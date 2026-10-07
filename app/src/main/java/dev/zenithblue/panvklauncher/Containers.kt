@@ -371,6 +371,15 @@ object ContainerManager {
             envMap["DXVK_HUD"] = "full"
         }
         envMap["VKD3D_LOG_FILE"] = "Z:" + File(gfxLogs, "vkd3d.log").absolutePath
+        // Mesa disk cache in files/mesa_shader_cache: compiled shaders survive sessions
+        // (keyed by driver BuildID + GPU id). Off by default on Android upstream.
+        envMap["MESA_SHADER_CACHE_DIR"] = ctx.filesDir.absolutePath
+        envMap["MESA_SHADER_CACHE_DISABLE"] = "false"
+        envMap["MESA_SHADER_CACHE_MAX_SIZE"] = "1G"
+        // 32-bit DXVK destroys each shader pipeline library after its background compile
+        // and recompiles it on dxvk-cs at first draw (1-1.6 s freezes). That saves 32-bit
+        // address space, which the 64-bit driver under wow64 does not use: keep them.
+        if (dxvk) envMap["DXVK_CONFIG"] = "dxvk.trackPipelineLifetime = False"
 
         val fexDll = File(containerDir, ".wine/drive_c/windows/system32/libwow64fex.dll")
         if (fexDll.exists()) {

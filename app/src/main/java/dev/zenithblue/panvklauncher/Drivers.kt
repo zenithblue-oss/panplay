@@ -22,7 +22,7 @@ data class Driver(
     val sha256: String = "",
     val driverVersion: String = ""
 ) {
-    /** "PanVK Kbase G615 - beta.9 (...)" style one-liner for dropdowns and the launch card. */
+    /** "PanVK Kbase - beta.9 (...)" style one-liner for dropdowns and the launch card. */
     val label: String get() = if (version.isEmpty()) name else "$name — $version"
 }
 
@@ -298,7 +298,7 @@ object DriverManager {
             so.copyTo(File(stage, "libvulkan_panfrost.so"), overwrite = true)
             File(stage, "meta.json").writeText(
                 JSONObject()
-                    .put("name", "PanVK Kbase G615 — ${r.label}")
+                    .put("name", "PanVK Kbase — ${r.label}")
                     .put("packageVersion", r.version)
                     .put("description", "Downloaded from GitHub release ${r.tag} (${DriverUpdate.ASSET}), SHA-256 and ELF verified.")
                     .put("author", "panvk-kbase-android")

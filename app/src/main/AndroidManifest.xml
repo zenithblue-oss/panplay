@@ -24,7 +24,7 @@
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
-            android:configChanges="orientation|screenSize|keyboardHidden|screenLayout|smallestScreenSize|uiMode|density"
+            android:configChanges="orientation|screenSize|keyboard|keyboardHidden|navigation|screenLayout|smallestScreenSize|uiMode|density"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,14 +33,14 @@
         </activity>
         <activity
             android:name=".XServerActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden|screenLayout|smallestScreenSize|uiMode|density"
+            android:configChanges="orientation|screenSize|keyboard|keyboardHidden|navigation|screenLayout|smallestScreenSize|uiMode|density"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="fullUser"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
         <activity
             android:name=".SessionLogsActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden|screenLayout|smallestScreenSize|uiMode|density"
+            android:configChanges="orientation|screenSize|keyboard|keyboardHidden|navigation|screenLayout|smallestScreenSize|uiMode|density"
             android:exported="false" />
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -53,7 +53,7 @@
         </provider>
         <activity
             android:name=".ScreenActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:configChanges="orientation|screenSize|keyboard|keyboardHidden|navigation"
             android:exported="false"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
     </application>

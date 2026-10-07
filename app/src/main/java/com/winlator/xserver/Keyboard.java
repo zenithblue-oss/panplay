@@ -92,16 +92,9 @@ public class Keyboard {
         }
     }
 
-    // panvk-launcher: replaces com.winlator.inputcontrols.ExternalController.isGameController.
-    private static boolean isGameController(android.view.InputDevice device) {
-        if (device == null) return false;
-        int sources = device.getSources();
-        return (sources & android.view.InputDevice.SOURCE_GAMEPAD) == android.view.InputDevice.SOURCE_GAMEPAD ||
-               (sources & android.view.InputDevice.SOURCE_JOYSTICK) == android.view.InputDevice.SOURCE_JOYSTICK;
-    }
-
     public boolean onKeyEvent(KeyEvent event) {
-        if (isGameController(event.getDevice())) return false;
+        // Per-key, not per-device: keyboards often also report SOURCE_JOYSTICK.
+        if (KeyEvent.isGamepadButton(event.getKeyCode())) return false;
 
         int action = event.getAction();
         if (action == KeyEvent.ACTION_DOWN || action == KeyEvent.ACTION_UP) {
