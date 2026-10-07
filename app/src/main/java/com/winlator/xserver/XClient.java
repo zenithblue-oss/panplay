@@ -100,6 +100,9 @@ public class XClient implements XResourceManager.OnResourceLifecycleListener {
                 }
             }
 
+            SHMSegmentManager shm = xServer.getSHMSegmentManager();
+            if (shm != null) shm.detachAll(this);
+
             while (!eventListeners.isEmpty()) {
                 int i = eventListeners.size()-1;
                 eventListeners.keyAt(i).removeEventListener(eventListeners.removeAt(i));

@@ -136,6 +136,7 @@ object DriverManager {
                             libPath = libFile.absolutePath,
                             bundled = false,
                             buildId = buildIdOf(json),
+                            sha256 = json.optString("sha256", ""),
                             driverVersion = drvVer
                         )
                     )
@@ -284,6 +285,33 @@ object DriverManager {
                 ContentManager.deleteTree(tempDir)
             } catch (_: Exception) {}
             Result.failure(t)
+        }
+    }
+
+    fun releaseId(r: DriverUpdate.Release) = "panvk-kbase-g615-${r.version}"
+
+    /** Store a verified GitHub release .so like an imported package: drivers/<id>/{meta.json, .so}. */
+    fun installRelease(context: Context, so: File, r: DriverUpdate.Release) {
+        val dir = File(context.filesDir, "drivers/${releaseId(r)}")
+        val stage = File(context.filesDir, "staging/update_${System.nanoTime()}").apply { mkdirs() }
+        try {
+            so.copyTo(File(stage, "libvulkan_panfrost.so"), overwrite = true)
+            File(stage, "meta.json").writeText(
+                JSONObject()
+                    .put("name", "PanVK Kbase G615 — ${r.label}")
+                    .put("packageVersion", r.version)
+                    .put("description", "Downloaded from GitHub release ${r.tag} (${DriverUpdate.ASSET}), SHA-256 and ELF verified.")
+                    .put("author", "panvk-kbase-android")
+                    .put("libraryName", "libvulkan_panfrost.so")
+                    .put("sha256", r.sha256)
+                    .put("sourceTag", r.tag)
+                    .toString(2)
+            )
+            if (dir.exists()) ContentManager.deleteTree(dir)
+            dir.parentFile?.mkdirs()
+            if (!stage.renameTo(dir)) throw IOException("Could not move driver into ${dir.absolutePath}")
+        } finally {
+            if (stage.exists()) ContentManager.deleteTree(stage)
         }
     }
 

@@ -363,10 +363,14 @@ object ContainerManager {
             "VK_DRIVER_FILES" to icdFile.absolutePath
         )
 
+        // DXVK/vkd3d logs go to one dir (Z: = /); SessionLogs.collect moves them into the session folder.
+        val gfxLogs = SessionLogs.gfxLogDir(ctx)
         if (dxvk) {
             envMap["DXVK_LOG_LEVEL"] = "info"
+            envMap["DXVK_LOG_PATH"] = "Z:" + gfxLogs.absolutePath
             envMap["DXVK_HUD"] = "full"
         }
+        envMap["VKD3D_LOG_FILE"] = "Z:" + File(gfxLogs, "vkd3d.log").absolutePath
 
         val fexDll = File(containerDir, ".wine/drive_c/windows/system32/libwow64fex.dll")
         if (fexDll.exists()) {
@@ -380,6 +384,13 @@ object ContainerManager {
         extra?.get("ANDROID_SYSVSHM_SERVER")?.let { envMap["ANDROID_SYSVSHM_SERVER"] = it }
         // Gamepad: LD_PRELOAD shim -> SDL virtual Xbox pad -> winebus. Graphical runs only.
         if (extra?.containsKey("DISPLAY") == true) envMap.putAll(GamepadBridge.env(ctx))
+        // X11 sw WSI (csf-v11/117) paces FIFO to this; X servers here give no real vblank.
+        if (extra?.containsKey("DISPLAY") == true) {
+            ctx.getSystemService(android.hardware.display.DisplayManager::class.java)
+                ?.getDisplay(android.view.Display.DEFAULT_DISPLAY)
+                ?.supportedModes?.maxOfOrNull { it.refreshRate }
+                ?.let { envMap["MESA_VK_X11_SW_REFRESH_HZ"] = Math.round(it).toString() }
+        }
         // FEX preset (default Intermediate); per-game env below may override single FEX_* keys.
         envMap.putAll(FexPresets.env(launchOpts.get()?.fexMode ?: ""))
         // Per-game shortcut env wins over defaults (but not DISPLAY / display plumbing above).
@@ -608,7 +619,16 @@ object ContainerManager {
                     onLine("Wine Graphics=null failed (exit=$regCode). Console launch continues.")
                 }
             }
-            return runInternal(ctx, args, workDir ?: containerDir, onLine, session?.env)
+            if (!graphics) return runInternal(ctx, args, workDir ?: containerDir, onLine, session?.env)
+            // A game from an earlier session (crashed launcher, detached child) must not keep its GPU and RAM.
+            killPrefixProcesses(ctx)
+            val code = runInternal(ctx, args, workDir ?: containerDir, onLine, session?.env)
+            // The started exe can exit while the game it spawned keeps running (Fallout4Launcher, start.exe), and a
+            // finished game can leave Wine processes behind that hold its memory into the next launch. Wait until
+            // wineserver is gone (EXIT's "wineserver -k" ends this wait), then kill whatever is left.
+            if (!synchronized(lifecycleLock) { stopRequested }) wineserver(ctx, "-w", 0)
+            killPrefixProcesses(ctx)
+            return code
         } finally {
             if (session != null) DisplayServer.close(session)
             synchronized(lifecycleLock) {
@@ -661,76 +681,64 @@ object ContainerManager {
         // still answers), then the launcher process, then anything left, and only then the X server.
 
         try {
-            val config = getContainerConfig(ctx)
-            val wineDir = config?.first ?: run {
-                val installed = ContentManager.list(ctx)
-                installed.firstOrNull { it.type == "Proton" }?.dir
-            }
-            val containerDir = File(ctx.filesDir, "container")
-
-            if (wineDir != null) {
-                val wineServer = File(wineDir, "bin/wineserver")
-                val wineServerBin = try {
-                    wineServer.canonicalPath
-                } catch (_: Exception) {
-                    wineServer.absolutePath
-                }
-                val wsCmd = listOf(wineServerBin, "-k")
-                try {
-                    val pb = ProcessBuilder(wsCmd)
-                    pb.directory(containerDir)
-                    pb.environment().putAll(env(ctx))
-                    pb.environment().remove("DISPLAY")
-                    pb.redirectErrorStream(true)
-                    val wsProcess = pb.start()
-                    val finished = wsProcess.waitFor(10, TimeUnit.SECONDS)
-                    if (!finished) {
-                        wsProcess.destroyForcibly()
-                    }
-                } catch (_: Exception) {}
-            }
-
+            wineserver(ctx, "-k", 10)
             currentProcess?.let { try { it.destroyForcibly() } catch (_: Exception) {} }
-
-            try {
-                val winePrefix = File(ctx.filesDir, "container/.wine")
-                val prefixAbs = winePrefix.absolutePath
-                val prefixCanon = try { winePrefix.canonicalPath } catch (_: Exception) { prefixAbs }
-                val target1 = "WINEPREFIX=$prefixAbs"
-                val target2 = "WINEPREFIX=$prefixCanon"
-
-                val myPid = android.os.Process.myPid()
-                val procRoot = File("/proc")
-                val procList = procRoot.listFiles() ?: emptyArray()
-                for (f in procList) {
-                    val pid = f.name.toIntOrNull() ?: continue
-                    if (pid == myPid) continue
-                    try {
-                        // A Wine process whose main thread exited is a zombie leader with an empty environ while its
-                        // other threads live on (pipe_read on the dead wineserver), so also check each thread's environ.
-                        val environs = sequenceOf(File(f, "environ")) +
-                            (File(f, "task").listFiles() ?: emptyArray()).asSequence().map { File(it, "environ") }
-                        val match = environs.any { environFile ->
-                            val bytes = try { FileInputStream(environFile).use { it.readBytes() } } catch (_: Exception) { ByteArray(0) }
-                            val entries = String(bytes, Charsets.UTF_8).split('\u0000')
-                            entries.contains(target1) || entries.contains(target2)
-                        }
-                        if (match) {
-                            try {
-                                Os.kill(pid, OsConstants.SIGKILL)
-                            } catch (_: Exception) {}
-                        }
-                    } catch (_: Exception) {}
-                }
-            } catch (_: Exception) {}
-            // A killed Wine leaves its ntsync shm behind, which makes the next start hang.
-            try { File(ctx.filesDir, "contents/imagefs/bionic/usr/tmp/ntsync_userspace.v9.shm").delete() } catch (_: Exception) {}
+            killPrefixProcesses(ctx)
             DisplayServer.stopOwned()
         } finally {
             currentProcess = null
             // Latch and STOPPING stay until run() returns. Clearing them here
             // lets that owner start Wine after Stop during DisplayServer.prepare.
         }
+    }
+
+    /** Run "wineserver <flag>" for the container prefix; timeoutS 0 waits without limit. */
+    private fun wineserver(ctx: Context, flag: String, timeoutS: Long) {
+        val wineDir = getContainerConfig(ctx)?.first
+            ?: ContentManager.list(ctx).firstOrNull { it.type == "Proton" }?.dir ?: return
+        val wineServer = File(wineDir, "bin/wineserver")
+        val bin = try { wineServer.canonicalPath } catch (_: Exception) { wineServer.absolutePath }
+        try {
+            val pb = ProcessBuilder(listOf(bin, flag))
+            pb.directory(File(ctx.filesDir, "container"))
+            pb.environment().putAll(env(ctx))
+            pb.environment().remove("DISPLAY")
+            pb.redirectErrorStream(true)
+            val p = pb.start()
+            p.inputStream.close()
+            if (timeoutS == 0L) p.waitFor()
+            else if (!p.waitFor(timeoutS, TimeUnit.SECONDS)) p.destroyForcibly()
+        } catch (_: Exception) {}
+    }
+
+    /** SIGKILL every process running in the container prefix, then drop the stale ntsync shm. */
+    private fun killPrefixProcesses(ctx: Context) {
+        try {
+            val winePrefix = File(ctx.filesDir, "container/.wine")
+            val prefixAbs = winePrefix.absolutePath
+            val prefixCanon = try { winePrefix.canonicalPath } catch (_: Exception) { prefixAbs }
+            val target1 = "WINEPREFIX=$prefixAbs"
+            val target2 = "WINEPREFIX=$prefixCanon"
+            val myPid = android.os.Process.myPid()
+            for (f in File("/proc").listFiles() ?: emptyArray()) {
+                val pid = f.name.toIntOrNull() ?: continue
+                if (pid == myPid) continue
+                try {
+                    // A Wine process whose main thread exited is a zombie leader with an empty environ while its
+                    // other threads live on (pipe_read on the dead wineserver), so also check each thread's environ.
+                    val environs = sequenceOf(File(f, "environ")) +
+                        (File(f, "task").listFiles() ?: emptyArray()).asSequence().map { File(it, "environ") }
+                    val match = environs.any { environFile ->
+                        val bytes = try { FileInputStream(environFile).use { it.readBytes() } } catch (_: Exception) { ByteArray(0) }
+                        val entries = String(bytes, Charsets.UTF_8).split('\u0000')
+                        entries.contains(target1) || entries.contains(target2)
+                    }
+                    if (match) try { Os.kill(pid, OsConstants.SIGKILL) } catch (_: Exception) {}
+                } catch (_: Exception) {}
+            }
+        } catch (_: Exception) {}
+        // A killed Wine leaves its ntsync shm behind, which makes the next start hang.
+        try { File(ctx.filesDir, "contents/imagefs/bionic/usr/tmp/ntsync_userspace.v9.shm").delete() } catch (_: Exception) {}
     }
 
     fun recentExes(ctx: Context): List<String> {

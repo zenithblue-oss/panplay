@@ -405,6 +405,7 @@ private fun ShortcutEditorSheet(
                     if (path != null) {
                         exe = path
                         if (name.isBlank()) name = File(path).nameWithoutExtension
+                        env = ShortcutStore.envText(ShortcutStore.withKnownEnv(path, ShortcutStore.parseEnv(env)))
                     } else android.widget.Toast.makeText(ctx, ContainerManager.IMPORT_FAIL_MSG, android.widget.Toast.LENGTH_LONG).show()
                 }
             }

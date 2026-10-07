@@ -58,7 +58,8 @@ fun DriversScreen(
     onSelectDriver: (Driver) -> Unit,
     onImportClick: () -> Unit,
     onProbeClick: () -> Unit,
-    onDeleteDriver: (Driver) -> Unit
+    onDeleteDriver: (Driver) -> Unit,
+    updateCard: @Composable () -> Unit = {}
 ) {
     var confirmDelete by remember { mutableStateOf<Driver?>(null) }
 
@@ -70,6 +71,7 @@ fun DriversScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
+        item { updateCard() }
         item {
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),

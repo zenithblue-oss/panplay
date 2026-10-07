@@ -189,6 +189,20 @@ object ShortcutStore {
         .filterKeys { it.isNotEmpty() }
 
     fun envText(env: Map<String, String>) = env.entries.joinToString("\n") { "${it.key}=${it.value}" }
+
+    /* Per-game env the bundled Wine needs; prefilled when the exe is picked (user can edit it).
+     * Fallout 4 (Galaxy64/steam_api64) on Proton 11.0-2-arm64ec: GetAdaptersAddresses deadlocks in
+     * nsiproxy and OpenSCManagerW from x86_64 code crashes in rpcrt4. Without services.exe both fail
+     * fast. Shortcut WINEDLLOVERRIDES replaces the launcher default, so it repeats the DXVK overrides.
+     * See worklogs/driver-remaining/fo4-hang-before-driver.md. */
+    private val KNOWN_ENV = mapOf(
+        "fallout4.exe" to mapOf(
+            "WINEDLLOVERRIDES" to "mscoree,mshtml=d;d3d8,d3d9,d3d10core,d3d11,dxgi=n,b;services.exe=d"
+        )
+    )
+
+    fun withKnownEnv(exe: String, env: Map<String, String>): Map<String, String> =
+        env + (KNOWN_ENV[exe.substringAfterLast('/').substringAfterLast('\\').lowercase()] ?: emptyMap())
 }
 
 /** Minimal PE reader: machine type and first icon (PNG or DIB entry) from the resource section. */

@@ -199,6 +199,7 @@ public class GLRenderer implements GLSurfaceView.Renderer, WindowManager.OnWindo
     }
 
     private void renderDrawable(Drawable drawable, int x, int y, ShaderMaterial material, boolean forceFullscreen) {
+        if (drawable == null) return; // vanished/contentless drawable: skip, never fatal on the GL thread
         synchronized (drawable.renderLock) {
             Texture texture = drawable.getTexture();
             texture.updateFromDrawable(drawable);
@@ -284,7 +285,8 @@ public class GLRenderer implements GLSurfaceView.Renderer, WindowManager.OnWindo
 
     private void collectRenderableWindows(Window window, int x, int y) {
         if (!window.attributes.isMapped()) return;
-        if (window != xServer.windowManager.rootWindow) {
+        // panvk: InputOnly windows (e.g. Wine's ClipCursor clip window) are mapped but have no content drawable.
+        if (window != xServer.windowManager.rootWindow && window.isInputOutput()) {
             boolean viewable = true;
 
             if (unviewableWMClasses != null) {

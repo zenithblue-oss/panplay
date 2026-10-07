@@ -23,7 +23,7 @@ import java.util.zip.ZipOutputStream
 object SessionLogs {
     const val KEEP = 10
     private const val MAX_FILE = 4L shl 20      // per file, tail kept
-    private const val MAX_LOGCAT = 2L shl 20    // "last 2 MB" of logcat
+    private const val MAX_LOGCAT = 4L shl 20    // logcat, head+tail
     private val ERR = Regex(
         "(?i)(\\berr:|\\berror\\b|\\bfatal\\b|exception|crash|segfault|sigsegv|sigabrt|sigbus|device[_ ]lost|unhandled|\\bassert|\\babort|page fault|\\bfailed\\b|backtrace)"
     )
@@ -40,15 +40,20 @@ object SessionLogs {
 
     fun summary(dir: File): JSONObject = try { JSONObject(File(dir, "session.json").readText()) } catch (_: Exception) { JSONObject() }
 
+    /** DXVK_LOG_PATH / VKD3D_LOG_FILE target; [collect] moves its files into the session folder. */
+    fun gfxLogDir(ctx: Context) = File(ctx.filesDir, "gfx-logs").apply { mkdirs() }
+
+    /** Whole file up to [max]; above that the first quarter (driver init lines) and the tail, with a marker. */
     private fun tail(src: File, max: Long): String {
         if (!src.isFile) return ""
         return try {
             RandomAccessFile(src, "r").use { f ->
                 val n = f.length()
-                val start = if (n > max) n - max else 0
-                f.seek(start)
-                val b = ByteArray((n - start).toInt()); f.readFully(b)
-                (if (start > 0) "[... ${start} earlier bytes cut, last ${max shr 20} MB kept ...]\n" else "") + String(b, Charsets.UTF_8)
+                if (n <= max) return@use ByteArray(n.toInt()).also { f.readFully(it) }.toString(Charsets.UTF_8)
+                val head = ByteArray((max / 4).toInt()).also { f.readFully(it) }
+                val t = ByteArray((max - max / 4).toInt()); f.seek(n - t.size); f.readFully(t)
+                String(head, Charsets.UTF_8) + "\n[... ${n - max} bytes cut, first ${head.size} and last ${t.size} bytes kept ...]\n" +
+                    String(t, Charsets.UTF_8)
             }
         } catch (t: Throwable) { "[read failed: $t]\n" }
     }
@@ -73,15 +78,26 @@ object SessionLogs {
                 for (l in text.lineSequence()) if (errors.size < 400 && isError(l) && l.length < 600) errors += "[$name] ${l.trim()}"
         }
 
+        // Original sizes of every capped log, for the upload manifest.
+        val logs = JSONArray()
+        fun cap(src: File, name: String): String {
+            if (src.isFile) logs.put(JSONObject().put("path", name).put("originalBytes", src.length()).put("truncated", src.length() > MAX_FILE))
+            return tail(src, MAX_FILE)
+        }
+
         // Wine stdout/stderr (WINEDEBUG channels, DXVK and Mesa/PanVK stderr land here).
-        val wineLog = run?.logFile?.let { tail(it, MAX_FILE) } ?: ""
+        val wineLog = run?.logFile?.let { cap(it, "wine-run.log") } ?: ""
         save("wine-run.log", wineLog)
         save("launcher.log", launcherLog)
 
-        // DXVK logs next to the exe (cwd), written this run.
+        // DXVK (d3d8/9/10/11, dxgi) and vkd3d logs: DXVK_LOG_PATH / VKD3D_LOG_FILE dir (moved here), else next to the exe.
         val exeFile = File(exePath)
+        gfxLogDir(ctx).listFiles { f -> f.isFile }?.forEach {
+            if (it.lastModified() >= startMs - 5000) save("dxvk-${it.name}".replace("dxvk-vkd3d", "vkd3d"), cap(it, it.name))
+            it.delete()
+        }
         exeFile.parentFile?.listFiles { f -> f.isFile && f.name.endsWith(".log") && (f.name.contains("_d3d") || f.name.contains("_dxgi")) }
-            ?.filter { it.lastModified() >= startMs - 5000 }?.forEach { save("dxvk-${it.name}", tail(it, MAX_FILE)) }
+            ?.filter { it.lastModified() >= startMs - 5000 }?.forEach { save("dxvk-${it.name}", cap(it, it.name)) }
 
         // Unity Player.log (AppData/LocalLow/<company>/<product>/Player.log) inside the prefix.
         val users = File(ctx.filesDir, "container/.wine/drive_c/users")
@@ -89,20 +105,20 @@ object SessionLogs {
             File(u, "AppData/LocalLow").listFiles()?.forEach { co -> co.listFiles()?.forEach { prod ->
                 for (n in listOf("Player.log", "Player-prev.log")) File(prod, n).takeIf { it.isFile }?.let {
                     val stale = if (it.lastModified() < startMs - 60_000) " (older than this run)" else ""
-                    save("unity-${n.removeSuffix(".log")}-${prod.name}.log", "[${it.path} modified ${Date(it.lastModified())}$stale]\n" + tail(it, MAX_FILE))
+                    val un = "unity-${n.removeSuffix(".log")}-${prod.name}.log"
+                    save(un, "[${it.path} modified ${Date(it.lastModified())}$stale]\n" + cap(it, un))
                 }
             } }
         }
-        save("xserver.log", tail(File(ctx.filesDir, "xserver.log"), MAX_FILE))
+        save("xserver.log", cap(File(ctx.filesDir, "xserver.log"), "xserver.log"))
 
-        // logcat (own uid only on Android; last 2 MB).
-        val logcat = try {
-            val p = ProcessBuilder("logcat", "-d", "-v", "threadtime", "-t", "40000").redirectErrorStream(true).start()
-            val text = p.inputStream.bufferedReader().use { it.readText() }
-            p.waitFor()
-            if (text.length > MAX_LOGCAT) text.takeLast(MAX_LOGCAT.toInt()) else text
-        } catch (t: Throwable) { "logcat failed: $t\n" }
-        File(dir, "logcat.txt").writeText(logcat)
+        // logcat: all tags, run window, main/system/crash/events (own uid only without READ_LOGS), head+tail capped.
+        val logcatFile = File(dir, "logcat.txt")
+        val logcatInfo = try { UploadLogs.logcat(ctx, logcatFile, (run?.startMs ?: startMs) - 5000, MAX_LOGCAT) }
+            catch (t: Throwable) { logcatFile.writeText("logcat failed: $t\n"); JSONObject().put("error", t.toString()) }
+        val logcat = try { logcatFile.readText() } catch (_: Throwable) { "" }
+        val facts = UploadLogs.deviceFacts(null, UploadLogs.driverLines(sequenceOf(wineLog, logcat)))
+        File(dir, "device-facts.json").writeText(facts.toString(2))
         for (l in logcat.lineSequence()) if (errors.size < 400 && (" E " in l || " F " in l) && isError(l) && l.length < 600) errors += "[logcat] ${l.trim()}"
 
         // Mesa / PanVK lines from everything.
@@ -144,6 +160,7 @@ object SessionLogs {
             put("errorCount", uniq.size); put("errors", JSONArray(uniq.take(60)))
             put("files", JSONArray((dir.listFiles() ?: emptyArray()).map { it.name }.sorted()))
             put("manifestInfo", manifestInfo)
+            put("deviceFacts", facts); put("logcat", logcatInfo); put("logs", logs)
         }
         File(dir, "session.json").writeText(sum.toString(2))
         File(dir, "summary.txt").writeText(buildString {
@@ -768,6 +785,7 @@ object SessionLogs {
                     put("gpuModel", gpuModel ?: JSONObject.NULL)
                 })
 
+                for (k in listOf("deviceFacts", "logcat", "logs")) sessionJson?.opt(k)?.let { put(k, it) }
                 put("files", filesArray)
             }
 

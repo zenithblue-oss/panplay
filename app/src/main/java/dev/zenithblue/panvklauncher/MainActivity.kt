@@ -77,6 +77,8 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handleUploadEndpointIntent(intent: Intent?) {
+        // Debug builds only (checked in DriverUpdate): --es updateAs 0.1.0-beta.15 makes an older release look newer.
+        intent?.getStringExtra("updateAs")?.let { DriverUpdate.debugInstalledAs = it.ifEmpty { null } }
         if (intent?.hasExtra("uploadEndpoint") == true) {
             val extra = intent.getStringExtra("uploadEndpoint")
             if (extra.isNullOrEmpty()) {
@@ -139,6 +141,8 @@ fun LauncherApp(
     var probeResult by remember { mutableStateOf<String?>(null) }
     var isProbing by remember { mutableStateOf(false) }
     var importing by remember { mutableStateOf(false) }
+    val driverUpdate = remember { DriverUpdate(context) }
+    LaunchedEffect(Unit) { driverUpdate.check(manual = false) }
     var installedComponents by remember { mutableStateOf(ContentManager.list(context)) }
     var isComponentBusy by remember { mutableStateOf(false) }
     var componentProgressText by remember { mutableStateOf<String?>(null) }
@@ -725,6 +729,31 @@ fun LauncherApp(
                         }
                         addLog("Deleted driver: $driverName")
                     }
+                },
+                updateCard = {
+                    val rel = driverUpdate.available
+                    val relId = rel?.let { DriverManager.releaseId(it) }
+                    fun select() {
+                        if (relId == null) return
+                        selectedDriverId = relId
+                        DriverManager.setSelectedDriverId(context, relId)
+                    }
+                    DriverUpdateCard(
+                        upd = driverUpdate,
+                        downloaded = relId != null && drivers.any { it.id == relId },
+                        selected = relId != null && selectedDriver.id == relId,
+                        onCheck = { scope.launch { driverUpdate.check(manual = true) } },
+                        onDownload = {
+                            scope.launch {
+                                if (driverUpdate.download { f, r -> DriverManager.installRelease(context, f, r) }) {
+                                    drivers = DriverManager.getDrivers(context)
+                                    select()
+                                    addLog("Downloaded driver ${rel?.tag} and made it active")
+                                }
+                            }
+                        },
+                        onSelect = { select() }
+                    )
                 }
             )
             AppTab.Settings -> SettingsScreen(

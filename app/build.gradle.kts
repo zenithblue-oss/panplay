@@ -36,9 +36,12 @@ val checkPanvkSo = tasks.register("checkPanvkSo") {
     doLast {
         if (panvkSoProp != null) {
             if (!panvkSoFile.exists()) throw GradleException("panvkSo not found: ${panvkSoFile.absolutePath}")
+            if (sha256Of(panvkSoFile) != pinnedSha) logger.warn("WARNING: -PpanvkSo sha256 != bundled-driver.json pin ($pinnedSha): APK label will not match the bundled .so")
             return@doLast
         }
         if (!(pinnedCache.exists() && sha256Of(pinnedCache) == pinnedSha)) {
+            if (bundledRelease["published"] == false) throw GradleException(
+                "Bundled driver ${bundledRelease["tag"]} is not published yet; build with -PpanvkSo=<path to sha256 $pinnedSha>")
             pinnedCache.parentFile.mkdirs()
             val tmp = File(pinnedCache.parentFile, "${pinnedSha}.part")
             logger.lifecycle("Downloading bundled driver $pinnedUrl")
@@ -74,8 +77,8 @@ android {
         minSdk = 28
         // targetSdk 28: W^X (targetSdk>=29) blocks execve of wine/wineserver from app data; linker64 fails ("could not exec the wine loader"). Same as Winlator/GameNative legacy.
         targetSdk = 28
-        versionCode = 9
-        versionName = "1.2.2"
+        versionCode = 10
+        versionName = "1.2.3"
 
         ndk {
             abiFilters.add("arm64-v8a")
