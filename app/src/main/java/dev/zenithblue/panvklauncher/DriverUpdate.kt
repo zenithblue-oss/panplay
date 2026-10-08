@@ -39,7 +39,7 @@ import java.security.MessageDigest
 
 /**
  * "New driver available": GitHub releases of the driver repo (prereleases included), newest
- * g615-v11-csf-v* tag with the universal Android ICD asset. Download is refused without a published
+ * panvk-kbase-v* (or older g615-v11-csf-v*) tag with the universal Android ICD asset. Download is refused without a published
  * SHA-256 (asset digest or SHA256SUMS), and must be an aarch64 ELF shared object of the listed size.
  */
 class DriverUpdate(private val ctx: Context) {
@@ -56,16 +56,18 @@ class DriverUpdate(private val ctx: Context) {
     companion object {
         const val REPO = "zenithblue-oss/panvk-kbase-android"
         const val ASSET = "libvulkan_panfrost-android-aarch64.so"
-        private const val TAG_PREFIX = "g615-v11-csf-v"
+        // New tags are panvk-kbase-vX; the old g615-v11-csf-v prefix stays so beta/rc1 tags still parse.
+        // Versions continue 0.1.0-rcN then 0.1.0, so "-rcN" without beta sorting above betas is intended.
+        private val TAG_PREFIXES = listOf("panvk-kbase-v", "g615-v11-csf-v")
         private const val DAY_MS = 24L * 3600 * 1000
 
         /** Debug builds only: pretend this driver version is installed (intent extra "updateAs"). */
         @Volatile var debugInstalledAs: String? = null
 
-        fun label(v: String): String = Regex("beta\\.\\d+(?:-rc\\d+)?").find(v)?.value ?: v
+        fun label(v: String): String = Regex("beta\\.\\d+(?:-rc\\d+)?|rc\\d+").find(v)?.value ?: v
 
-        /** [major, minor, patch, beta, rc]; a final sorts after every beta, a beta after its RCs. */
-        fun versionKey(v: String): List<Int>? = Regex("(\\d+)\\.(\\d+)\\.(\\d+)(?:-beta\\.(\\d+)(?:-rc(\\d+))?)?").find(v)?.groupValues
+        /** [major, minor, patch, beta, rc]; a final sorts after every beta, a beta after its RCs; "-rcN" without beta sorts after every beta. */
+        fun versionKey(v: String): List<Int>? = Regex("(\\d+)\\.(\\d+)\\.(\\d+)(?:-beta\\.(\\d+))?(?:-rc(\\d+))?").find(v)?.groupValues
             ?.let { g -> listOf(g[1].toInt(), g[2].toInt(), g[3].toInt(), g[4].toIntOrNull() ?: Int.MAX_VALUE,
                 g[5].toIntOrNull() ?: Int.MAX_VALUE) }
 
@@ -85,8 +87,9 @@ class DriverUpdate(private val ctx: Context) {
             for (i in 0 until arr.length()) {
                 val r = arr.getJSONObject(i)
                 val tag = r.optString("tag_name")
-                if (r.optBoolean("draft") || !tag.startsWith(TAG_PREFIX)) continue
-                val ver = tag.removePrefix(TAG_PREFIX)
+                val prefix = TAG_PREFIXES.firstOrNull { tag.startsWith(it) }
+                if (r.optBoolean("draft") || prefix == null) continue
+                val ver = tag.removePrefix(prefix)
                 if (versionKey(ver) == null || (best != null && !isNewer(ver, best.first.version))) continue
                 val assets = r.optJSONArray("assets") ?: continue
                 var so: JSONObject? = null

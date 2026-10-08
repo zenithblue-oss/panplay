@@ -234,6 +234,12 @@ fun LauncherApp(
             val launcherLog = StringBuffer()
             var launched = false
             try {
+                // PanVK drives Mali kbase only; warn (not block, an imported driver may differ) when no Mali node exists.
+                if (!File("/dev/mali0").exists() && !File("/dev/mali").exists()) {
+                    val w = "Warning: no Mali GPU device (/dev/mali0). PanVK needs a Mali GPU; Vulkan will likely fail on this device."
+                    launcherLog.append(w).append('\n')
+                    mainHandler.post { addLog(w); android.widget.Toast.makeText(context, w, android.widget.Toast.LENGTH_LONG).show() }
+                }
                 // Controller mapping (shortcut file, exe preset or default) must be set before Wine/X server start.
                 ControllerInput.config = ControllerConfig.resolve(context, sc?.id, exePath)
                 ContainerManager.addRecent(context, exePath)

@@ -81,13 +81,17 @@ public class XOutputStream {
         if (buffer.position() != 0) {
             buffer.flip();
 
-            if (ancillaryFd != -1) {
-                clientSocket.sendAncillaryMsg(buffer, ancillaryFd);
-                ancillaryFd = -1;
+            try {
+                if (ancillaryFd != -1) {
+                    clientSocket.sendAncillaryMsg(buffer, ancillaryFd);
+                    ancillaryFd = -1;
+                }
+                else clientSocket.write(buffer);
             }
-            else clientSocket.write(buffer);
-
-            buffer.clear();
+            finally {
+                // a failed write must not leave the buffer flipped (limit==position), or the next put overflows
+                buffer.clear();
+            }
         }
     }
 

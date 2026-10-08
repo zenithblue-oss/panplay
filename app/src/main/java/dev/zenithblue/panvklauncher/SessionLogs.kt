@@ -29,7 +29,9 @@ object SessionLogs {
     )
     private val WARN = Regex("(?i)(\\bwarn|\\bwarning\\b|\\bwarn:)")
     private val MESA = Regex("(?i)(panvk|mesa|panfrost|libvulkan_panfrost|kbase|\\bmali\\b|vk_error|vkcreate|vkqueue|device[_ ]lost)")
-    fun isError(l: String) = ERR.containsMatchIn(l)
+    // Normal Wine/DXVK noise that is not a failure.
+    private val BENIGN = Regex("(?i)(winebth|libGL\\.so|\\bEDID\\b|rpcrt4.*error 87|error 87|BadImplementation)")
+    fun isError(l: String) = ERR.containsMatchIn(l) && !BENIGN.containsMatchIn(l)
     fun isWarn(l: String) = WARN.containsMatchIn(l)
 
     fun root(ctx: Context) = File(ctx.filesDir, "sessions").apply { mkdirs() }
@@ -103,10 +105,10 @@ object SessionLogs {
         val users = File(ctx.filesDir, "container/.wine/drive_c/users")
         users.listFiles()?.forEach { u ->
             File(u, "AppData/LocalLow").listFiles()?.forEach { co -> co.listFiles()?.forEach { prod ->
-                for (n in listOf("Player.log", "Player-prev.log")) File(prod, n).takeIf { it.isFile }?.let {
-                    val stale = if (it.lastModified() < startMs - 60_000) " (older than this run)" else ""
+                for (n in listOf("Player.log", "Player-prev.log")) File(prod, n).takeIf { it.isFile && it.lastModified() >= startMs - 60_000 }?.let {
+                    // older files belong to an earlier game/run: skipped
                     val un = "unity-${n.removeSuffix(".log")}-${prod.name}.log"
-                    save(un, "[${it.path} modified ${Date(it.lastModified())}$stale]\n" + cap(it, un))
+                    save(un, "[${it.path} modified ${Date(it.lastModified())}]\n" + cap(it, un))
                 }
             } }
         }
