@@ -16,7 +16,7 @@ FEX 2609.1 (libarm64ecfex.dll, libwow64fex.dll)
   License: MIT. Source: https://github.com/FEX-Emu/FEX tag FEX-2609.1 (9fbdc00bd6401aff3b32d79e78ff98b8a13e4dcf)
   Built with llvm-mingw 20260922 (https://github.com/mstorsjo/llvm-mingw) by scripts/build-fex-windows.sh.
 
-Box64 WowBox64 (assets/deps/wow64/wowbox64.dll, optional 32-bit emulator per game)
+Box64 WowBox64 (Box64 component, wowbox64.dll, optional 32-bit emulator per game)
   License: MIT. Source: https://github.com/ptitSeb/box64 commit 2f47bdff3ae9b3b7fb462fea0579cd3e87551e75 (master, 2026-10-07).
   Built with llvm-mingw 20260922 (https://github.com/mstorsjo/llvm-mingw) by scripts/build-box64-wow64.sh.
   sha256 6ed76e135b1cc403731e88961f65c42652d557bac2a170563e45a1493389d225
@@ -24,6 +24,10 @@ Box64 WowBox64 (assets/deps/wow64/wowbox64.dll, optional 32-bit emulator per gam
 DXVK 3.1.1 (+ clear-before-external-rendering patch), ARM64EC + i686
   License: Zlib. Source: https://github.com/doitsujin/dxvk tag v3.1.1 (b1a1c99ab52b687cf950d62c88bc2fa316b41663)
   Patch: runtimes/dxvk/clear-before-external-rendering.patch. Built by scripts/build-dxvk.sh.
+
+vkd3d-proton master-v3.0.1-452-g22307558 (d3d12.dll, d3d12core.dll), ARM64EC + i686
+  License: LGPL-2.1-or-later. Source: https://github.com/HansKristian-Work/vkd3d-proton commit 2230755878b01993b4b82d0ac0c0624f3ab4d333
+  (22307558). Built by scripts/build-dxvk.sh, shipped as the separate VKD3D component.
 
 Wine 11.19 i386 d3dcompiler_43.dll + wined3d.dll (assets/deps/x86, HLSL compiler with vkd3d-shader 2.1)
   License: LGPL-2.1-or-later (Wine; bundled vkd3d LGPL-2.1-or-later). Source: https://gitlab.winehq.org/wine/wine

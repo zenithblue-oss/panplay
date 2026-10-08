@@ -310,6 +310,18 @@ fun LauncherApp(
 
     var isDxvkEnabled by remember { mutableStateOf(ContainerManager.isDxvkEnabled(context)) }
 
+    var isVkd3dEnabled by remember { mutableStateOf(ContainerManager.isVkd3dEnabled(context)) }
+
+    fun toggleVkd3d(enabled: Boolean) {
+        scope.launch(Dispatchers.IO) {
+            val err = ContainerManager.setVkd3dEnabled(context, enabled)
+            withContext(Dispatchers.Main) {
+                isVkd3dEnabled = ContainerManager.isVkd3dEnabled(context)
+                addLog(if (err != null) "vkd3d-proton error: $err" else "vkd3d-proton ${if (enabled) "enabled" else "disabled"}")
+            }
+        }
+    }
+
     fun toggleDxvk(enabled: Boolean) {
         scope.launch(Dispatchers.IO) {
             val err = ContainerManager.setDxvkEnabled(context, enabled)
@@ -606,6 +618,9 @@ fun LauncherApp(
             }
             installedComponents = updatedList
             addLog("Installed component: ${installed.type}/${installed.versionName}")
+            if (installed.type == "VKD3D" && ContainerManager.isVkd3dEnabled(context)) withContext(Dispatchers.IO) {
+                ContainerManager.setVkd3dEnabled(context, true)?.let { addLog("vkd3d-proton: $it") }
+            }
         }.onFailure { err ->
             componentError = "Install failed: ${err.message}"
             addLog("Installation failed: ${err.message}")
@@ -769,6 +784,8 @@ fun LauncherApp(
                 selectedDriver = selectedDriver,
                 isDxvkEnabled = isDxvkEnabled,
                 onToggleDxvk = { toggleDxvk(it) },
+                isVkd3dEnabled = isVkd3dEnabled,
+                onToggleVkd3d = { toggleVkd3d(it) },
                 displayStatus = displayRev.let { DisplayServer.describe(context) },
                 builtinDisplay = builtinDisplay,
                 onToggleBuiltin = {

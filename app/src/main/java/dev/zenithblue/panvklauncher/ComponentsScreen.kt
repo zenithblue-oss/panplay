@@ -73,7 +73,7 @@ fun ComponentsScreen(
     PageList {
         item {
             Text(
-                "Rootfs, Wine, FEX and DXVK that games run on. Already installed components are detected from the files on this device.",
+                "Rootfs, Wine, FEX, Box64, DXVK and vkd3d-proton that games run on. Already installed components are detected from the files on this device.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

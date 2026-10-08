@@ -88,13 +88,33 @@ object ContentManager {
         ),
         CatalogEntry(
             type = "DXVK",
-            name = "DXVK v3.1.1 + clear fix + vkd3d-proton D3D12, ARM64EC + i686 (built from doitsujin/dxvk source)",
+            name = "DXVK v3.1.1 + clear fix, ARM64EC + i686 (built from doitsujin/dxvk source)",
             url = "",
             sha256 = null,
             title = "DXVK",
-            versionName = "3.1.1-2-arm64ec",
-            note = "Direct3D 8/9/10/11/12 to Vulkan",
-            asset = "components/dxvk-3.1.1-2-arm64ec.wcp"
+            versionName = "3.1.1-3-arm64ec",
+            note = "Direct3D 8/9/10/11 to Vulkan",
+            asset = "components/dxvk-3.1.1-3-arm64ec.wcp"
+        ),
+        CatalogEntry(
+            type = "VKD3D",
+            name = "vkd3d-proton 3.0.1-452-g22307558, ARM64EC + i686 (built from HansKristian-Work/vkd3d-proton source)",
+            url = "",
+            sha256 = null,
+            title = "vkd3d-proton",
+            versionName = "3.0.1-452-g22307558",
+            note = "Direct3D 12 to Vulkan (commit 22307558)",
+            asset = "components/vkd3d-3.0.1-452-g22307558.wcp"
+        ),
+        CatalogEntry(
+            type = "Box64",
+            name = "Box64 v0.4.5 wowbox64.dll, ARM64 PE (built from ptitSeb/box64 source)",
+            url = "",
+            sha256 = null,
+            title = "WoW64 emulator (32-bit)",
+            versionName = "0.4.5-2f47bdf",
+            note = "Box64 (commit 2f47bdf), optional per-game alternative to FEX",
+            asset = "components/box64-0.4.5-2f47bdf.wcp"
         )
     )
 

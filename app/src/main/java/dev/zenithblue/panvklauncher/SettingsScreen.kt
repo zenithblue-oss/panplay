@@ -53,6 +53,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import java.io.File
 
+private fun openContainerInFileManager(ctx: android.content.Context) {
+    val uri = android.provider.DocumentsContract.buildRootUri("dev.zenithblue.panvklauncher.documents", "container")
+    val base = android.content.Intent(android.content.Intent.ACTION_VIEW)
+        .setDataAndType(uri, android.provider.DocumentsContract.Root.MIME_TYPE_ITEM)
+        .addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION or android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION or android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+    val ok = listOf("com.google.android.documentsui", "com.android.documentsui", null).any { pkg ->
+        runCatching { ctx.startActivity(android.content.Intent(base).also { if (pkg != null) it.setPackage(pkg) }) }.isSuccess
+    }
+    if (!ok) android.widget.Toast.makeText(ctx, "Open Files app → sidebar → PanPlay Wine container", android.widget.Toast.LENGTH_LONG).show()
+}
+
 /** App + Wine settings. Replaces the old "Wine" tab: every action it had is here. */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -69,6 +80,8 @@ fun SettingsScreen(
     selectedDriver: Driver,
     isDxvkEnabled: Boolean,
     onToggleDxvk: (Boolean) -> Unit,
+    isVkd3dEnabled: Boolean,
+    onToggleVkd3d: (Boolean) -> Unit,
     displayStatus: String,
     builtinDisplay: Boolean,
     onToggleBuiltin: (Boolean) -> Unit,
@@ -94,6 +107,17 @@ fun SettingsScreen(
         ?.let { versionLabel(it) } ?: "not installed"
 
     PageList {
+        item { SectionTitle("Wine container") }
+        item {
+            SettingsCard {
+                Text("Browse drive_c in the Files app (enable Show hidden files for .wine)", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                val ctx = androidx.compose.ui.platform.LocalContext.current
+                Button(onClick = { openContainerInFileManager(ctx) }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
+                    Icon(Icons.Rounded.FolderOpen, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.width(8.dp)); Text("Open Wine container in file manager")
+                }
+            }
+        }
         item { SectionTitle("Wine environment") }
         item {
             SettingsCard {
@@ -128,6 +152,8 @@ fun SettingsScreen(
                     InfoRow("Wine", ver("Proton"))
                     InfoRow("FEX", ver("FEXCore"))
                     InfoRow("DXVK", ver("DXVK"))
+                    InfoRow("vkd3d-proton", ver("VKD3D"))
+                    InfoRow("Box64", ver("Box64"))
                     InfoRow("PanVK driver", selectedDriver.label)
                 }
                 if (isRunning) {
@@ -210,6 +236,7 @@ fun SettingsScreen(
         item {
             SettingsCard {
                 SwitchRow("DXVK", "Direct3D 8/9/10/11 to Vulkan", isDxvkEnabled, onToggleDxvk)
+                SwitchRow("vkd3d-proton", "Direct3D 12 to Vulkan (needs DXVK on)", isVkd3dEnabled, onToggleVkd3d)
                 Text(
                     "Enabling DXVK is not a game compatibility result. ARM64EC smoke tests do not validate x86/i686 WOW64 games; 32-bit staging can fail on Mali kbase SAME_VA.",
                     style = MaterialTheme.typography.bodySmall,

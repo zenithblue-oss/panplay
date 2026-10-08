@@ -317,7 +317,7 @@ object ContainerManager {
         val marker = File(ctx.filesDir, "container/.deps-rev")
         if (marker.isFile && marker.readText() == DEPS_REV && File(win, "system32/mfc140u.dll").isFile) return
         try {
-            for ((dir, dst) in listOf("x64" to "system32", "x86" to "syswow64", "ddraw" to "cnc-ddraw", "wow64" to "system32")) {
+            for ((dir, dst) in listOf("x64" to "system32", "x86" to "syswow64", "ddraw" to "cnc-ddraw")) {
                 val out = File(win, dst).apply { mkdirs() }
                 for (n in ctx.assets.list("deps/$dir") ?: emptyArray()) {
                     ctx.assets.open("deps/$dir/$n").use { i -> File(out, n).outputStream().use { i.copyTo(it) } }
@@ -386,11 +386,7 @@ object ContainerManager {
         // nsiproxy.sys=d: on Android the driver's netlink bind is denied (errno 13) and GetAdaptersAddresses /
         // GetBestRoute then block forever. Games probe the network at startup (UPnP, Steam API, Unity), so
         // they sat on a black screen. Without the driver those calls fail fast; services/winebus stay up.
-        val dllOverrides = if (dxvk) {
-            "mscoree,mshtml=d;d3d8,d3d9,d3d10core,d3d11,d3d12,d3d12core,dxgi=n,b;nsiproxy.sys=d"
-        } else {
-            "mscoree,mshtml=d;nsiproxy.sys=d"
-        }
+        val dllOverrides = defaultDllOverrides(ctx)
 
         val envMap = mutableMapOf(
             "WINEPREFIX" to File(containerDir, ".wine").absolutePath,
@@ -455,6 +451,14 @@ object ContainerManager {
         } else envMap.putAll(FexPresets.env(emuMode))
         // Per-game shortcut env wins over defaults (but not DISPLAY / display plumbing above).
         launchOpts.get()?.env?.forEach { (k, v) -> if (k != "DISPLAY" && k != "DXVK_HUD") envMap[k] = v }
+        // FPS cap. DXVK 3.x dropped the DXVK_FRAME_RATE env (config option instead); vkd3d-proton reads VKD3D_FRAME_RATE.
+        // A user-set DXVK_FRAME_RATE in the shortcut env means they manage it themselves.
+        val fps = launchOpts.get()?.fpsLimit ?: 0
+        if (fps in 1..1000 && launchOpts.get()?.env?.containsKey("DXVK_FRAME_RATE") != true) {
+            envMap["DXVK_FRAME_RATE"] = "$fps"
+            envMap["VKD3D_FRAME_RATE"] = "$fps"
+            envMap["DXVK_CONFIG"] = (envMap["DXVK_CONFIG"]?.let { "$it; " } ?: "") + "dxvk.maxFrameRate = $fps"
+        }
         return envMap
     }
 
@@ -743,7 +747,7 @@ object ContainerManager {
         val hlsl = if (needsHlslFix(ctx, exeFile)) ";d3dcompiler_43,wined3d=n" else ""
         val extraOvr = (ddraw ?: "") + hlsl
         launchOpts.set(if (extraOvr.isEmpty()) opts2 else o.copy(env = o.env + ("WINEDLLOVERRIDES" to
-            ((o.env["WINEDLLOVERRIDES"] ?: if (isDxvkEnabled(ctx)) "mscoree,mshtml=d;d3d8,d3d9,d3d10core,d3d11,d3d12,d3d12core,dxgi=n,b;nsiproxy.sys=d" else "mscoree,mshtml=d;nsiproxy.sys=d") + extraOvr))))
+            ((o.env["WINEDLLOVERRIDES"] ?: defaultDllOverrides(ctx)) + extraOvr))))
         try {
             return run(ctx, listOf(exeFile.absolutePath) + (opts2?.args ?: emptyList()), workDir = workDir, onLine = onLine, graphics = true)
         } finally {
@@ -855,7 +859,7 @@ object ContainerManager {
     /**
      * 32-bit emulator Wine loads for WoW64 processes: HKLM\Software\Microsoft\Wow64\x86 default value. Edited in
      * system.reg directly (wineserver is dead here, and a reg.exe write would be lost to the SIGKILL cleanup).
-     * Box64 = wowbox64.dll (bundled in assets/deps/wow64), FEX = libwow64fex.dll. Always rewritten so FEX games
+     * Box64 = wowbox64.dll (from the Box64 content), FEX = libwow64fex.dll. Always rewritten so FEX games
      * switch back after a Box64 launch.
      */
     private fun selectWow64Emulator(ctx: Context, box: Boolean) {
@@ -863,6 +867,11 @@ object ContainerManager {
             val reg = File(ctx.filesDir, "container/.wine/system.reg")
             if (!reg.isFile) return
             val want = if (box) "wowbox64.dll" else "libwow64fex.dll"
+            if (box) ContentManager.list(ctx).firstOrNull { it.type == "Box64" && ContentManager.isComplete(it) }?.let {
+                val dst = File(ctx.filesDir, "container/.wine/drive_c/windows/system32/wowbox64.dll")
+                val src = File(it.dir, "system32/wowbox64.dll")
+                if (!dst.isFile || dst.length() != src.length()) src.copyTo(dst, overwrite = true)
+            }
             val text = reg.readText(Charsets.ISO_8859_1)
             val re = Regex("""(\[Software\\\\Microsoft\\\\Wow64\\\\x86\][^\n]*\n(?:#[^\n]*\n)?@=")[^"\n]*(")""")
             val out = re.replace(text) { it.groupValues[1] + want + it.groupValues[2] }
@@ -979,14 +988,48 @@ object ContainerManager {
         return prefs.getBoolean("dxvk_enabled", false)
     }
 
+    /** vkd3d-proton (D3D12) is its own VKD3D content; on by default, independent of the DXVK switch. */
+    fun isVkd3dEnabled(ctx: Context): Boolean =
+        ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getBoolean("vkd3d_enabled", true)
+
+    /** d3d12 override: native vkd3d-proton when enabled, else Wine's builtin (ignores the copied dlls). */
+    private fun defaultDllOverrides(ctx: Context): String =
+        if (!isDxvkEnabled(ctx)) "mscoree,mshtml=d;nsiproxy.sys=d"
+        else "mscoree,mshtml=d;d3d8,d3d9,d3d10core,d3d11,dxgi=n,b;d3d12,d3d12core=" +
+            (if (isVkd3dEnabled(ctx)) "n,b" else "b") + ";nsiproxy.sys=d"
+
+    private fun copyDlls(src: InstalledContent, dlls: List<String>, win: File) {
+        for (d in listOf("system32", "syswow64")) {
+            File(win, d).mkdirs()
+            for (dll in dlls) File(src.dir, "$d/$dll").takeIf { it.isFile }?.copyTo(File(win, "$d/$dll"), overwrite = true)
+        }
+    }
+
+    fun setVkd3dEnabled(ctx: Context, on: Boolean): String? {
+        if (!isSetup(ctx)) return "Container is not set up"
+        if (on) {
+            val v = ContentManager.list(ctx).firstOrNull { it.type == "VKD3D" && ContentManager.isComplete(it) }
+                ?: return "vkd3d-proton content is not installed"
+            try { copyDlls(v, listOf("d3d12.dll", "d3d12core.dll"), File(ctx.filesDir, "container/.wine/drive_c/windows")) }
+            catch (e: Exception) { return "Failed to copy vkd3d-proton DLLs: ${e.message}" }
+        }
+        ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().putBoolean("vkd3d_enabled", on).apply()
+        return null
+    }
+
     /** DXVK defaults on (wined3d needs GL, which Android lacks); also restores DLLs wiped by a container rebuild. */
     private fun ensureDxvk(ctx: Context, force: Boolean = false) {
         if (!isSetup(ctx)) return
         val prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val win = File(ctx.filesDir, "container/.wine/drive_c/windows")
-        val dxvk = ContentManager.list(ctx).firstOrNull { it.type == "DXVK" }
+        val installed = ContentManager.list(ctx)
+        val dxvk = installed.firstOrNull { it.type == "DXVK" }
         val srcWow = dxvk?.let { File(it.dir, "syswow64/dxgi.dll") }
-        val missing = !File(win, "system32/dxgi.dll").exists() || (dxvk?.let { File(it.dir, "system32/d3d12core.dll") }?.takeIf { it.isFile }?.let { it.length() != File(win, "system32/d3d12core.dll").length() } == true) ||
+        val vk = installed.firstOrNull { it.type == "VKD3D" }
+        val vkMissing = isVkd3dEnabled(ctx) && vk != null && listOf("system32", "syswow64").any { d ->
+            File(vk.dir, "$d/d3d12core.dll").let { it.isFile && it.length() != File(win, "$d/d3d12core.dll").length() }
+        }
+        val missing = !File(win, "system32/dxgi.dll").exists() || vkMissing ||
             (srcWow?.isFile == true && File(win, "syswow64/dxgi.dll").length() != srcWow.length())
         if (!prefs.contains("dxvk_enabled") || (isDxvkEnabled(ctx) && (missing || force))) setDxvkEnabled(ctx, true)
     }
@@ -1008,7 +1051,7 @@ object ContainerManager {
             dstSys32.mkdirs()
             dstSyswow64.mkdirs()
 
-            val dlls = listOf("d3d8.dll", "d3d9.dll", "d3d10core.dll", "d3d11.dll", "d3d12.dll", "d3d12core.dll", "dxgi.dll")
+            val dlls = listOf("d3d8.dll", "d3d9.dll", "d3d10core.dll", "d3d11.dll", "dxgi.dll")
             val srcSys32 = File(dxvk.dir, "system32")
             val srcSyswow64 = File(dxvk.dir, "syswow64")
 
@@ -1027,6 +1070,11 @@ object ContainerManager {
                 return "Failed to copy DXVK DLLs: ${e.message}"
             }
             prefs.edit().putBoolean("dxvk_enabled", true).apply()
+            // Migration/restore: D3D12 dlls come from the separate VKD3D package.
+            if (isVkd3dEnabled(ctx)) installed.firstOrNull { it.type == "VKD3D" && ContentManager.isComplete(it) }?.let {
+                try { copyDlls(it, listOf("d3d12.dll", "d3d12core.dll"), File(winePrefix, "drive_c/windows")) }
+                catch (e: Exception) { return "Failed to copy vkd3d-proton DLLs: ${e.message}" }
+            }
         } else {
             prefs.edit().putBoolean("dxvk_enabled", false).apply()
         }

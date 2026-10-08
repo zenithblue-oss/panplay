@@ -64,6 +64,7 @@ fun LaunchSheet(
     val info = remember(game.id, game.exe, game.arch, ctlRev) { LaunchInfoResolver.resolve(ctx, game) }
     if (editCtl) GameControllerEditor(game.id, game.name, info.exePath) { editCtl = false; ctlRev++ }
     var resolution by remember(game.id) { mutableStateOf(game.resolution) }
+    var fps by remember(game.id) { mutableStateOf(game.fpsLimit) }
     // Driver ids can be legacy ("bundled") or point at a deleted driver: show those as "default".
     var driverId by remember(game.id) {
         mutableStateOf(DriverManager.find(ctx, drivers, game.driver)?.id ?: "")
@@ -124,6 +125,7 @@ fun LaunchSheet(
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Text("Change for this game", style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary)
                     ResolutionField("Resolution", resolution, { resolution = it }, defaultLabel = "Default ($defaultResolution)")
+                    FpsLimitField(fps) { fps = it }
                     DropdownField(
                         label = "PanVK driver",
                         options = listOf("" to "Default (${activeDriver.label})") + drivers.map { it.id to it.label },
@@ -156,7 +158,7 @@ fun LaunchSheet(
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
                         TextButton(onClick = onDismiss, modifier = Modifier.heightIn(min = 52.dp)) { Text("Cancel") }
                         Button(
-                            onClick = { onLaunch(game.copy(resolution = resolution, driver = driverId, fex = emuMode)) },
+                            onClick = { onLaunch(game.copy(resolution = resolution, driver = driverId, fex = emuMode, fpsLimit = fps)) },
                             enabled = problems.isEmpty(),
                             modifier = Modifier.weight(1f).heightIn(min = 52.dp)
                         ) {

@@ -17,9 +17,19 @@
       "build": "scripts/build-fex-windows.sh"
     },
     {
-      "file": "dxvk-3.1.1-2-arm64ec.wcp",
-      "sha256": "7d8efc7d62f49cbf5d49a144115fade46d4ba213f019e5e01033dd19dd97b8f8",
+      "file": "dxvk-3.1.1-3-arm64ec.wcp",
+      "sha256": "7a418143ec83adcebb5374f3c613158e18a9b64c818fb1d18d95b9887e9a12ca",
       "build": "scripts/build-dxvk.sh"
+    },
+    {
+      "file": "vkd3d-3.0.1-452-g22307558.wcp",
+      "sha256": "4a280987eb34480b831670298adf4fe82d43d13bd5d21d7428f9181d5d90b157",
+      "build": "scripts/build-dxvk.sh"
+    },
+    {
+      "file": "box64-0.4.5-2f47bdf.wcp",
+      "sha256": "d71d5a21ff31186b70edbfa6a5cb59fcbac13782e122f6f8c2288f0132d16507",
+      "build": "scripts/build-box64-wow64.sh"
     }
   ]
 }

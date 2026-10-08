@@ -25,6 +25,7 @@ data class Shortcut(
     val resolution: String = "", // "" = launcher default, else e.g. 1280x720
     val driver: String = "", // "" = launcher default, else Driver.id
     val fex: String = "", // "" = FexPresets.DEFAULT, else a FexPresets mode
+    val fpsLimit: Int = 0, // 0 = off, else 1..1000 (DXVK_FRAME_RATE / VKD3D_FRAME_RATE)
     val icon: String = "auto",
     val created: Long = System.currentTimeMillis(),
     val lastPlayed: Long = 0
@@ -35,7 +36,8 @@ data class LaunchOptions(
     val args: List<String> = emptyList(),
     val env: Map<String, String> = emptyMap(),
     val driverId: String = "",
-    val fexMode: String = ""
+    val fexMode: String = "",
+    val fpsLimit: Int = 0
 )
 
 /** FEX emulation presets, applied as FEX_* env on the Wine process (FEX also reads them in libwow64fex.dll). */
@@ -131,7 +133,7 @@ object ShortcutStore {
     private fun toJson(s: Shortcut) = JSONObject().apply {
         put("id", s.id); put("name", s.name); put("exe", s.exe); put("args", s.args)
         put("env", JSONObject(s.env)); put("arch", s.arch); put("resolution", s.resolution)
-        put("driver", s.driver); put("fex", s.fex); put("icon", s.icon); put("created", s.created)
+        put("driver", s.driver); put("fex", s.fex); put("fpsLimit", s.fpsLimit); put("icon", s.icon); put("created", s.created)
         put("lastPlayed", s.lastPlayed)
     }
 
@@ -143,7 +145,7 @@ object ShortcutStore {
             id = j.getString("id"), name = j.optString("name", j.getString("id")),
             exe = j.getString("exe"), args = j.optString("args", ""), env = env,
             arch = j.optString("arch", "auto"), resolution = j.optString("resolution", ""),
-            driver = j.optString("driver", ""), fex = j.optString("fex", ""), icon = j.optString("icon", "auto"),
+            driver = j.optString("driver", ""), fex = j.optString("fex", ""), fpsLimit = j.optInt("fpsLimit", 0).takeIf { it in 1..1000 } ?: 0, icon = j.optString("icon", "auto"),
             created = j.optLong("created", 0), lastPlayed = j.optLong("lastPlayed", 0)
         )
     }
@@ -239,7 +241,7 @@ object ShortcutStore {
     }
 
     fun launchOptions(ctx: Context, s: Shortcut) = LaunchOptions(
-        args = splitArgs(s.args), env = s.env, driverId = s.driver, fexMode = Box64Presets.modeFor(s)
+        args = splitArgs(s.args), env = s.env, driverId = s.driver, fexMode = Box64Presets.modeFor(s), fpsLimit = s.fpsLimit
     )
 
     /** Whitespace split honouring "double quotes". */

@@ -67,13 +67,31 @@ cat > "$PKG/profile.json" <<EOF
   "type": "DXVK",
   "versionName": "$DXVK_VERSION",
   "versionCode": 1,
-  "description": "DXVK $DXVK_TAG ($DXVK_COMMIT) + clear-before-external-rendering fix + vkd3d-proton $VKD3D_TAG ($VKD3D_COMMIT), built from source with llvm-mingw $LLVM_MINGW_VER (scripts/build-dxvk.sh). ARM64EC system32 + i686 syswow64.",
+  "description": "DXVK $DXVK_TAG ($DXVK_COMMIT) + clear-before-external-rendering fix, built from source with llvm-mingw $LLVM_MINGW_VER (scripts/build-dxvk.sh). ARM64EC system32 + i686 syswow64. D3D12 is the separate VKD3D package.",
   "files": [
 $files
   ]
 }
 EOF
 
-wcp=$OUT/dxvk-$DXVK_VERSION.wcp
-tar -C "$PKG" --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner -cf - . | zstd -19 -T0 -q -f -o "$wcp"
-sha256sum "$wcp" | tee "$wcp.sha256"
+# Split d3d12/d3d12core into their own VKD3D package (type VKD3D, versionName $VKD3D_VERSION).
+V=$WORK/vkd3d-pkg
+rm -rf "$V"; mkdir -p "$V/system32" "$V/syswow64"
+for a in system32 syswow64; do mv "$PKG/$a"/d3d12.dll "$PKG/$a"/d3d12core.dll "$V/$a/"; done
+python3 - "$PKG/profile.json" "$V/profile.json" "$VKD3D_VERSION" "$VKD3D_TAG" "$VKD3D_COMMIT" "$LLVM_MINGW_VER" <<'PY'
+import json, sys
+src, dst, ver, tag, commit, llvm = sys.argv[1:]
+p = json.load(open(src))
+f = p["files"]
+p["files"] = [x for x in f if "d3d12" not in x["source"]]
+json.dump(p, open(src, "w"), indent=2)
+json.dump({"type": "VKD3D", "versionName": ver, "versionCode": 1,
+           "description": f"vkd3d-proton {tag} ({commit}), d3d12.dll + d3d12core.dll, built from source with llvm-mingw {llvm} (scripts/build-dxvk.sh). ARM64EC system32 + i686 syswow64.",
+           "files": [x for x in f if "d3d12" in x["source"]]}, open(dst, "w"), indent=2)
+PY
+
+for pair in "$PKG:dxvk-$DXVK_VERSION" "$V:vkd3d-$VKD3D_VERSION"; do
+    wcp=$OUT/${pair#*:}.wcp
+    tar -C "${pair%%:*}" --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner -cf - . | zstd -19 -T0 -q -f -o "$wcp"
+    sha256sum "$wcp" | tee "$wcp.sha256"
+done

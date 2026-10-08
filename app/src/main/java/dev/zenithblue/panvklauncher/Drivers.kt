@@ -56,7 +56,7 @@ object DriverManager {
             id = m.optString("id", LEGACY_BUNDLED_ID),
             name = m.optString("name", "PanVK"),
             description = m.optString("description", ""),
-            author = m.optString("author", "panvk-kbase-android"),
+            author = m.optString("author", "abhay-byte"),
             version = m.optString("displayVersion", m.optString("packageVersion", "")),
             libPath = lib,
             bundled = true,
@@ -288,7 +288,7 @@ object DriverManager {
         }
     }
 
-    fun releaseId(r: DriverUpdate.Release) = "panvk-kbase-g615-${r.version}"
+    fun releaseId(r: DriverUpdate.Release) = "panvk-kbase-${r.version}"
 
     /** Store a verified GitHub release .so like an imported package: drivers/<id>/{meta.json, .so}. */
     fun installRelease(context: Context, so: File, r: DriverUpdate.Release) {
@@ -301,7 +301,7 @@ object DriverManager {
                     .put("name", "PanVK Kbase — ${r.label}")
                     .put("packageVersion", r.version)
                     .put("description", "Downloaded from GitHub release ${r.tag} (${DriverUpdate.ASSET}), SHA-256 and ELF verified.")
-                    .put("author", "panvk-kbase-android")
+                    .put("author", "abhay-byte")
                     .put("libraryName", "libvulkan_panfrost.so")
                     .put("sha256", r.sha256)
                     .put("sourceTag", r.tag)
