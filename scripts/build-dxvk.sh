@@ -22,6 +22,13 @@ git -C "$SRC" submodule update --init --recursive --depth 1
 git -C "$SRC" checkout -- .
 git -C "$SRC" apply "$RT/clear-before-external-rendering.patch"
 
+VSRC=$WORK/vkd3d-proton-src
+if [ ! -d "$VSRC/.git" ]; then
+    git clone https://github.com/HansKristian-Work/vkd3d-proton.git "$VSRC"
+fi
+git -C "$VSRC" checkout -q "$VKD3D_COMMIT"
+git -C "$VSRC" submodule update --init --recursive
+
 PKG=$WORK/dxvk-package
 rm -rf "$PKG"
 files=
@@ -39,6 +46,20 @@ for arch in arm64ec i686; do
 "
     done
 done
+for arch in arm64ec i686; do
+    B=$WORK/vkd3d-build-$arch
+    rm -rf "$B"
+    meson setup "$B" "$VSRC" --cross-file "$HERE/../runtimes/vkd3d/$arch.txt" --buildtype release --strip \
+        -Denable_tests=false -Denable_extras=false
+    ninja -C "$B" -j"$JOBS"
+    case $arch in arm64ec) dest=system32;; i686) dest=syswow64;; esac
+    for pair in d3d12/d3d12 d3d12core/d3d12core; do
+        dll=${pair#*/}.dll
+        cp "$B/libs/$pair.dll" "$PKG/$dest/"
+        files="$files    { \"source\": \"$dest/$dll\", \"target\": \"\${$dest}/$dll\" },
+"
+    done
+done
 files=$(printf '%s' "$files" | sed '$ s/,$//')
 
 cat > "$PKG/profile.json" <<EOF
@@ -46,7 +67,7 @@ cat > "$PKG/profile.json" <<EOF
   "type": "DXVK",
   "versionName": "$DXVK_VERSION",
   "versionCode": 1,
-  "description": "DXVK $DXVK_TAG ($DXVK_COMMIT) + clear-before-external-rendering fix, built from source with llvm-mingw $LLVM_MINGW_VER (scripts/build-dxvk.sh). ARM64EC system32 + i686 syswow64.",
+  "description": "DXVK $DXVK_TAG ($DXVK_COMMIT) + clear-before-external-rendering fix + vkd3d-proton $VKD3D_TAG ($VKD3D_COMMIT), built from source with llvm-mingw $LLVM_MINGW_VER (scripts/build-dxvk.sh). ARM64EC system32 + i686 syswow64.",
   "files": [
 $files
   ]

@@ -17,8 +17,8 @@
       "build": "scripts/build-fex-windows.sh"
     },
     {
-      "file": "dxvk-3.1.1-1-arm64ec.wcp",
-      "sha256": "bb702623a565374e05282e7d3baa5da579dd611421571ee729d32213ba40f87a",
+      "file": "dxvk-3.1.1-2-arm64ec.wcp",
+      "sha256": "7d8efc7d62f49cbf5d49a144115fade46d4ba213f019e5e01033dd19dd97b8f8",
       "build": "scripts/build-dxvk.sh"
     }
   ]

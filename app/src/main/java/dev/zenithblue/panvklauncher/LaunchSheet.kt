@@ -68,7 +68,11 @@ fun LaunchSheet(
     var driverId by remember(game.id) {
         mutableStateOf(DriverManager.find(ctx, drivers, game.driver)?.id ?: "")
     }
-    var fexMode by remember(game.id) { mutableStateOf(FexPresets.resolve(game.fex)) }
+    var fexMode by remember(game.id) { mutableStateOf(Box64Presets.resolve(Box64Presets.modeFor(game))) }
+    // Box64 (WowBox64) only emulates 32-bit WoW64 processes; 64-bit games always use FEX.
+    val is32 = info.arch == "i386"
+    val box = is32 && Box64Presets.isBox(fexMode)
+    val emuMode = if (!is32 && Box64Presets.isBox(fexMode)) FexPresets.DEFAULT else fexMode
     val chosenDriver = if (driverId.isEmpty()) activeDriver else drivers.firstOrNull { it.id == driverId } ?: activeDriver
 
     val problems = buildList {
@@ -109,7 +113,7 @@ fun LaunchSheet(
                             InfoRow(r.label, r.name, r.version, subIsError = r.missing)
                         }
                         InfoRow("PanVK driver", chosenDriver.label, chosenDriver.buildId.ifEmpty { chosenDriver.driverVersion })
-                        InfoRow("FEX mode", fexMode)
+                        InfoRow(if (box) "Box64 mode" else "FEX mode", emuMode)
                         InfoRow("Executable", info.exePath, info.arch)
                         // Controller assignment is set in the game's Edit sheet; its mapping can be edited from here.
                         TextButton(onClick = { editCtl = true }, modifier = Modifier.heightIn(min = 48.dp)) { Text("Edit controls…") }
@@ -127,12 +131,20 @@ fun LaunchSheet(
                         onSelect = { driverId = it }
                     )
                     DropdownField(
-                        label = "FEX mode",
-                        options = FexPresets.modes.map { it to it },
-                        selected = fexMode,
+                        label = "32-bit emulator",
+                        options = listOf("FEX" to "FEX (default)", "Box64" to "Box64"),
+                        selected = if (box) "Box64" else "FEX",
+                        onSelect = { fexMode = if (it == "Box64") Box64Presets.modes[0] else FexPresets.DEFAULT },
+                        enabled = is32
+                    )
+                    if (!is32) Text("Box64 is 32-bit only (WoW64).", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    DropdownField(
+                        label = if (box) "Box64 mode" else "FEX mode",
+                        options = (if (box) Box64Presets.modes else FexPresets.modes).map { it to it },
+                        selected = emuMode,
                         onSelect = { fexMode = it }
                     )
-                    Text(FexPresets.hint(fexMode), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(if (box) Box64Presets.hint(emuMode) else FexPresets.hint(emuMode), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     if (problems.isNotEmpty()) {
                         Column(
                             modifier = Modifier.semantics(mergeDescendants = true) {},
@@ -144,7 +156,7 @@ fun LaunchSheet(
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
                         TextButton(onClick = onDismiss, modifier = Modifier.heightIn(min = 52.dp)) { Text("Cancel") }
                         Button(
-                            onClick = { onLaunch(game.copy(resolution = resolution, driver = driverId, fex = fexMode)) },
+                            onClick = { onLaunch(game.copy(resolution = resolution, driver = driverId, fex = emuMode)) },
                             enabled = problems.isEmpty(),
                             modifier = Modifier.weight(1f).heightIn(min = 52.dp)
                         ) {

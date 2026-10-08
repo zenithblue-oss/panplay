@@ -88,13 +88,13 @@ object ContentManager {
         ),
         CatalogEntry(
             type = "DXVK",
-            name = "DXVK v3.1.1 + clear fix, ARM64EC + i686 (built from doitsujin/dxvk source)",
+            name = "DXVK v3.1.1 + clear fix + vkd3d-proton D3D12, ARM64EC + i686 (built from doitsujin/dxvk source)",
             url = "",
             sha256 = null,
             title = "DXVK",
-            versionName = "3.1.1-1-arm64ec",
-            note = "Direct3D 8/9/10/11 to Vulkan",
-            asset = "components/dxvk-3.1.1-1-arm64ec.wcp"
+            versionName = "3.1.1-2-arm64ec",
+            note = "Direct3D 8/9/10/11/12 to Vulkan",
+            asset = "components/dxvk-3.1.1-2-arm64ec.wcp"
         )
     )
 

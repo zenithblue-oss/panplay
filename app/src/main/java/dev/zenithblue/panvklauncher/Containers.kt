@@ -284,11 +284,55 @@ object ContainerManager {
         return true
     }
 
+    /**
+     * Redistributable DLLs Wine does not ship (MFC 14 / vcomp: games bundle plugins importing mfc140u.dll,
+     * e.g. Unity's Razer Chroma SDK; without it the game dies in Awake). Bundled in assets/deps/{x86,x64}
+     * (extracted from Microsoft's vc_redist) and copied into the prefix when missing; bump DEPS_REV to re-copy.
+     * deps/x86 also holds Wine 11.19's i386 d3dcompiler_43.dll + wined3d.dll (vkd3d-shader 2.1) with the
+     * "Wine builtin DLL" stub tag renamed so Wine treats them as native: idle unless a game overrides them =n
+     * (see HLSL_FIX_EXES); default builtin-first load order keeps Proton's own for everything else.
+     */
+    private const val DEPS_REV = "4"
+    private val HLSL_FIX_EXES = setOf("burnoutparadise.exe")
+    // Game shader caches built by Proton's broken compiler; wiped once (marker) when the fix first applies.
+    private val HLSL_STALE_CACHES = mapOf("burnoutparadise.exe" to "AppData/Local/Criterion Games/Burnout Paradise/ShaderCache")
+
+    private fun needsHlslFix(ctx: Context, exe: File): Boolean {
+        val name = exe.name.lowercase()
+        val fix = name in HLSL_FIX_EXES || (PeInfo.arch(exe.path) == "i386" &&
+            PeInfo.imports(exe.path).any { it.startsWith("d3dx9_") || it.startsWith("d3dcompiler_") })
+        if (!fix) return false
+        val rel = HLSL_STALE_CACHES[name] ?: return true
+        val users = File(ctx.filesDir, "container/.wine/drive_c/users")
+        val marker = File(ctx.filesDir, "container/.hlsl-cache-cleared-$name")
+        if (!marker.exists()) {
+            users.listFiles()?.forEach { File(it, rel).deleteRecursively() }
+            marker.writeText("1")
+        }
+        return true
+    }
+    private fun ensureRuntimeDeps(ctx: Context) {
+        val win = File(ctx.filesDir, "container/.wine/drive_c/windows")
+        if (!win.isDirectory) return
+        val marker = File(ctx.filesDir, "container/.deps-rev")
+        if (marker.isFile && marker.readText() == DEPS_REV && File(win, "system32/mfc140u.dll").isFile) return
+        try {
+            for ((dir, dst) in listOf("x64" to "system32", "x86" to "syswow64", "ddraw" to "cnc-ddraw", "wow64" to "system32")) {
+                val out = File(win, dst).apply { mkdirs() }
+                for (n in ctx.assets.list("deps/$dir") ?: emptyArray()) {
+                    ctx.assets.open("deps/$dir/$n").use { i -> File(out, n).outputStream().use { i.copyTo(it) } }
+                }
+            }
+            marker.writeText(DEPS_REV)
+        } catch (_: Exception) {}
+    }
+
     fun env(ctx: Context, extra: Map<String, String>? = null): Map<String, String> {
         val containerDir = File(ctx.filesDir, "container")
         containerDir.mkdirs()
         ensureFex(ctx)
         val wowCopied = ensureWow64(ctx)
+        ensureRuntimeDeps(ctx)
         ensureDxvk(ctx, force = wowCopied)
         val imagefs = File(ctx.filesDir, "contents/imagefs/bionic")
         val tmpDir = File(imagefs, "usr/tmp")
@@ -339,10 +383,13 @@ object ContainerManager {
         } catch (_: Exception) {}
 
         val dxvk = isDxvkEnabled(ctx)
+        // nsiproxy.sys=d: on Android the driver's netlink bind is denied (errno 13) and GetAdaptersAddresses /
+        // GetBestRoute then block forever. Games probe the network at startup (UPnP, Steam API, Unity), so
+        // they sat on a black screen. Without the driver those calls fail fast; services/winebus stay up.
         val dllOverrides = if (dxvk) {
-            "mscoree,mshtml=d;d3d8,d3d9,d3d10core,d3d11,dxgi=n,b"
+            "mscoree,mshtml=d;d3d8,d3d9,d3d10core,d3d11,d3d12,d3d12core,dxgi=n,b;nsiproxy.sys=d"
         } else {
-            "mscoree,mshtml=d"
+            "mscoree,mshtml=d;nsiproxy.sys=d"
         }
 
         val envMap = mutableMapOf(
@@ -401,7 +448,11 @@ object ContainerManager {
                 ?.let { envMap["MESA_VK_X11_SW_REFRESH_HZ"] = Math.round(it).toString() }
         }
         // FEX preset (default Intermediate); per-game env below may override single FEX_* keys.
-        envMap.putAll(FexPresets.env(launchOpts.get()?.fexMode ?: ""))
+        val emuMode = launchOpts.get()?.fexMode ?: ""
+        if (Box64Presets.isBox(emuMode)) {
+            envMap.putAll(Box64Presets.env(emuMode))
+            envMap["HODLL"] = "wowbox64.dll"
+        } else envMap.putAll(FexPresets.env(emuMode))
         // Per-game shortcut env wins over defaults (but not DISPLAY / display plumbing above).
         launchOpts.get()?.env?.forEach { (k, v) -> if (k != "DISPLAY" && k != "DXVK_HUD") envMap[k] = v }
         return envMap
@@ -631,6 +682,7 @@ object ContainerManager {
             if (!graphics) return runInternal(ctx, args, workDir ?: containerDir, onLine, session?.env)
             // A game from an earlier session (crashed launcher, detached child) must not keep its GPU and RAM.
             killPrefixProcesses(ctx)
+            selectWow64Emulator(ctx, Box64Presets.isBox(launchOpts.get()?.fexMode ?: ""))
             val code = runInternal(ctx, args, workDir ?: containerDir, onLine, session?.env)
             // The started exe can exit while the game it spawned keeps running (Fallout4Launcher, start.exe), and a
             // finished game can leave Wine processes behind that hold its memory into the next launch. Wait until
@@ -657,8 +709,10 @@ object ContainerManager {
     // Per-launch shortcut overrides (args/env/driver); thread-local so run()/runInternal()/env() need no new params.
     private val launchOpts = ThreadLocal<LaunchOptions?>()
 
-    fun runExe(ctx: Context, exePath: String, onLine: (String) -> Unit = {}, opts: LaunchOptions? = null): Int {
-        val exeFile = File(exePath)
+    fun runExe(ctx: Context, exePathIn: String, onLine: (String) -> Unit = {}, opts: LaunchOptions? = null): Int {
+        // A game folder (shortcut / intent / picker gave a directory) launches its main exe.
+        val exePath = ShortcutStore.findExeIn(exePathIn) ?: exePathIn
+        val exeFile = File(exePath).let { if (it.isFile) ShortcutStore.preferInner(it) else it }
         if (!exeFile.isFile) {
             val msg = "File not found: $exePath"
             onLine(msg)
@@ -667,12 +721,89 @@ object ContainerManager {
         val fbFile = File(ctx.filesDir, "container/fb.bin")
         try { fbFile.delete() } catch (_: Exception) {}
         val workDir = exeFile.parentFile ?: File(ctx.filesDir, "container")
-        launchOpts.set(opts)
+        applyGamePrefs(ctx, exeFile.name)
+        // Native-first override is what makes Wine load the swapped-in cnc-ddraw instead of its builtin.
+        val ddraw = swapDdraw(ctx, exeFile.path)
+        // Unity D3D11 games size their texture budget from the DXGI VRAM they see (5+ GB shared on this SoC) while the
+        // device heap is ~2.4 GB: Silksong then exhausts it and dies in Mono ("Crash!!!") with a black screen.
+        // Cap what DXGI reports unless the shortcut sets its own DXVK_CONFIG.
+        val unity = exeFile.parentFile?.list()?.any { it.equals("UnityPlayer.dll", true) } == true
+        val opts = if (unity && opts?.env?.containsKey("DXVK_CONFIG") != true) (opts ?: LaunchOptions()).let {
+            it.copy(env = it.env + ("DXVK_CONFIG" to "dxvk.trackPipelineLifetime = False; dxgi.maxDeviceMemory = 2048; dxgi.maxSharedMemory = 1024"))
+        } else opts
+        // AoE2 (age2_x2 / empires2): the intro-video startup path ends in "undetectable problem in loading the specified
+        // device driver" under Wine; its own "nostartup" switch skips it and the menu + games run.
+        val aoe = exeFile.name.lowercase() in setOf("age2_x2.exe", "empires2.exe", "age2_x1.exe")
+        val opts2 = if (aoe && opts?.args?.contains("nostartup") != true) (opts ?: LaunchOptions()).let { it.copy(args = it.args + "nostartup") } else opts
+        val o = opts2 ?: LaunchOptions()
+        // Burnout Paradise compiles its HLSL at runtime through d3dx9_37 -> d3dcompiler_43. Proton 11.0-2's bundled
+        // vkd3d-shader 1.18 emits SM3 bytecode that renders the world black/garbage (same bytecode is wrong on desktop
+        // RADV too); Wine 11.19's compiler (bundled in deps/x86) gives correct shaders.
+        // Any 32-bit exe importing d3dx9_*/d3dcompiler_* gets it too (only x86 copies are bundled, so never x64).
+        val hlsl = if (needsHlslFix(ctx, exeFile)) ";d3dcompiler_43,wined3d=n" else ""
+        val extraOvr = (ddraw ?: "") + hlsl
+        launchOpts.set(if (extraOvr.isEmpty()) opts2 else o.copy(env = o.env + ("WINEDLLOVERRIDES" to
+            ((o.env["WINEDLLOVERRIDES"] ?: if (isDxvkEnabled(ctx)) "mscoree,mshtml=d;d3d8,d3d9,d3d10core,d3d11,d3d12,d3d12core,dxgi=n,b;nsiproxy.sys=d" else "mscoree,mshtml=d;nsiproxy.sys=d") + extraOvr))))
         try {
-            return run(ctx, listOf(exeFile.absolutePath) + (opts?.args ?: emptyList()), workDir = workDir, onLine = onLine, graphics = true)
+            return run(ctx, listOf(exeFile.absolutePath) + (opts2?.args ?: emptyList()), workDir = workDir, onLine = onLine, graphics = true)
         } finally {
             launchOpts.remove()
+            swapDdraw(ctx, null)
         }
+    }
+
+    /**
+     * Per-game config the game reads itself. Dark Souls PTDE renders its whole 3D scene black on panvk with the
+     * default Blur/Antialiasing (MSAA) filter targets, so those are forced off in its ini before each launch.
+     */
+    private fun applyGamePrefs(ctx: Context, exeName: String) {
+        if (!exeName.equals("DARKSOULS.exe", true)) return
+        try {
+            val ini = File(ctx.filesDir, "container/.wine/drive_c/users/xuser/AppData/Local/NBGI/DarkSouls/DarkSouls.ini")
+            val want = mapOf("Blur" to "0", "Antialiasing" to "0", "ForceDisableAA" to "1")
+            val lines = if (ini.isFile) ini.readLines().toMutableList() else mutableListOf("[DisplaySettingFilter]")
+            val seen = mutableSetOf<String>()
+            for (i in lines.indices) {
+                val k = lines[i].substringBefore('=').trim()
+                if (lines[i].contains('=') && k in want) { lines[i] = "$k=${want[k]}"; seen += k }
+            }
+            val miss = want.keys - seen
+            if (miss.isEmpty() && ini.isFile && lines == ini.readLines()) return
+            if (miss.isNotEmpty()) {
+                val at = lines.indexOf("[DisplaySettingFilter]").let { if (it < 0) { lines += "[DisplaySettingFilter]"; lines.size } else it + 1 }
+                lines.addAll(at, miss.map { "$it=${want[it]}" })
+            }
+            ini.parentFile?.mkdirs(); ini.writeText(lines.joinToString("\r\n") + "\r\n")
+        } catch (_: Exception) {}
+    }
+
+    /**
+     * DirectDraw-only games (AoE2, C&C...) need a ddraw implementation: Wine's goes through wined3d, which needs
+     * OpenGL (absent on Android). For such exes the bundled cnc-ddraw (own GDI/D3D9 renderers) temporarily replaces
+     * C:\\windows\\syswow64\\ddraw.dll (Wine's kept as ddraw.dll.wine) and is swapped back when the game ends and
+     * before every other launch, so 3D ddraw games keep Wine's. Game folder stays untouched.
+     */
+    private fun swapDdraw(ctx: Context, exePath: String?): String? {
+        val dir = File(ctx.filesDir, "container/.wine/drive_c/windows/syswow64")
+        val cnc = File(ctx.filesDir, "container/.wine/drive_c/windows/cnc-ddraw")
+        val dll = File(dir, "ddraw.dll"); val keep = File(dir, "ddraw.dll.wine")
+        try {
+            val imp = exePath?.let { PeInfo.imports(it) } ?: emptySet()
+            val sibling = exePath?.let { File(it).parentFile?.list()?.map { n -> n.lowercase() } } ?: emptyList()
+            // A game folder that ships its own ddraw.dll keeps it. A windowed-mode shim (wndmode.dll) is disabled,
+            // else cnc-ddraw refuses to run ("cannot combine with other DirectDraw wrappers").
+            val need = "ddraw.dll" !in sibling && "ddraw.dll" in imp &&
+                imp.none { it.startsWith("d3d") || it == "opengl32.dll" } && File(cnc, "ddraw.dll").isFile
+            if (need) {
+                if (!keep.isFile) dll.copyTo(keep)
+                File(cnc, "ddraw.dll").copyTo(dll, overwrite = true)
+                File(cnc, "ddraw.ini").copyTo(File(dir, "ddraw.ini"), overwrite = true)
+                return ";ddraw=n,b" + sibling.filter { it == "wndmode.dll" }.joinToString("") { ";${it.removeSuffix(".dll")}=d" }
+            } else if (keep.isFile) {
+                keep.copyTo(dll, overwrite = true); keep.delete(); File(dir, "ddraw.ini").delete()
+            }
+        } catch (_: Exception) {}
+        return null
     }
 
     fun runExplorer(ctx: Context, onLine: (String) -> Unit = {}): Int {
@@ -721,6 +852,24 @@ object ContainerManager {
     }
 
     /** SIGKILL every process running in the container prefix, then drop the stale ntsync shm. */
+    /**
+     * 32-bit emulator Wine loads for WoW64 processes: HKLM\Software\Microsoft\Wow64\x86 default value. Edited in
+     * system.reg directly (wineserver is dead here, and a reg.exe write would be lost to the SIGKILL cleanup).
+     * Box64 = wowbox64.dll (bundled in assets/deps/wow64), FEX = libwow64fex.dll. Always rewritten so FEX games
+     * switch back after a Box64 launch.
+     */
+    private fun selectWow64Emulator(ctx: Context, box: Boolean) {
+        try {
+            val reg = File(ctx.filesDir, "container/.wine/system.reg")
+            if (!reg.isFile) return
+            val want = if (box) "wowbox64.dll" else "libwow64fex.dll"
+            val text = reg.readText(Charsets.ISO_8859_1)
+            val re = Regex("""(\[Software\\\\Microsoft\\\\Wow64\\\\x86\][^\n]*\n(?:#[^\n]*\n)?@=")[^"\n]*(")""")
+            val out = re.replace(text) { it.groupValues[1] + want + it.groupValues[2] }
+            if (out != text) reg.writeText(out, Charsets.ISO_8859_1)
+        } catch (_: Exception) {}
+    }
+
     private fun killPrefixProcesses(ctx: Context) {
         try {
             val winePrefix = File(ctx.filesDir, "container/.wine")
@@ -817,6 +966,14 @@ object ContainerManager {
 
     fun importUri(ctx: Context, uri: Uri): String? = resolveUriToPath(ctx, uri)
 
+    /** Picked game folder (OpenDocumentTree) -> its main exe path, or null (needs All files access). */
+    fun resolveTreeToExe(uri: Uri): String? = try {
+        val docId = DocumentsContract.getTreeDocumentId(uri)
+        val vol = docId.substringBefore(':')
+        val root = if (vol == "primary") "/storage/emulated/0" else "/storage/$vol"
+        ShortcutStore.findExeIn(File(root, docId.substringAfter(':', "")).canonicalPath)
+    } catch (_: Exception) { null }
+
     fun isDxvkEnabled(ctx: Context): Boolean {
         val prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return prefs.getBoolean("dxvk_enabled", false)
@@ -829,7 +986,7 @@ object ContainerManager {
         val win = File(ctx.filesDir, "container/.wine/drive_c/windows")
         val dxvk = ContentManager.list(ctx).firstOrNull { it.type == "DXVK" }
         val srcWow = dxvk?.let { File(it.dir, "syswow64/dxgi.dll") }
-        val missing = !File(win, "system32/dxgi.dll").exists() ||
+        val missing = !File(win, "system32/dxgi.dll").exists() || (dxvk?.let { File(it.dir, "system32/d3d12core.dll") }?.takeIf { it.isFile }?.let { it.length() != File(win, "system32/d3d12core.dll").length() } == true) ||
             (srcWow?.isFile == true && File(win, "syswow64/dxgi.dll").length() != srcWow.length())
         if (!prefs.contains("dxvk_enabled") || (isDxvkEnabled(ctx) && (missing || force))) setDxvkEnabled(ctx, true)
     }
@@ -851,7 +1008,7 @@ object ContainerManager {
             dstSys32.mkdirs()
             dstSyswow64.mkdirs()
 
-            val dlls = listOf("d3d8.dll", "d3d9.dll", "d3d10core.dll", "d3d11.dll", "dxgi.dll")
+            val dlls = listOf("d3d8.dll", "d3d9.dll", "d3d10core.dll", "d3d11.dll", "d3d12.dll", "d3d12core.dll", "dxgi.dll")
             val srcSys32 = File(dxvk.dir, "system32")
             val srcSyswow64 = File(dxvk.dir, "syswow64")
 

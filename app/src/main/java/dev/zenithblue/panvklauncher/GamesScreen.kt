@@ -84,7 +84,7 @@ import java.io.File
 
 private val ARCHES = listOf("auto", "i386", "x86_64", "arm64ec")
 
-/** Game library. Tap a game (or Play) = Launch card; the card's Launch button starts it via [onLaunch]. */
+/** Game library. Tap a game (or Play) launches it with its saved settings; the card menu has Launch options. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GamesScreen(
@@ -151,7 +151,8 @@ fun GamesScreen(
                             menuOpen = menuFor == g.id,
                             onOpenMenu = { menuFor = g.id },
                             onCloseMenu = { menuFor = null },
-                            onPlay = { launching = g },
+                            onPlay = { onLaunch(g) },
+                            onOptions = { menuFor = null; launching = g },
                             onEdit = { menuFor = null; editingIsNew = false; editing = g },
                             onDuplicate = {
                                 menuFor = null
@@ -169,7 +170,7 @@ fun GamesScreen(
                             GameCard(
                                 g = g, busy = busy, defaultResolution = defaultResolution,
                                 menuOpen = false, onOpenMenu = {}, onCloseMenu = {},
-                                onPlay = { launching = g }, onEdit = {}, onDuplicate = {}, onDelete = {},
+                                onPlay = { onLaunch(g) }, onOptions = { launching = g }, onEdit = {}, onDuplicate = {}, onDelete = {},
                                 readOnly = true
                             )
                         }
@@ -271,6 +272,7 @@ private fun GameCard(
     onOpenMenu: () -> Unit,
     onCloseMenu: () -> Unit,
     onPlay: () -> Unit,
+    onOptions: () -> Unit,
     onEdit: () -> Unit,
     onDuplicate: () -> Unit,
     onDelete: () -> Unit,
@@ -285,7 +287,7 @@ private fun GameCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(enabled = !busy, onClickLabel = "Open launch card for ${g.name}", onClick = onPlay),
+            .clickable(enabled = !busy, onClickLabel = "Launch ${g.name}", onClick = onPlay),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
         shape = MaterialTheme.shapes.large
     ) {
@@ -307,12 +309,13 @@ private fun GameCard(
                     Icon(Icons.Rounded.MoreVert, contentDescription = "Options for ${g.name}")
                 }
                 DropdownMenu(expanded = menuOpen, onDismissRequest = onCloseMenu) {
+                    DropdownMenuItem(text = { Text("Launch options") }, onClick = onOptions, leadingIcon = { Icon(Icons.Rounded.PlayArrow, null) }, modifier = Modifier.heightIn(min = 48.dp))
                     DropdownMenuItem(text = { Text("Edit") }, onClick = onEdit, leadingIcon = { Icon(Icons.Rounded.Edit, null) }, modifier = Modifier.heightIn(min = 48.dp))
                     DropdownMenuItem(text = { Text("Duplicate") }, onClick = onDuplicate, leadingIcon = { Icon(Icons.Rounded.ContentCopy, null) }, modifier = Modifier.heightIn(min = 48.dp))
                     DropdownMenuItem(text = { Text("Delete") }, onClick = onDelete, leadingIcon = { Icon(Icons.Rounded.DeleteOutline, null) }, modifier = Modifier.heightIn(min = 48.dp))
                 }
             }
-            // Same action as tapping the card: opens the launch card (nothing starts without it).
+            // Same action as tapping the card: launches with the game's saved settings (Launch options in the menu).
             FilledIconButton(onClick = onPlay, enabled = !busy, modifier = Modifier.size(52.dp)) {
                 Icon(Icons.Rounded.PlayArrow, contentDescription = if (busy) "Wine is running" else "Launch ${g.name}", modifier = Modifier.size(28.dp))
             }
@@ -412,6 +415,15 @@ private fun ShortcutEditorSheet(
         }
     }
 
+    val folderPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+        val path = uri?.let { ContainerManager.resolveTreeToExe(it) }
+        if (path != null) {
+            exe = path
+            if (name.isBlank()) name = File(path).nameWithoutExtension
+            env = ShortcutStore.envText(ShortcutStore.withKnownEnv(path, ShortcutStore.parseEnv(env)))
+        } else if (uri != null) android.widget.Toast.makeText(ctx, "No game .exe found in that folder (needs All files access).", android.widget.Toast.LENGTH_LONG).show()
+    }
+
     // Fresh install has no storage permission: picked /sdcard exe would be copied alone, without its DLLs/data.
     val permLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
         picker.launch(arrayOf("*/*"))
@@ -439,6 +451,9 @@ private fun ShortcutEditorSheet(
             )
             OutlinedButton(onClick = { pickExe() }, enabled = !importing, modifier = Modifier.heightIn(min = 48.dp)) {
                 Text("Browse for .exe")
+            }
+            OutlinedButton(onClick = { folderPicker.launch(null) }, enabled = !importing, modifier = Modifier.heightIn(min = 48.dp)) {
+                Text("Pick game folder")
             }
             OutlinedTextField(args, { args = it }, label = { Text("Arguments") }, singleLine = true, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(

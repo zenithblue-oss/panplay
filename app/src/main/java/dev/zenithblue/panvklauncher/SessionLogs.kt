@@ -199,7 +199,7 @@ object SessionLogs {
         appendLine("== Shortcut ==")
         appendLine(sc?.let { File(ctx.filesDir, "shortcuts/${it.id}.json").takeIf { f -> f.isFile }?.readText() } ?: "(none, plain exe run: $exePath)")
         appendLine("\n== FEX mode ==")
-        appendLine(FexPresets.resolve(sc?.fex ?: ""))
+        appendLine(Box64Presets.resolve(sc?.fex ?: ""))
         appendLine("\n== Controller config ==")
         appendLine(ControllerInput.config.toJson().toString(2))
         appendLine("\n== Wine command ==")
@@ -392,7 +392,7 @@ object SessionLogs {
                 put("version", wineVer.opt("version"))
                 put("source", wineVer.opt("source"))
             })
-            put("fexMode", FexPresets.resolve(sc?.fex ?: ""))
+            put("fexMode", Box64Presets.resolve(sc?.fex ?: ""))
             put("dxvk", JSONObject().apply {
                 put("enabled", ContainerManager.isDxvkEnabled(ctx))
                 put("version", dxvkVer.opt("version"))

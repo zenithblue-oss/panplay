@@ -69,6 +69,43 @@ object FexPresets {
     }
 }
 
+/**
+ * Box64 (WowBox64, PE build of ptitSeb/box64) as the 32-bit WoW64 emulator instead of FEX. Stored in [Shortcut.fex]
+ * as one of [modes]; anything else is a FEX preset. Applied as BOX64_* env (only the keys the WowBox64 build reads).
+ */
+object Box64Presets {
+    val modes = listOf("Box64 Default", "Box64 Stability", "Box64 Performance")
+    fun isBox(m: String) = m in modes
+
+    // Per-exe default when the game has no saved choice. NFS Undercover (SecuROM self-modifying code) stalls forever
+    // at "Compiling shaders" under FEX 2609.1 and 2610 (SMC re-translation loop) but runs on WowBox64.
+    private val EXE_DEFAULT = mapOf("nfs.exe" to "Box64 Stability")
+    /** [Shortcut.fex] if set, else the per-exe default, else "" (FEX default). */
+    fun modeFor(s: Shortcut) = s.fex.ifEmpty { EXE_DEFAULT[java.io.File(s.exe).name.lowercase()] ?: "" }
+    /** Mode shown/saved for a shortcut's [Shortcut.fex] value. */
+    fun resolve(m: String) = if (isBox(m)) m else FexPresets.resolve(m)
+
+    fun hint(m: String) = when (m) {
+        "Box64 Stability" -> "Strong memory model, no big blocks, safe flags. Slowest, safest."
+        "Box64 Performance" -> "Big blocks, fast NaN/rounding, relaxed flags. Fast; may crash or glitch."
+        else -> "Box64 defaults. Good starting point; 32-bit games only."
+    }
+
+    fun env(m: String): Map<String, String> = when (m) {
+        "Box64 Stability" -> mapOf(
+            "BOX64_DYNAREC_STRONGMEM" to "2", "BOX64_DYNAREC_BIGBLOCK" to "0", "BOX64_DYNAREC_SAFEFLAGS" to "2",
+            "BOX64_DYNAREC_CALLRET" to "0", "BOX64_DYNAREC_FASTNAN" to "0", "BOX64_DYNAREC_FASTROUND" to "0",
+            "BOX64_DYNAREC_X87DOUBLE" to "1", "BOX64_DYNAREC_WEAKBARRIER" to "0"
+        )
+        "Box64 Performance" -> mapOf(
+            "BOX64_DYNAREC_STRONGMEM" to "0", "BOX64_DYNAREC_BIGBLOCK" to "3", "BOX64_DYNAREC_SAFEFLAGS" to "0",
+            "BOX64_DYNAREC_CALLRET" to "1", "BOX64_DYNAREC_FASTNAN" to "1", "BOX64_DYNAREC_FASTROUND" to "1",
+            "BOX64_DYNAREC_FORWARD" to "1024", "BOX64_DYNAREC_WEAKBARRIER" to "2"
+        )
+        else -> emptyMap()
+    }
+}
+
 /** Intent extra consumed by MainActivity (debug builds only): shortcut id or name. */
 const val EXTRA_LAUNCH_SHORTCUT = "dev.zenithblue.panvklauncher.LAUNCH_SHORTCUT"
 
@@ -169,13 +206,40 @@ object ShortcutStore {
 
     /** exe may be an Android path or a Wine path under the container C: drive. */
     fun resolveExe(ctx: Context, exe: String): String {
-        val m = Regex("^([A-Za-z]):[\\\\/](.*)$").matchEntire(exe) ?: return exe
-        if (!m.groupValues[1].equals("c", true)) return exe
-        return File(ctx.filesDir, "container/.wine/drive_c/" + m.groupValues[2].replace('\\', '/')).path
+        val m = Regex("^([A-Za-z]):[\\\\/](.*)$").matchEntire(exe)
+        val p = if (m == null || !m.groupValues[1].equals("c", true)) exe
+        else File(ctx.filesDir, "container/.wine/drive_c/" + m.groupValues[2].replace('\\', '/')).path
+        return findExeIn(p) ?: p
+    }
+
+    private val NOT_GAME = Regex("(?i)unins|setup|install|redist|vcredist|dxsetup|crash|report|updater|dotnet|handler|config")
+
+    /**
+     * Zip/installer extracts often nest the game twice (Game/Game/Game.exe, outer copy without the data dirs).
+     * Among the exe and its same-named copies in direct subfolders, the one in the fullest folder has the game data.
+     * Burnout Paradise otherwise spins forever on a missing VEHICLES/VEHICLELIST.BUNDLE (a tiny T2B/ copy also exists).
+     */
+    fun preferInner(exe: File): File {
+        val copies = exe.parentFile?.listFiles { f -> f.isDirectory }
+            ?.mapNotNull { d -> d.listFiles { f -> f.isFile && f.name.equals(exe.name, true) }?.firstOrNull() } ?: emptyList()
+        return (copies + exe).maxByOrNull { it.parentFile?.list()?.size ?: 0 } ?: exe
+    }
+
+    /** [path] is a game folder: pick its main exe (name closest to the folder's, else largest; depth 2). Else null. */
+    fun findExeIn(path: String): String? {
+        val dir = File(path)
+        if (!dir.isDirectory) return null
+        val exes = dir.walkTopDown().maxDepth(2)
+            .filter { it.isFile && it.name.endsWith(".exe", true) && !NOT_GAME.containsMatchIn(it.name) }.toList()
+        val key = dir.name.lowercase().filter { it.isLetterOrDigit() }
+        return exes.minWithOrNull(compareBy<File>(
+            { it.parentFile != dir },
+            { !(key.isNotEmpty() && (it.nameWithoutExtension.lowercase().filter { c -> c.isLetterOrDigit() }.let { n -> key.startsWith(n) || n.startsWith(key) })) },
+            { -it.length() }))?.let { preferInner(it).path }
     }
 
     fun launchOptions(ctx: Context, s: Shortcut) = LaunchOptions(
-        args = splitArgs(s.args), env = s.env, driverId = s.driver, fexMode = s.fex
+        args = splitArgs(s.args), env = s.env, driverId = s.driver, fexMode = Box64Presets.modeFor(s)
     )
 
     /** Whitespace split honouring "double quotes". */
@@ -244,6 +308,27 @@ object PeInfo {
             }
         }
     } catch (_: Throwable) { null }
+
+    /** Lower-case DLL names the PE statically imports (empty when unreadable). */
+    fun imports(path: String): Set<String> = try {
+        RandomAccessFile(path, "r").use { f ->
+            val pe = Pe(f)
+            val rva = pe.u32(pe.optOff + (if (pe.plus) 112 else 96) + 8)
+            var d = pe.rvaToOff(rva)
+            val out = mutableSetOf<String>()
+            while (d > 0 && out.size < 200) {
+                if (pe.u32(d + 12) == 0L) break
+                val n = pe.rvaToOff(pe.u32(d + 12))
+                if (n < 0) break
+                f.seek(n)
+                val sb = StringBuilder()
+                while (sb.length < 64) { val c = f.read(); if (c <= 0) break; sb.append(c.toChar()) }
+                out.add(sb.toString().lowercase())
+                d += 20
+            }
+            out
+        }
+    } catch (_: Throwable) { emptySet() }
 
     fun iconPng(path: String): ByteArray? = try {
         RandomAccessFile(path, "r").use { f -> extract(Pe(f)) }

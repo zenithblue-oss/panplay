@@ -16,9 +16,20 @@ FEX 2609.1 (libarm64ecfex.dll, libwow64fex.dll)
   License: MIT. Source: https://github.com/FEX-Emu/FEX tag FEX-2609.1 (9fbdc00bd6401aff3b32d79e78ff98b8a13e4dcf)
   Built with llvm-mingw 20260922 (https://github.com/mstorsjo/llvm-mingw) by scripts/build-fex-windows.sh.
 
+Box64 WowBox64 (assets/deps/wow64/wowbox64.dll, optional 32-bit emulator per game)
+  License: MIT. Source: https://github.com/ptitSeb/box64 commit 2f47bdff3ae9b3b7fb462fea0579cd3e87551e75 (master, 2026-10-07).
+  Built with llvm-mingw 20260922 (https://github.com/mstorsjo/llvm-mingw) by scripts/build-box64-wow64.sh.
+  sha256 6ed76e135b1cc403731e88961f65c42652d557bac2a170563e45a1493389d225
+
 DXVK 3.1.1 (+ clear-before-external-rendering patch), ARM64EC + i686
   License: Zlib. Source: https://github.com/doitsujin/dxvk tag v3.1.1 (b1a1c99ab52b687cf950d62c88bc2fa316b41663)
   Patch: runtimes/dxvk/clear-before-external-rendering.patch. Built by scripts/build-dxvk.sh.
+
+Wine 11.19 i386 d3dcompiler_43.dll + wined3d.dll (assets/deps/x86, HLSL compiler with vkd3d-shader 2.1)
+  License: LGPL-2.1-or-later (Wine; bundled vkd3d LGPL-2.1-or-later). Source: https://gitlab.winehq.org/wine/wine
+  tag wine-11.19. Binaries from Arch Linux wine 11.19-1; only change: the 16-byte "Wine builtin DLL" DOS-stub
+  tag at offset 0x40 renamed so Wine loads them as native. Original sha256 f5f517bb1f352af6e5117a238d37b19b10a0625992e416a3a0a87b27a5f60d4e
+  (d3dcompiler_43), 1b9362fc31c54dbc9f949f8be9e3209c6526bc26749786e572dfa2a86f41c60f (wined3d).
 
 For any LGPL/GPL component above, the corresponding source is available from the listed upstream at the
 listed revision.
