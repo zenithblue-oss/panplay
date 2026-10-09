@@ -93,50 +93,98 @@ class SessionLogsActivity : ComponentActivity() {
         val uploadState = rememberCloudUploadState(endpoint = uploadEndpoint)
         CloudUploadFlow(state = uploadState)
 
-        Column(Modifier.fillMaxSize().systemBarsPadding().padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Session logs", style = MaterialTheme.typography.titleLarge, modifier = Modifier.weight(1f))
-                Button(onClick = onClose, modifier = Modifier.heightIn(min = 48.dp)) { Text("Close") }
+        val d = cur
+        var isSharing by remember { mutableStateOf(false) }
+        val isBusy = uploadState.isBusy || isSharing
+        val sum = remember(d) { d?.let { SessionLogs.summary(it) } }
+        val files = remember(d) { (d?.listFiles() ?: emptyArray()).filter { it.isFile && it.name != "session.json" }.sortedBy { it.name } }
+        var sel by remember(d) { mutableStateOf(files.firstOrNull { it.name == "summary.txt" } ?: files.firstOrNull()) }
+        var errOnly by remember(d) { mutableStateOf(false) }
+        val f = sel
+        val lines by produceState<List<String>?>(null, f, errOnly) {
+            value = if (f == null) emptyList() else withContext(Dispatchers.IO) {
+                val all = f.readLines()
+                if (errOnly) all.filter { SessionLogs.isError(it) } else all
             }
-            Text(
-                "Send the ZIP or link to the PanVK Telegram group so we can check your results.",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            val d = cur
-            if (d == null) { Text("No sessions recorded yet."); return@Column }
-            var isSharing by remember { mutableStateOf(false) }
-            val isBusy = uploadState.isBusy || isSharing
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                Button(
-                    onClick = { uploadState.startFlow(d) },
-                    enabled = !isBusy,
-                    modifier = Modifier.heightIn(min = 48.dp)
-                ) { Text("Send to cloud") }
-                OutlinedButton(
-                    onClick = { share(ctx, d) { isSharing = it } },
-                    enabled = !isBusy,
-                    modifier = Modifier.heightIn(min = 48.dp).semantics { contentDescription = "Share as ZIP" }
-                ) { Text("Share as ZIP") }
-                Box {
-                    OutlinedButton(onClick = { menu = true }, modifier = Modifier.heightIn(min = 48.dp)) { Text("Session: ${d.name.take(24)}") }
-                    DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
-                        sessions.forEach { s -> DropdownMenuItem(text = { Text(s.name) }, onClick = { cur = s; menu = false }) }
+        }
+        // One scrolling list: header, buttons, card, chips, then log lines. No weights, no dead space.
+        LazyColumn(
+            Modifier.fillMaxSize().systemBarsPadding(),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            item {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("Session logs", style = MaterialTheme.typography.titleLarge, modifier = Modifier.weight(1f))
+                    Button(onClick = onClose, modifier = Modifier.heightIn(min = 48.dp)) { Text("Close") }
+                }
+            }
+            item {
+                Text(
+                    "Send the ZIP or link to the PanVK Telegram group so we can check your results.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            if (d == null || sum == null) { item { Text("No sessions recorded yet.") }; return@LazyColumn }
+            item {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Button(
+                            onClick = { uploadState.startFlow(d) },
+                            enabled = !isBusy,
+                            modifier = Modifier.weight(1f).heightIn(min = 48.dp),
+                            contentPadding = PaddingValues(horizontal = 8.dp)
+                        ) { Text("Send to cloud", maxLines = 1) }
+                        val perfId = if (sum.isNull("perfId")) null else sum.optString("perfId")
+                        if (perfId != null && PerfRecorder.summary(ctx, perfId).length() > 0) OutlinedButton(
+                            onClick = { PerfReportActivity.open(ctx, id = perfId) },
+                            modifier = Modifier.weight(1f).heightIn(min = 48.dp),
+                            contentPadding = PaddingValues(horizontal = 8.dp)
+                        ) { Text("Performance", maxLines = 1) }
+                        OutlinedButton(
+                            onClick = { share(ctx, d) { isSharing = it } },
+                            enabled = !isBusy,
+                            modifier = Modifier.weight(1f).heightIn(min = 48.dp).semantics { contentDescription = "Share as ZIP" },
+                            contentPadding = PaddingValues(horizontal = 8.dp)
+                        ) { Text("Share as ZIP", maxLines = 1) }
+                    }
+                    Box {
+                        OutlinedButton(onClick = { menu = true }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
+                            Text("Session: ${d.name}", maxLines = 1)
+                        }
+                        DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
+                            sessions.forEach { s -> DropdownMenuItem(text = { Text(s.name) }, onClick = { cur = s; menu = false }) }
+                        }
                     }
                 }
             }
-            SessionView(d)
+            item { SessionCard(sum) }
+            item {
+                Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    FilterChip(selected = errOnly, onClick = { errOnly = !errOnly }, label = { Text("Errors only") })
+                    files.forEach { x -> FilterChip(selected = sel == x, onClick = { sel = x }, label = { Text(x.name) }) }
+                }
+            }
+            val l = lines
+            if (l == null) item { Text("Loading...") } else items(l.size) { i ->
+                val t = l[i]
+                Text(
+                    t, fontFamily = FontFamily.Monospace, fontSize = 10.sp, lineHeight = 12.sp,
+                    color = when {
+                        SessionLogs.isError(t) -> Color(0xFFE5534B)
+                        SessionLogs.isWarn(t) -> Color(0xFFE3B341)
+                        else -> MaterialTheme.colorScheme.onSurface
+                    }
+                )
+            }
         }
     }
 
     @Composable
-    private fun ColumnScope.SessionView(dir: File) {
-        val sum = remember(dir) { SessionLogs.summary(dir) }
-        val files = remember(dir) { (dir.listFiles() ?: emptyArray()).filter { it.isFile && it.name != "session.json" }.sortedBy { it.name } }
-        var sel by remember(dir) { mutableStateOf(files.firstOrNull { it.name == "summary.txt" } ?: files.firstOrNull()) }
-        var errOnly by remember(dir) { mutableStateOf(false) }
+    private fun SessionCard(sum: org.json.JSONObject) {
         val bad = sum.optBoolean("crash") || sum.optBoolean("deviceLost")
-        Card(colors = CardDefaults.cardColors(containerColor = if (bad) Color(0x33E5534B) else MaterialTheme.colorScheme.surfaceVariant)) {
+        Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = if (bad) Color(0x33E5534B) else MaterialTheme.colorScheme.surfaceVariant)) {
             Column(Modifier.fillMaxWidth().padding(10.dp)) {
                 Text(sum.optString("reason", "?"), fontWeight = FontWeight.Bold, color = if (bad) Color(0xFFE5534B) else MaterialTheme.colorScheme.onSurface)
                 Text(
@@ -150,33 +198,6 @@ class SessionLogsActivity : ComponentActivity() {
                 Column(Modifier.heightIn(max = 110.dp).verticalScroll(rememberScrollState())) {
                     if (errs != null) for (i in 0 until minOf(errs.length(), 25))
                         Text(errs.getString(i), fontFamily = FontFamily.Monospace, fontSize = 10.sp, color = Color(0xFFE5534B), maxLines = 2)
-                }
-            }
-        }
-        Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            FilterChip(selected = errOnly, onClick = { errOnly = !errOnly }, label = { Text("Errors only") })
-            files.forEach { f -> FilterChip(selected = sel == f, onClick = { sel = f }, label = { Text(f.name) }) }
-        }
-        val f = sel
-        if (f != null) {
-            val lines by produceState<List<String>?>(null, f, errOnly) {
-                value = withContext(Dispatchers.IO) {
-                    val all = f.readLines()
-                    if (errOnly) all.filter { SessionLogs.isError(it) } else all
-                }
-            }
-            val l = lines
-            if (l == null) Text("Loading...") else LazyColumn(Modifier.weight(1f).fillMaxWidth()) {
-                items(l.size) { i ->
-                    val t = l[i]
-                    Text(
-                        t, fontFamily = FontFamily.Monospace, fontSize = 10.sp, lineHeight = 12.sp,
-                        color = when {
-                            SessionLogs.isError(t) -> Color(0xFFE5534B)
-                            SessionLogs.isWarn(t) -> Color(0xFFE3B341)
-                            else -> MaterialTheme.colorScheme.onSurface
-                        }
-                    )
                 }
             }
         }

@@ -33,6 +33,7 @@ import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.DeleteOutline
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.Speed
 import androidx.compose.material.icons.rounded.Stop
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.animation.AnimatedVisibility
@@ -310,6 +311,8 @@ private fun GameCard(
                 }
                 DropdownMenu(expanded = menuOpen, onDismissRequest = onCloseMenu) {
                     DropdownMenuItem(text = { Text("Launch options") }, onClick = onOptions, leadingIcon = { Icon(Icons.Rounded.PlayArrow, null) }, modifier = Modifier.heightIn(min = 48.dp))
+                    val pctx = LocalContext.current
+                    DropdownMenuItem(text = { Text("Last session performance") }, onClick = { onCloseMenu(); PerfReportActivity.open(pctx, game = g.name) }, leadingIcon = { Icon(Icons.Rounded.Speed, null) }, modifier = Modifier.heightIn(min = 48.dp))
                     DropdownMenuItem(text = { Text("Edit") }, onClick = onEdit, leadingIcon = { Icon(Icons.Rounded.Edit, null) }, modifier = Modifier.heightIn(min = 48.dp))
                     DropdownMenuItem(text = { Text("Duplicate") }, onClick = onDuplicate, leadingIcon = { Icon(Icons.Rounded.ContentCopy, null) }, modifier = Modifier.heightIn(min = 48.dp))
                     DropdownMenuItem(text = { Text("Delete") }, onClick = onDelete, leadingIcon = { Icon(Icons.Rounded.DeleteOutline, null) }, modifier = Modifier.heightIn(min = 48.dp))

@@ -155,6 +155,7 @@ object SessionLogs {
 
         val sum = JSONObject().apply {
             put("time", now); put("startMs", run?.startMs ?: startMs); put("durationSec", dur)
+            put("perfId", PerfRecorder.lastId ?: JSONObject.NULL)
             put("game", sc?.name ?: exeFile.name); put("exe", exePath); put("reason", reason)
             put("exit", if (exit == Int.MIN_VALUE) JSONObject.NULL else exit)
             put("userStopped", ContainerManager.userStopped); put("crash", crash || deviceLost)

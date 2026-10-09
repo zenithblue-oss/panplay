@@ -254,6 +254,7 @@ fun LauncherApp(
                     mainHandler.post { addLog("Launch shortcut '${sc.name}' (${sc.id})") }
                 }
                 launched = true
+                PerfRecorder.start(context, sc, exePath)
                 ContainerManager.runExe(context, exePath, { line ->
                     launcherLog.append(line).append('\n')
                     mainHandler.post { addLog(line) }
@@ -262,6 +263,7 @@ fun LauncherApp(
                 launcherLog.append("Run error: ${t.message}\n")
                 mainHandler.post { addLog("Run error: ${t.message}") }
             } finally {
+                PerfRecorder.finish(context)
                 DisplayServer.launchOverride = null
                 mainHandler.post {
                     isWineRunning = ContainerManager.isRunning()

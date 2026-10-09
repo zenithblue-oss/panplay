@@ -412,6 +412,7 @@ object ContainerManager {
             envMap["DXVK_LOG_LEVEL"] = "info"
             envMap["DXVK_LOG_PATH"] = "Z:" + gfxLogs.absolutePath
             envMap["DXVK_HUD"] = "full"
+            envMap.putAll(PerfRecorder.env()) // DXVK_STATS_FILE while a perf session is recording
         }
         envMap["VKD3D_LOG_FILE"] = "Z:" + File(gfxLogs, "vkd3d.log").absolutePath
         // Mesa disk cache in files/mesa_shader_cache: compiled shaders survive sessions
@@ -1024,13 +1025,13 @@ object ContainerManager {
         val win = File(ctx.filesDir, "container/.wine/drive_c/windows")
         val installed = ContentManager.list(ctx)
         val dxvk = installed.firstOrNull { it.type == "DXVK" }
-        val srcWow = dxvk?.let { File(it.dir, "syswow64/dxgi.dll") }
+        val srcWow = dxvk?.let { File(it.dir, "syswow64/d3d11.dll") }
         val vk = installed.firstOrNull { it.type == "VKD3D" }
         val vkMissing = isVkd3dEnabled(ctx) && vk != null && listOf("system32", "syswow64").any { d ->
             File(vk.dir, "$d/d3d12core.dll").let { it.isFile && it.length() != File(win, "$d/d3d12core.dll").length() }
         }
         val missing = !File(win, "system32/dxgi.dll").exists() || vkMissing ||
-            (srcWow?.isFile == true && File(win, "syswow64/dxgi.dll").length() != srcWow.length())
+            (srcWow?.isFile == true && File(win, "syswow64/d3d11.dll").length() != srcWow.length())
         if (!prefs.contains("dxvk_enabled") || (isDxvkEnabled(ctx) && (missing || force))) setDxvkEnabled(ctx, true)
     }
 

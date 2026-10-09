@@ -21,6 +21,7 @@ test "$(git -C "$SRC" rev-parse HEAD)" = "$DXVK_COMMIT" || { echo "DXVK commit m
 git -C "$SRC" submodule update --init --recursive --depth 1
 git -C "$SRC" checkout -- .
 git -C "$SRC" apply "$RT/clear-before-external-rendering.patch"
+git -C "$SRC" apply "$RT/panplay-stats.patch"
 
 VSRC=$WORK/vkd3d-proton-src
 if [ ! -d "$VSRC/.git" ]; then
@@ -67,7 +68,7 @@ cat > "$PKG/profile.json" <<EOF
   "type": "DXVK",
   "versionName": "$DXVK_VERSION",
   "versionCode": 1,
-  "description": "DXVK $DXVK_TAG ($DXVK_COMMIT) + clear-before-external-rendering fix, built from source with llvm-mingw $LLVM_MINGW_VER (scripts/build-dxvk.sh). ARM64EC system32 + i686 syswow64. D3D12 is the separate VKD3D package.",
+  "description": "DXVK $DXVK_TAG ($DXVK_COMMIT) + clear-before-external-rendering fix + PanPlay DXVK_STATS_FILE recorder, built from source with llvm-mingw $LLVM_MINGW_VER (scripts/build-dxvk.sh). ARM64EC system32 + i686 syswow64. D3D12 is the separate VKD3D package.",
   "files": [
 $files
   ]

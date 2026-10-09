@@ -36,8 +36,12 @@
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden|navigation|screenLayout|smallestScreenSize|uiMode|density"
             android:exported="false"
             android:launchMode="singleTop"
-            android:screenOrientation="fullUser"
+            android:screenOrientation="sensorLandscape"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
+        <activity
+            android:name=".PerfReportActivity"
+            android:configChanges="orientation|screenSize|keyboard|keyboardHidden|navigation|screenLayout|smallestScreenSize|uiMode|density"
+            android:exported="false" />
         <activity
             android:name=".SessionLogsActivity"
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden|navigation|screenLayout|smallestScreenSize|uiMode|density"

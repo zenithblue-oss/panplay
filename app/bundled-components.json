@@ -17,13 +17,13 @@
       "build": "scripts/build-fex-windows.sh"
     },
     {
-      "file": "dxvk-3.1.1-3-arm64ec.wcp",
-      "sha256": "7a418143ec83adcebb5374f3c613158e18a9b64c818fb1d18d95b9887e9a12ca",
+      "file": "dxvk-3.1.1-4-arm64ec.wcp",
+      "sha256": "c812e0006c6cc858562facec221f63b61e1c9c2a04d6a0831ed81bebe91cf628",
       "build": "scripts/build-dxvk.sh"
     },
     {
       "file": "vkd3d-3.0.1-452-g22307558.wcp",
-      "sha256": "4a280987eb34480b831670298adf4fe82d43d13bd5d21d7428f9181d5d90b157",
+      "sha256": "dd00eac38f766122f6ef9cc6fb1cb303105bd59a763094c9e5a72ff46a064f37",
       "build": "scripts/build-dxvk.sh"
     },
     {

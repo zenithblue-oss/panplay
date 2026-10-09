@@ -1,0 +1,163 @@
+diff --git a/src/dxvk/hud/dxvk_hud.cpp b/src/dxvk/hud/dxvk_hud.cpp
+index 0ef6e85..30fc634 100644
+--- a/src/dxvk/hud/dxvk_hud.cpp
++++ b/src/dxvk/hud/dxvk_hud.cpp
+@@ -9,7 +9,8 @@ namespace dxvk::hud {
+     const Rc<DxvkDevice>& device)
+   : m_device        (device),
+     m_renderer      (device),
+-    m_hudItems      (device) {
++    m_hudItems      (device),
++    m_stats         (device) {
+     // Retrieve and sanitize options
+     m_options.scale = std::clamp(m_hudItems.getOption<float>("scale", 1.0f), 0.25f, 4.0f);
+     m_options.opacity = std::clamp(m_hudItems.getOption<float>("opacity", 1.0f), 0.1f, 1.0f);
+@@ -37,6 +38,83 @@ namespace dxvk::hud {
+ 
+   void Hud::update() {
+     m_hudItems.update();
++    m_stats.update();
++  }
++
++
++  HudStatsFile::HudStatsFile(const Rc<DxvkDevice>& device)
++  : m_device(device) {
++    std::string path = env::getEnvVar("DXVK_STATS_FILE");
++
++    // Append: several swapchains/devices may each own a Hud.
++    if (!path.empty())
++      m_file.open(str::topath(path.c_str()).c_str(), std::ios::out | std::ios::app);
++
++    m_prev = m_device->getStatCounters();
++  }
++
++
++  void HudStatsFile::update() {
++    if (!m_file.is_open())
++      return;
++
++    auto now = clock::now();
++    auto us = [&] (clock::time_point a, clock::time_point b) {
++      return uint64_t(std::chrono::duration_cast<std::chrono::microseconds>(a - b).count());
++    };
++
++    if (!m_header) {
++      m_header = true;
++      if (m_file.tellp() == std::streampos(0))
++        m_buf += "# F,timestamp_us,frametime_us\n"
++                 "# S,timestamp_us,gpu_load_pct,vidmem_used_mb,vidmem_alloc_mb,sysmem_used_mb,sysmem_alloc_mb,"
++                 "draw_calls,submissions,renderpasses,barriers,graphics_pipelines,compiler_busy\n";
++    }
++
++    // Frame row. The first present has no predecessor, skip it.
++    if (m_frames++) {
++      m_buf += "F," + std::to_string(us(now, m_start)) + ',' + std::to_string(us(now, m_lastFrame)) + '\n';
++    }
++    m_lastFrame = now;
++
++    // ~500ms summary row (counts are per interval).
++    uint64_t sumUs = us(now, m_lastSum);
++    if (sumUs >= 500'000) {
++      DxvkStatCounters cur = m_device->getStatCounters();
++      DxvkStatCounters d = cur.diff(m_prev);
++      m_prev = cur;
++      m_lastSum = now;
++
++      uint64_t idle = d.getCtr(DxvkStatCounter::GpuIdleTicks);
++      uint64_t load = sumUs > idle ? (100 * (sumUs - idle)) / sumUs : 0;
++
++      const auto& mem = m_device->adapter()->memoryProperties();
++      uint64_t vu = 0, va = 0, su = 0, sa = 0;
++      for (uint32_t i = 0; i < mem.memoryHeapCount; i++) {
++        auto s = m_device->getMemoryStats(i);
++        if (mem.memoryHeaps[i].flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT) { vu += s.memoryUsed; va += s.memoryAllocated; }
++        else                                                            { su += s.memoryUsed; sa += s.memoryAllocated; }
++      }
++
++      m_buf += "S," + std::to_string(us(now, m_start))
++        + ',' + std::to_string(load)
++        + ',' + std::to_string(vu >> 20) + ',' + std::to_string(va >> 20)
++        + ',' + std::to_string(su >> 20) + ',' + std::to_string(sa >> 20)
++        + ',' + std::to_string(d.getCtr(DxvkStatCounter::CmdDrawCalls))
++        + ',' + std::to_string(d.getCtr(DxvkStatCounter::QueueSubmitCount))
++        + ',' + std::to_string(d.getCtr(DxvkStatCounter::CmdRenderPassCount))
++        + ',' + std::to_string(d.getCtr(DxvkStatCounter::CmdBarrierCount))
++        + ',' + std::to_string(cur.getCtr(DxvkStatCounter::PipeCountGraphics))
++        + ',' + (cur.getCtr(DxvkStatCounter::PipeTasksDone) < cur.getCtr(DxvkStatCounter::PipeTasksTotal) ? '1' : '0')
++        + '\n';
++    }
++
++    if (us(now, m_lastFlush) >= 1'000'000) {
++      m_lastFlush = now;
++      m_file.write(m_buf.data(), std::streamsize(m_buf.size()));
++      m_file.flush();
++      m_buf.clear();
++    }
+   }
+ 
+ 
+diff --git a/src/dxvk/hud/dxvk_hud.h b/src/dxvk/hud/dxvk_hud.h
+index 1b8f947..edc8bc4 100644
+--- a/src/dxvk/hud/dxvk_hud.h
++++ b/src/dxvk/hud/dxvk_hud.h
+@@ -1,5 +1,8 @@
+ #pragma once
+ 
++#include <fstream>
++#include <string>
++
+ #include "../dxvk_device.h"
+ 
+ #include "dxvk_hud_item.h"
+@@ -7,9 +10,42 @@
+ 
+ namespace dxvk::hud {
+ 
++  /**
++   * \brief PanPlay stats recorder
++   *
++   * If DXVK_STATS_FILE is set, appends CSV rows independent of what
++   * DXVK_HUD shows: "F,<ts_us>,<frametime_us>" per presented frame and
++   * "S,..." every ~500ms (see header lines in the file). Buffered, flushed ~1s.
++   */
++  class HudStatsFile {
++
++  public:
++
++    HudStatsFile(const Rc<DxvkDevice>& device);
++
++    void update();
++
++  private:
++
++    using clock = dxvk::high_resolution_clock;
++
++    Rc<DxvkDevice>    m_device;
++    std::ofstream     m_file;
++    std::string       m_buf;
++    bool              m_header   = false;
++    clock::time_point m_start    = clock::now();
++    clock::time_point m_lastFrame = m_start;
++    clock::time_point m_lastSum  = m_start;
++    clock::time_point m_lastFlush = m_start;
++    uint64_t          m_frames   = 0;
++    DxvkStatCounters  m_prev;
++
++  };
++
++
+   /**
+    * \brief DXVK HUD
+-   * 
++   *
+    * Can be used by the presentation backend to
+    * display performance and driver information.
+    */
+@@ -77,6 +113,7 @@ namespace dxvk::hud {
+     
+     HudRenderer           m_renderer;
+     HudItemSet            m_hudItems;
++    HudStatsFile          m_stats;
+ 
+     HudOptions            m_options;
+     

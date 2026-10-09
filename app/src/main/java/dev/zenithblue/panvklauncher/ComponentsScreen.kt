@@ -108,7 +108,7 @@ fun ComponentsScreen(
 
         item { SectionTitle("Add from file") }
         item {
-            FilledTonalButton(onClick = onInstallLocalClick, enabled = !busy) {
+            FilledTonalButton(onClick = onInstallLocalClick, enabled = !busy, modifier = Modifier.heightIn(min = 48.dp)) {
                 Icon(Icons.Rounded.FileUpload, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.width(8.dp))
                 Text("Install local .wcp")

@@ -313,7 +313,12 @@ fun SettingsScreen(
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(onClick = onOpenAppLog, modifier = Modifier.heightIn(min = 48.dp)) { Text("Launcher log") }
                     OutlinedButton(onClick = onOpenSessionLogs, modifier = Modifier.heightIn(min = 48.dp)) { Text("Last session logs") }
+                    val pctx = androidx.compose.ui.platform.LocalContext.current
+                    OutlinedButton(onClick = { PerfReportActivity.open(pctx) }, modifier = Modifier.heightIn(min = 48.dp)) { Text("Last session performance") }
                 }
+                val rctx = androidx.compose.ui.platform.LocalContext.current
+                var rec by remember { mutableStateOf(PerfRecorder.enabled(rctx)) }
+                SwitchRow("Record performance", "FPS, frame times, CPU, RAM, GPU, temps per session (low overhead)", rec, { rec = it; PerfRecorder.setEnabled(rctx, it) })
             }
         }
 

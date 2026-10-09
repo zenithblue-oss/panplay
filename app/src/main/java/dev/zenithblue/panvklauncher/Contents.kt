@@ -92,9 +92,9 @@ object ContentManager {
             url = "",
             sha256 = null,
             title = "DXVK",
-            versionName = "3.1.1-3-arm64ec",
+            versionName = "3.1.1-4-arm64ec",
             note = "Direct3D 8/9/10/11 to Vulkan",
-            asset = "components/dxvk-3.1.1-3-arm64ec.wcp"
+            asset = "components/dxvk-3.1.1-4-arm64ec.wcp"
         ),
         CatalogEntry(
             type = "VKD3D",
