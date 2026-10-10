@@ -293,6 +293,8 @@ object ContainerManager {
      * (see HLSL_FIX_EXES); default builtin-first load order keeps Proton's own for everything else.
      */
     private const val DEPS_REV = "4"
+    /** Internal launch-opts env key: per-game DLL overrides appended to WINEDLLOVERRIDES in env(). */
+    private const val EXTRA_DLL_OVERRIDES = "PANPLAY_EXTRA_DLLOVERRIDES"
     private val HLSL_FIX_EXES = setOf("burnoutparadise.exe")
     // Game shader caches built by Proton's broken compiler; wiped once (marker) when the fix first applies.
     private val HLSL_STALE_CACHES = mapOf("burnoutparadise.exe" to "AppData/Local/Criterion Games/Burnout Paradise/ShaderCache")
@@ -452,6 +454,7 @@ object ContainerManager {
         } else envMap.putAll(FexPresets.env(emuMode))
         // Per-game shortcut env wins over defaults (but not DISPLAY / display plumbing above).
         launchOpts.get()?.env?.forEach { (k, v) -> if (k != "DISPLAY" && k != "DXVK_HUD") envMap[k] = v }
+        envMap.remove(EXTRA_DLL_OVERRIDES)?.let { envMap["WINEDLLOVERRIDES"] = envMap["WINEDLLOVERRIDES"] + it }
         // FPS cap. DXVK 3.x dropped the DXVK_FRAME_RATE env (config option instead); vkd3d-proton reads VKD3D_FRAME_RATE.
         // A user-set DXVK_FRAME_RATE in the shortcut env means they manage it themselves.
         val fps = launchOpts.get()?.fpsLimit ?: 0
@@ -745,10 +748,14 @@ object ContainerManager {
         // vkd3d-shader 1.18 emits SM3 bytecode that renders the world black/garbage (same bytecode is wrong on desktop
         // RADV too); Wine 11.19's compiler (bundled in deps/x86) gives correct shaders.
         // Any 32-bit exe importing d3dx9_*/d3dcompiler_* gets it too (only x86 copies are bundled, so never x64).
-        val hlsl = if (needsHlslFix(ctx, exeFile)) ";d3dcompiler_43,wined3d=n" else ""
+        // Native wined3d is only for Burnout (HLSL_FIX_EXES): for other games it can make Wine's wined3d (GL, absent
+        // on Android) initialise instead of DXVK (NFS: Most Wanted on a fresh G925 container: wined3d_adapter_gl_init).
+        val hlsl = if (!needsHlslFix(ctx, exeFile)) ""
+            else if (exeFile.name.lowercase() in HLSL_FIX_EXES) ";d3dcompiler_43,wined3d=n" else ";d3dcompiler_43=n"
         val extraOvr = (ddraw ?: "") + hlsl
-        launchOpts.set(if (extraOvr.isEmpty()) opts2 else o.copy(env = o.env + ("WINEDLLOVERRIDES" to
-            ((o.env["WINEDLLOVERRIDES"] ?: defaultDllOverrides(ctx)) + extraOvr))))
+        // Appended in env(), after ensureDxvk: reading defaultDllOverrides here on a fresh install (dxvk_enabled
+        // not yet set) dropped d3d9=n, so wined3d loaded and crashed on first launch (NFS MW, G925/G720).
+        launchOpts.set(if (extraOvr.isEmpty()) opts2 else o.copy(env = o.env + (EXTRA_DLL_OVERRIDES to extraOvr)))
         try {
             return run(ctx, listOf(exeFile.absolutePath) + (opts2?.args ?: emptyList()), workDir = workDir, onLine = onLine, graphics = true)
         } finally {
