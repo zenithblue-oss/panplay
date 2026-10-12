@@ -1,0 +1,8 @@
+11468 S<    futex_wait_queue 2191464 MiSideFull.exe
+11471 Rs    0                 19168 wineserver
+11479 S<s   futex_wait_queue  25616 C:\windows\system32\winedevice.exe
+11507 S<s   futex_wait_queue  35136 C:\windows\system32\winedevice.exe
+		total        used        free      shared     buffers
+Mem:             7331        6893         438          34           0
+-/+ buffers/cache:           6892         439
+Swap:            3665        2482        1183

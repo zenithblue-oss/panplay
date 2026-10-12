@@ -1,0 +1,27 @@
+Game: NFSMW_icon
+Exe: /storage/emulated/0/Games/Need.for.Speed.Most.Wanted/speed.exe
+Exit reason: User exit (overlay EXIT or Stop)
+Wine exit code: n/a
+Duration: 565s
+Tombstone: none seen in logcat (apps cannot read /data/tombstones)
+Errors found: 20
+  [wine-run.log] 008c:err:nsi:poll_events bind failed, errno 13.
+  [wine-run.log] 00a0:err:ntoskrnl:ZwLoadDriver failed to create driver L"\\Registry\\Machine\\System\\CurrentControlSet\\Services\\winebth": c00000e5
+  [wine-run.log] 00d0:err:wgl:X11DRV_OpenGLInit Failed to load libGL: dlopen failed: library "libGL.so.1" not found
+  [wine-run.log] 00d0:err:wgl:X11DRV_OpenGLInit OpenGL support is disabled.
+  [wine-run.log] info:  OpenVR: Failed to locate module
+  [wine-run.log] 00dc:err:rpc:rpcrt4_protseq_np_wait_for_new_connection wait failed with error 87
+  [wine-run.log] 00fc:err:rpc:rpcrt4_protseq_np_wait_for_new_connection wait failed with error 87
+  [wine-run.log] 0100:err:rpc:rpcrt4_protseq_np_wait_for_new_connection wait failed with error 87
+  [wine-run.log] 0164:err:dinput:dinput_thread_proc Unexpected termination, ret 0xffffffff
+  [launcher.log] 008c:err:nsi:poll_events bind failed, errno 13.
+  [launcher.log] 00a0:err:ntoskrnl:ZwLoadDriver failed to create driver L"\\Registry\\Machine\\System\\CurrentControlSet\\Services\\winebth": c00000e5
+  [launcher.log] 00d0:err:wgl:X11DRV_OpenGLInit Failed to load libGL: dlopen failed: library "libGL.so.1" not found
+  [launcher.log] 00d0:err:wgl:X11DRV_OpenGLInit OpenGL support is disabled.
+  [launcher.log] info:  OpenVR: Failed to locate module
+  [launcher.log] 00dc:err:rpc:rpcrt4_protseq_np_wait_for_new_connection wait failed with error 87
+  [launcher.log] 00fc:err:rpc:rpcrt4_protseq_np_wait_for_new_connection wait failed with error 87
+  [launcher.log] 0100:err:rpc:rpcrt4_protseq_np_wait_for_new_connection wait failed with error 87
+  [launcher.log] 0164:err:dinput:dinput_thread_proc Unexpected termination, ret 0xffffffff
+  [dxvk-speed_d3d9.log] info:  OpenVR: Failed to locate module
+  [xserver.log] 200884 request error opcode=-103 com.winlator.xserver.errors.BadImplementation

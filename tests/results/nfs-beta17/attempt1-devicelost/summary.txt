@@ -1,0 +1,28 @@
+Game: NFSMW_icon
+Exe: /storage/emulated/0/Games/Need.for.Speed.Most.Wanted/speed.exe
+Exit reason: Crash: Wine killed by SIGKILL (exit 137) + driver failure: VK_ERROR_DEVICE_LOST seen in logs
+Wine exit code: 137
+Duration: 887s
+Tombstone: none seen in logcat (apps cannot read /data/tombstones)
+Errors found: 21
+  [wine-run.log] 0090:err:nsi:poll_events bind failed, errno 13.
+  [wine-run.log] 00a4:err:ntoskrnl:ZwLoadDriver failed to create driver L"\\Registry\\Machine\\System\\CurrentControlSet\\Services\\winebth": c00000e5
+  [wine-run.log] 00d8:err:wgl:X11DRV_OpenGLInit Failed to load libGL: dlopen failed: library "libGL.so.1" not found
+  [wine-run.log] 00d8:err:wgl:X11DRV_OpenGLInit OpenGL support is disabled.
+  [wine-run.log] info:  OpenVR: Failed to locate module
+  [wine-run.log] err:   DxvkSubmissionQueue: Command submission failed: VK_ERROR_DEVICE_LOST
+  [wine-run.log] err:   Failed to query semaphore value: VK_ERROR_DEVICE_LOST
+  [launcher.log] 0090:err:nsi:poll_events bind failed, errno 13.
+  [launcher.log] 00a4:err:ntoskrnl:ZwLoadDriver failed to create driver L"\\Registry\\Machine\\System\\CurrentControlSet\\Services\\winebth": c00000e5
+  [launcher.log] 00d8:err:wgl:X11DRV_OpenGLInit Failed to load libGL: dlopen failed: library "libGL.so.1" not found
+  [launcher.log] 00d8:err:wgl:X11DRV_OpenGLInit OpenGL support is disabled.
+  [launcher.log] info:  OpenVR: Failed to locate module
+  [launcher.log] err:   DxvkSubmissionQueue: Command submission failed: VK_ERROR_DEVICE_LOST
+  [launcher.log] err:   Failed to query semaphore value: VK_ERROR_DEVICE_LOST
+  [dxvk-speed_d3d9.log] info:  OpenVR: Failed to locate module
+  [dxvk-speed_d3d9.log] err:   DxvkSubmissionQueue: Command submission failed: VK_ERROR_DEVICE_LOST
+  [dxvk-speed_d3d9.log] err:   Failed to query semaphore value: VK_ERROR_DEVICE_LOST
+  [xserver.log] 268450 request error opcode=18 com.winlator.xserver.errors.BadWindow
+  [xserver.log] 269673 request error opcode=-103 com.winlator.xserver.errors.BadImplementation
+  [mesa-panvk.txt] err:   DxvkSubmissionQueue: Command submission failed: VK_ERROR_DEVICE_LOST
+  [mesa-panvk.txt] err:   Failed to query semaphore value: VK_ERROR_DEVICE_LOST

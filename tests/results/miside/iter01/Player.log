@@ -1,0 +1,52 @@
+[Physics::Module] Initialized MultithreadedJobDispatcher with {0} workers.
+Initialize engine version: 2021.3.35f1 (157b46ce122a)
+[Subsystems] Discovering subsystems at path E:/Games/MiSide/MiSideFull_Data/UnitySubsystems
+GfxDevice: creating device client; threaded=1; jobified=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: Mali-G615 MC6 (ID=0x1030)
+    Vendor:   ARM
+    VRAM:     5498 MB
+    Driver:   35.0.99.9999
+FMOD failed to initialize any audio devices, running on emulated software output with no sound. Please check your audio drivers and/or hardware for malfunction.
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 38.130400 ms
+Serialization depth limit 10 exceeded at 'ConsoleEditor_HierarchyCase.obj'. There may be an object composition cycle in one or more of your serialized classes.
+
+Serialization hierarchy:
+11: ConsoleEditor_HierarchyCase.obj
+10: ConsoleEditor_HierarchyCase.casesMe
+9: ConsoleEditor_HierarchyCase.casesMe
+8: ConsoleEditor_HierarchyCase.casesMe
+7: ConsoleEditor_HierarchyCase.casesMe
+6: ConsoleEditor_HierarchyCase.casesMe
+5: ConsoleEditor_HierarchyCase.casesMe
+4: ConsoleEditor_HierarchyCase.casesMe
+3: ConsoleEditor_HierarchyCase.casesMe
+2: ConsoleEditor_HierarchyCase.casesMe
+1: ConsoleEditor_HierarchyCase.casesMe
+0: ConsoleEditor.casesRoot
+Serialization depth limit 10 exceeded at 'ConsoleEditor_HierarchyCase.obj'. There may be an object composition cycle in one or more of your serialized classes.
+
+Serialization hierarchy:
+11: ConsoleEditor_HierarchyCase.obj
+10: ConsoleEditor_HierarchyCase.casesMe
+9: ConsoleEditor_HierarchyCase.casesMe
+8: ConsoleEditor_HierarchyCase.casesMe
+7: ConsoleEditor_HierarchyCase.casesMe
+6: ConsoleEditor_HierarchyCase.casesMe
+5: ConsoleEditor_HierarchyCase.casesMe
+4: ConsoleEditor_HierarchyCase.casesMe
+3: ConsoleEditor_HierarchyCase.casesMe
+2: ConsoleEditor_HierarchyCase.casesMe
+1: ConsoleEditor_HierarchyCase.casesMe
+0: ConsoleEditor_HierarchyCase.casesMe
+Unloading 6 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 120.268000 ms
+DontDestroyOnLoad only works for root GameObjects or components on root GameObjects.
+SteamManager:Awake()
+
+[ line 1109928]
+

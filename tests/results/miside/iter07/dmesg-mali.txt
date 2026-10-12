@@ -1,0 +1,3 @@
+[288004.419776] mali 13000000.mali: Unknown ioctl 0xc010640c nr:12
+[288005.052850] mali 13000000.mali: Unknown ioctl 0xc010640c nr:12
+[288029.327549] mali 13000000.mali: Tiler heap reclaim scan freed pages: 2048 (unused: 8960)

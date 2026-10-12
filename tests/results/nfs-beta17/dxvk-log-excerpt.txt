@@ -1,0 +1,13 @@
+info:  Found device: Mali-G615 MC6 (panvk 26.2.99)
+info:    Driver   : panvk 26.2.99
+info:      Type  2: DEVICE_LOCAL | HOST_VISIBLE | HOST_CACHED
+info:    VK_EXT_graphics_pipeline_library
+info:    pipelineCreationCacheControl   : 1
+info:  VK_EXT_graphics_pipeline_library:
+info:  Graphics pipeline libraries supported
+info:  Presenter: Actual swapchain properties:
+info:    Present mode: VK_PRESENT_MODE_IMMEDIATE_KHR (dynamic: yes)
+info:    Image count:  4
+info:  Found cache file: C:\users\xuser\AppData\Local\dxvk\487d261f9916cdd8.dxvk.bin
+info:  Cache: 64 shaders (347 kB)
+info:  DXVK: Using 8 compiler threads

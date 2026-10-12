@@ -1,0 +1,8 @@
+10547 S<    futex_wait_queue 2172756 MiSideFull.exe
+10551 Ss    do_epoll_wait     19140 wineserver
+10561 S<s   futex_wait_queue  25432 C:\windows\system32\winedevice.exe
+10588 S<s   futex_wait_queue  34856 C:\windows\system32\winedevice.exe
+		total        used        free      shared     buffers
+Mem:             7331        6993         338          34           0
+-/+ buffers/cache:           6992         339
+Swap:            3665        2442        1223

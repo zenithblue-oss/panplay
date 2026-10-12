@@ -1,0 +1,60 @@
+[287817.224271] mali 13000000.mali: Tiler heap reclaim scan freed pages: 1792 (unused: 5120)
+[287824.317763] mali 13000000.mali: Invalid Heap statistics provided by firmware: vt_start 7, vt_end 6, frag_end 11
+[287824.317778] mali 13000000.mali: Queue group to be terminated, couldn't handle the OoM event
+[287824.317782] mali 13000000.mali: Terminate ctx 11468_25897, group 0, kbase_queue_oom_event
+[287824.318049] mali 13000000.mali: Unhandled Page fault (protected mode 0) in AS1 at VA 0x0000006001F02000
+[287824.318089] mali 13000000.mali: Register dump of CSHWIF 0
+[287824.318096] mali 13000000.mali: CMD_PTR: 5fe4801378 CMD_PTR_END: 5fe4806ec0 STATUS: 4 JASID: 1 EMUL_INSTR: 3500424410000000 WAIT_STATUS: 0 SB_SET_SEL: 1 SB_SEL: 104
+[287824.318106] mali 13000000.mali: CMD_COUNTER: cbb2cf EVT_RAW: 70180000 EVT_IRQ_STATUS: 0 EVT_HALT_STATUS: 0 FAULT_STATUS: 0 FAULT_ADDR: 0
+[287824.318114] mali 13000000.mali: ITER_COMPUTE: 0 ITER_FRAGMENT: 0 ITER_TILER: 0
+[287824.318120] mali 13000000.mali: 
+[287824.318137] mali 13000000.mali: Dumping instructions around the CMD_PTR
+[287824.318280] mali 13000000.mali: Register dump of CSHWIF 2
+[287824.318286] mali 13000000.mali: CMD_PTR: 5fe47f0b20 CMD_PTR_END: 5fe47f3d98 STATUS: 4 JASID: 1 EMUL_INSTR: 3500424410000000 WAIT_STATUS: 0 SB_SET_SEL: 506 SB_SEL: 103
+[287824.318295] mali 13000000.mali: CMD_COUNTER: 96afa4 EVT_RAW: 70180000 EVT_IRQ_STATUS: 0 EVT_HALT_STATUS: 0 FAULT_STATUS: 0 FAULT_ADDR: 0
+[287824.318302] mali 13000000.mali: ITER_COMPUTE: 0 ITER_FRAGMENT: 0 ITER_TILER: 0
+[287824.318308] mali 13000000.mali: 
+[287824.318323] mali 13000000.mali: Dumping instructions around the CMD_PTR
+[287824.318444] mali 13000000.mali: Compute  CTRL: 2 STATUS: 2 JASID: 1 IRQ_RAW:        0 IRQ_STATUS:        0 EP_EVT_STATUS: 0 BLOCKED_SB_ENTRY:        0 FAULT_STATUS 0
+[287824.318453] mali 13000000.mali: Fragment CTRL: 2 STATUS: 2 JASID: 1 IRQ_RAW:        0 IRQ_STATUS:        0 EP_EVT_STATUS: 0 BLOCKED_SB_ENTRY:    10004 FAULT_STATUS 0
+[287824.318462] mali 13000000.mali: Tiler    CTRL: 0 STATUS: 1 JASID: 1 IRQ_RAW:       40 IRQ_STATUS:        0 EP_EVT_STATUS: 0 BLOCKED_SB_ENTRY:    30003 FAULT_STATUS 0
+[287824.318470] mali 13000000.mali: 
+[287827.651106] mali 13000000.mali: ctx:1047_0 kcpu queue:7 Command - FENCE_SIGNAL timeout(3000 ms) on fence[0000000000000000] context#seqno:76#2390988 (driver=mali, timeline=0-1047_0-76-kcpu)
+[287827.651182] mali 13000000.mali: KCPU queues for ctx 0:
+[287827.651229] mali 13000000.mali: queue:KCPU-0-7 exec:S cmd:CQS_WAIT_OPERATION obj:0x0000005fffff2ff8 live_value:0x0000000000000000 | op:gt arg_value:0x00000000
+[287827.651278] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:FENCE_SIGNAL obj:0x0000000000000000 live_value:0x00000000 | timeline_name:0-1047_0-76-kcpu context#seqno:76#2390988
+[287827.651325] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:CQS_SET_OPERATION obj:0x0000005fffff2ff0 live_value:0x0000000000000000 | op:add arg_value:0x00000001
+[287827.651364] mali 13000000.mali: queue:KCPU-0-7 exec:P , U, Unknown blocking command
+[287827.651407] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:FENCE_WAIT obj:0x0000000000000000 live_value:0x00000001 | timeline_name:-P_0_13- context#seqno:93#3418664
+[287827.651451] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:CQS_SET_OPERATION obj:0x0000005fffff2f58 live_value:0x0000000000000000 | op:add arg_value:0x00000001
+[287827.651490] mali 13000000.mali: queue:KCPU-0-7 exec:P , U, Unknown blocking command
+[287827.651532] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:FENCE_WAIT obj:0x0000000000000000 live_value:0x00000001 | timeline_name:0-13106_25725-10040901-kcpu context#seqno:10040901#38561
+[287827.651577] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:CQS_SET_OPERATION obj:0x0000005fffff2d80 live_value:0x0000000000000000 | op:add arg_value:0x00000001
+[287827.651614] mali 13000000.mali: queue:KCPU-0-7 exec:P , U, Unknown blocking command
+[287827.651656] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:FENCE_WAIT obj:0x0000000000000000 live_value:0x00000001 | timeline_name:0-13106_25725-10078743-kcpu context#seqno:10078743#12
+[287827.651700] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:CQS_SET_OPERATION obj:0x0000005fffff2d50 live_value:0x0000000000000000 | op:add arg_value:0x00000001
+[287827.651738] mali 13000000.mali: queue:KCPU-0-7 exec:P , U, Unknown blocking command
+[287827.651779] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:FENCE_WAIT obj:0x0000000000000000 live_value:0x00000001 | timeline_name:0-2083_3-110-kcpu context#seqno:110#521069
+[287827.651845] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:CQS_SET_OPERATION obj:0x0000005fffff2d40 live_value:0x0000000000000000 | op:add arg_value:0x00000001
+[287827.651884] mali 13000000.mali: queue:KCPU-0-7 exec:P , U, Unknown blocking command
+[287827.651926] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:FENCE_WAIT obj:0x0000000000000000 live_value:0x00000001 | timeline_name:0-2083_3-110-kcpu context#seqno:110#521070
+[287827.651969] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:CQS_SET_OPERATION obj:0x0000005fffff2d30 live_value:0x0000000000000000 | op:add arg_value:0x00000001
+[287827.652007] mali 13000000.mali: queue:KCPU-0-7 exec:P , U, Unknown blocking command
+[287827.652045] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:CQS_WAIT_OPERATION obj:0x0000005fffff2da8 live_value:0x0000000000000000 | op:gt arg_value:0x00000000
+[287827.652090] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:FENCE_SIGNAL obj:0x0000000000000000 live_value:0x00000000 | timeline_name:0-1047_0-76-kcpu context#seqno:76#2390989
+[287827.652134] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:CQS_SET_OPERATION obj:0x0000005fffff2d20 live_value:0x0000000000000000 | op:add arg_value:0x00000001
+[287827.652172] mali 13000000.mali: queue:KCPU-0-7 exec:P , U, Unknown blocking command
+[287827.652213] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:FENCE_WAIT obj:0x0000000000000000 live_value:0x00000001 | timeline_name:-P_0_13- context#seqno:93#3418666
+[287827.652256] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:CQS_SET_OPERATION obj:0x0000005fffff2d18 live_value:0x0000000000000000 | op:add arg_value:0x00000001
+[287827.652293] mali 13000000.mali: queue:KCPU-0-7 exec:P , U, Unknown blocking command
+[287827.652334] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:FENCE_WAIT obj:0x0000000000000000 live_value:0x00000001 | timeline_name:0-13106_25725-10040901-kcpu context#seqno:10040901#38561
+[287827.652378] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:CQS_SET_OPERATION obj:0x0000005fffff2d00 live_value:0x0000000000000000 | op:add arg_value:0x00000001
+[287827.652416] mali 13000000.mali: queue:KCPU-0-7 exec:P , U, Unknown blocking command
+[287827.652457] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:FENCE_WAIT obj:0x0000000000000000 live_value:0x00000001 | timeline_name:0-13106_25725-10078743-kcpu context#seqno:10078743#12
+[287827.652501] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:CQS_SET_OPERATION obj:0x0000005fffff2cf0 live_value:0x0000000000000000 | op:add arg_value:0x00000001
+[287827.652538] mali 13000000.mali: queue:KCPU-0-7 exec:P , U, Unknown blocking command
+[287827.652579] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:FENCE_WAIT obj:0x0000000000000000 live_value:0x00000001 | timeline_name:0-2083_3-110-kcpu context#seqno:110#521069
+[287827.652622] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:CQS_SET_OPERATION obj:0x0000005fffff2ce0 live_value:0x0000000000000000 | op:add arg_value:0x00000001
+[287827.652660] mali 13000000.mali: queue:KCPU-0-7 exec:P , U, Unknown blocking command
+[287827.652700] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:FENCE_WAIT obj:0x0000000000000000 live_value:0x00000001 | timeline_name:0-2083_3-110-kcpu context#seqno:110#521070
+[287827.652743] mali 13000000.mali: queue:KCPU-0-7 exec:P cmd:CQS_SET_OPERATION obj:0x0000005fffff2cd0 live_value:0x0000000000000000 | op:add arg_value:0x00000001

@@ -1,0 +1,40 @@
+[287831.998879] mali 13000000.mali: [QINSPECT_RECOVERY]prevent gpu reset fail, skip this run
+[287831.998906] mali 13000000.mali: Evicting context 19284_23168 slots: 0x00
+[287831.998943] mali 13000000.mali: Evicting context 23524_17534 slots: 0x00
+[287831.998990] mali 13000000.mali: Evicting context 23362_17533 slots: 0x00
+[287831.999090] mali 13000000.mali: Evicting context 19089_17532 slots: 0x00
+[287831.999129] mali 13000000.mali: Evicting context 16524_17415 slots: 0x00
+[287831.999166] mali 13000000.mali: Evicting context 28868_17238 slots: 0x00
+[287831.999209] mali 13000000.mali: Evicting context 9122_16715 slots: 0x00
+[287831.999245] mali 13000000.mali: Evicting context 19323_16065 slots: 0x00
+[287831.999291] mali 13000000.mali: Evicting context 9984_15649 slots: 0x00
+[287831.999423] mali 13000000.mali: Evicting context 2288_6 slots: 0x00
+[287831.999474] mali 13000000.mali: Evicting context 1723_5 slots: 0x00
+[287831.999518] mali 13000000.mali: Evicting context 2083_3 slots: 0x00
+[287831.999564] mali 13000000.mali: Evicting context 1047_0 slots: 0x00
+[287831.999615] mali 13000000.mali: Reset active queue groups and clear out scheduler data
+[287831.999670] mali 13000000.mali: Resetting GPU (allowing up to 500 ms)
+[287831.999699] mali 13000000.mali: Register state:
+[287831.999720] mali 13000000.mali:   GPU_IRQ_RAWSTAT=0x00000200   GPU_STATUS=0x00000000  MCU_STATUS=0x00000001
+[287831.999748] mali 13000000.mali:   JOB_IRQ_RAWSTAT=0x00000000   MMU_IRQ_RAWSTAT=0x00000000   GPU_FAULTSTATUS=0x00000000
+[287831.999774] mali 13000000.mali:   GPU_IRQ_MASK=0x00000000   JOB_IRQ_MASK=0x00000000   MMU_IRQ_MASK=0x00000000
+[287831.999798] mali 13000000.mali:   PWR_OVERRIDE0=0x00040000   PWR_OVERRIDE1=0x00000000
+[287831.999823] mali 13000000.mali:   SHADER_CONFIG=0x00000000   L2_MMU_CONFIG=0x00000000   TILER_CONFIG=0x00000000
+[287832.000256] mali 13000000.mali: GPU soft reset completed
+[287832.001685] mali 13000000.mali: reloading firmware
+[287832.001906] mali 13000000.mali: External quirks 0: 0x00000001
+[287832.002100] mali 13000000.mali: Reset complete
+[287832.002230] mali 13000000.mali: queue not bound when handling fatal event
+[287832.002275] mali 13000000.mali: mcu state back trace 2->3->4->0->1->2->3->4
+[287832.002328] mali 13000000.mali: diagnosis hook = 0x00000004, mode = 0, mask = 0x00000000
+[287832.002361] mali 13000000.mali: queue not bound when handling fatal event
+[287832.002389] mali 13000000.mali: mcu state back trace 2->3->4->0->1->2->3->4
+[287832.002415] mali 13000000.mali: diagnosis hook = 0x00000004, mode = 0, mask = 0x00000000
+[287840.256061] servicemanager: Caller(pid=12251,uid=0,sid=u:r:ksu:s0) Found android.hardware.graphics.allocator.IAllocator/default in device VINTF manifest.
+[287840.257128] servicemanager: Caller(pid=12251,uid=0,sid=u:r:ksu:s0) Found android.hardware.graphics.allocator.IAllocator/default in device VINTF manifest.
+[287853.784043] servicemanager: Caller(pid=12291,uid=0,sid=u:r:ksu:s0) Found android.hardware.graphics.allocator.IAllocator/default in device VINTF manifest.
+[287853.785053] servicemanager: Caller(pid=12291,uid=0,sid=u:r:ksu:s0) Found android.hardware.graphics.allocator.IAllocator/default in device VINTF manifest.
+[287860.747070] servicemanager: Caller(pid=12321,uid=0,sid=u:r:ksu:s0) Found android.hardware.graphics.allocator.IAllocator/default in device VINTF manifest.
+[287860.748151] servicemanager: Caller(pid=12321,uid=0,sid=u:r:ksu:s0) Found android.hardware.graphics.allocator.IAllocator/default in device VINTF manifest.
+[287876.008076] servicemanager: Caller(pid=12519,uid=0,sid=u:r:ksu:s0) Found android.hardware.graphics.allocator.IAllocator/default in device VINTF manifest.
+[287876.009346] servicemanager: Caller(pid=12519,uid=0,sid=u:r:ksu:s0) Found android.hardware.graphics.allocator.IAllocator/default in device VINTF manifest.

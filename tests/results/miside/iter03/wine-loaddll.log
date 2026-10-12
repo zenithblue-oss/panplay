@@ -1,0 +1,1306 @@
+_r_debug not found in ld.so
+ntsync: no usable /dev/ntsync, using userspace ntsync.
+_r_debug not found in ld.so
+286633.625:002c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\wineboot.exe" at 0000000140000000: builtin
+286633.625:002c:trace:loaddll:build_ntdll_module Loaded L"C:\\windows\\system32\\ntdll.dll" at 0000006FFFE40000: builtin
+286633.634:002c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\kernelbase.dll" at 0000006FFFAF0000: builtin
+286633.634:002c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\kernel32.dll" at 0000006FFFD30000: builtin
+286633.652:002c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\ucrtbase.dll" at 0000006FFF770000: builtin
+286633.652:002c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\sechost.dll" at 0000006FFF960000: builtin
+286633.657:002c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\msvcrt.dll" at 0000006FFF5D0000: builtin
+286633.657:002c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\advapi32.dll" at 0000006FFFA10000: builtin
+286633.660:002c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\cryptbase.dll" at 0000006FFF540000: builtin
+286633.662:002c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\ws2_32.dll" at 0000006FFF470000: builtin
+286633.708:002c:err:winediag:getaddrinfo Failed to resolve your host name IP
+_r_debug not found in ld.so
+286633.760:0034:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\services.exe" at 0000000140000000: builtin
+286633.760:0034:trace:loaddll:build_ntdll_module Loaded L"C:\\windows\\system32\\ntdll.dll" at 0000006FFFE40000: builtin
+286633.768:0034:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\kernelbase.dll" at 0000006FFFAF0000: builtin
+286633.768:0034:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\kernel32.dll" at 0000006FFFD30000: builtin
+286633.783:0034:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\ucrtbase.dll" at 0000006FFF770000: builtin
+286633.783:0034:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\sechost.dll" at 0000006FFF960000: builtin
+286633.786:0034:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\msvcrt.dll" at 0000006FFF5D0000: builtin
+286633.786:0034:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\advapi32.dll" at 0000006FFFA10000: builtin
+286633.788:0034:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\cryptbase.dll" at 0000006FFF540000: builtin
+286633.788:0034:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\rpcrt4.dll" at 0000006FFF300000: builtin
+286633.796:0034:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\userenv.dll" at 0000006FFF270000: builtin
+286633.801:0034:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\setupapi.dll" at 0000006FFF130000: builtin
+_r_debug not found in ld.so
+286633.908:0040:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\winedevice.exe" at 0000000140000000: builtin
+286633.908:0040:trace:loaddll:build_ntdll_module Loaded L"C:\\windows\\system32\\ntdll.dll" at 0000006FFFE40000: builtin
+286633.916:0040:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\kernelbase.dll" at 0000006FFFAF0000: builtin
+286633.916:0040:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\kernel32.dll" at 0000006FFFD30000: builtin
+286633.931:0040:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\ucrtbase.dll" at 0000006FFF770000: builtin
+286633.931:0040:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\sechost.dll" at 0000006FFF960000: builtin
+286633.934:0040:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\msvcrt.dll" at 0000006FFF5D0000: builtin
+286633.934:0040:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\advapi32.dll" at 0000006FFFA10000: builtin
+286633.945:0040:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\cryptbase.dll" at 0000006FFF540000: builtin
+286633.946:0040:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\ntoskrnl.exe" at 0000006FFF000000: builtin
+286633.969:0040:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\rpcrt4.dll" at 0000006FFF300000: builtin
+286633.995:004c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\drivers\\mountmgr.sys" at 0000006FFEF60000: builtin
+286634.002:004c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\setupapi.dll" at 0000006FFF130000: builtin
+286634.011:004c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\drivers\\sharedgpures.sys" at 0000006FFEF20000: builtin
+_r_debug not found in ld.so
+286634.051:0068:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\plugplay.exe" at 0000000140000000: builtin
+286634.051:0068:trace:loaddll:build_ntdll_module Loaded L"C:\\windows\\system32\\ntdll.dll" at 0000006FFFE40000: builtin
+286634.058:0068:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\kernelbase.dll" at 0000006FFFAF0000: builtin
+286634.058:0068:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\kernel32.dll" at 0000006FFFD30000: builtin
+286634.075:0068:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\ucrtbase.dll" at 0000006FFF770000: builtin
+286634.075:0068:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\sechost.dll" at 0000006FFF960000: builtin
+286634.079:0068:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\msvcrt.dll" at 0000006FFF5D0000: builtin
+286634.080:0068:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\advapi32.dll" at 0000006FFFA10000: builtin
+286634.085:0068:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\cryptbase.dll" at 0000006FFF540000: builtin
+286634.085:0068:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\rpcrt4.dll" at 0000006FFF300000: builtin
+286634.097:0068:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\win32u.dll" at 0000006FFE9F0000: builtin
+286634.098:0068:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\gdi32.dll" at 0000006FFEAD0000: builtin
+286634.099:0068:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\user32.dll" at 0000006FFEC40000: builtin
+286634.239:0068:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\imm32.dll" at 0000006FFE940000: builtin
+_r_debug not found in ld.so
+286634.274:0080:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\svchost.exe" at 0000000140000000: builtin
+286634.274:0080:trace:loaddll:build_ntdll_module Loaded L"C:\\windows\\system32\\ntdll.dll" at 0000006FFFE40000: builtin
+286634.277:0080:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\kernelbase.dll" at 0000006FFFAF0000: builtin
+286634.277:0080:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\kernel32.dll" at 0000006FFFD30000: builtin
+286634.283:0080:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\ucrtbase.dll" at 0000006FFF770000: builtin
+286634.283:0080:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\sechost.dll" at 0000006FFF960000: builtin
+286634.284:0080:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\msvcrt.dll" at 0000006FFF5D0000: builtin
+286634.284:0080:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\advapi32.dll" at 0000006FFFA10000: builtin
+286634.298:0080:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\wevtsvc.dll" at 0000006FFE8B0000: builtin
+286634.302:0080:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\cryptbase.dll" at 0000006FFF540000: builtin
+286634.302:0080:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\rpcrt4.dll" at 0000006FFF300000: builtin
+286634.319:004c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\drivers\\nsiproxy.sys" at 0000006FFE820000: builtin
+286634.320:0090:err:nsi:poll_events bind failed, errno 13.
+286634.342:004c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\dnsapi.dll" at 0000006FFE610000: builtin
+286634.346:004c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\nsi.dll" at 0000006FFE580000: builtin
+286634.349:004c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\ws2_32.dll" at 0000006FFF470000: builtin
+286634.350:004c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\iphlpapi.dll" at 0000006FFE6C0000: builtin
+286634.350:004c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\drivers\\ndis.sys" at 0000006FFE790000: builtin
+_r_debug not found in ld.so
+286634.399:009c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\winedevice.exe" at 0000000140000000: builtin
+286634.399:009c:trace:loaddll:build_ntdll_module Loaded L"C:\\windows\\system32\\ntdll.dll" at 0000006FFFE40000: builtin
+286634.406:009c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\kernelbase.dll" at 0000006FFFAF0000: builtin
+286634.407:009c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\kernel32.dll" at 0000006FFFD30000: builtin
+286634.422:009c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\ucrtbase.dll" at 0000006FFF770000: builtin
+286634.422:009c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\sechost.dll" at 0000006FFF960000: builtin
+286634.426:009c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\msvcrt.dll" at 0000006FFF5D0000: builtin
+286634.426:009c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\advapi32.dll" at 0000006FFFA10000: builtin
+286634.431:009c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\cryptbase.dll" at 0000006FFF540000: builtin
+286634.431:009c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\ntoskrnl.exe" at 0000006FFF000000: builtin
+286634.460:009c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\rpcrt4.dll" at 0000006FFF300000: builtin
+286634.488:00a4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\drivers\\hidparse.sys" at 0000006FFE450000: builtin
+286634.488:00a4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\drivers\\winebus.sys" at 0000006FFE4E0000: builtin
+286634.490:00a4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\setupapi.dll" at 0000006FFF130000: builtin
+286634.528:00a4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\win32u.dll" at 0000006FFE9F0000: builtin
+286634.530:00a4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\gdi32.dll" at 0000006FFEAD0000: builtin
+286634.530:00a4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\user32.dll" at 0000006FFEC40000: builtin
+286634.531:00a4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\drivers\\hidclass.sys" at 0000006FFE310000: builtin
+286634.531:00a4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\drivers\\winehid.sys" at 0000006FFE3B0000: builtin
+286634.729:00a4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\imm32.dll" at 0000006FFE940000: builtin
+286634.795:00a4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\drivers\\winebth.sys" at 0000006FFE260000: builtin
+286634.795:00a4:err:ntoskrnl:ZwLoadDriver failed to create driver L"\\Registry\\Machine\\System\\CurrentControlSet\\Services\\winebth": c00000e5
+286634.798:0034:fixme:service:scmdatabase_autostart_services Auto-start service L"winebth" failed to start: 1359
+286634.834:002c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\shcore.dll" at 0000006FFD6F0000: builtin
+286634.852:002c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\win32u.dll" at 0000006FFE9F0000: builtin
+286634.855:002c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\gdi32.dll" at 0000006FFEAD0000: builtin
+286634.855:002c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\user32.dll" at 0000006FFEC40000: builtin
+286634.857:002c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\shlwapi.dll" at 0000006FFD790000: builtin
+286634.857:002c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\shell32.dll" at 0000006FFD890000: builtin
+286635.081:002c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\imm32.dll" at 0000006FFE940000: builtin
+286635.094:002c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\rpcrt4.dll" at 0000006FFF300000: builtin
+286635.094:002c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\combase.dll" at 0000006FFD440000: builtin
+286635.096:002c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\coml2.dll" at 0000006FFD3A0000: builtin
+286635.096:002c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\ole32.dll" at 0000006FFD540000: builtin
+286635.387:002c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\mpr.dll" at 0000006FFD1C0000: builtin
+286635.388:002c:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\wininet.dll" at 0000006FFD270000: builtin
+286635.421:0024:trace:loaddll:build_module Loaded L"C:\\games\\MiSide\\MiSideFull.exe" at 0000000140000000: native
+286635.421:0024:trace:loaddll:build_ntdll_module Loaded L"C:\\windows\\system32\\ntdll.dll" at 0000006FFFE40000: builtin
+286635.451:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\libarm64ecfex.dll" at 0000006FFDE80000: builtin
+286635.480:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\kernelbase.dll" at 0000006FFFAF0000: builtin
+286635.480:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\kernel32.dll" at 0000006FFFD30000: builtin
+286635.549:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\ucrtbase.dll" at 0000006FFF770000: builtin
+286635.549:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\sechost.dll" at 0000006FFF960000: builtin
+286635.552:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\msvcrt.dll" at 0000006FFF5D0000: builtin
+286635.553:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\advapi32.dll" at 0000006FFFA10000: builtin
+286635.555:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\win32u.dll" at 0000006FFE9F0000: builtin
+286635.555:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\gdi32.dll" at 0000006FFEAD0000: builtin
+286635.555:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\USER32.dll" at 0000006FFEC40000: builtin
+286635.562:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\VERSION.dll" at 0000006FFC0C0000: builtin
+286635.570:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\cryptbase.dll" at 0000006FFF540000: builtin
+286635.571:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\rpcrt4.dll" at 0000006FFF300000: builtin
+286635.571:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\combase.dll" at 0000006FFBE10000: builtin
+286635.573:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\coml2.dll" at 0000006FFBD70000: builtin
+286635.573:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\ole32.dll" at 0000006FFBF10000: builtin
+286635.576:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\shcore.dll" at 0000006FFBBD0000: builtin
+286635.576:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\SHLWAPI.dll" at 0000006FFBC70000: builtin
+286635.578:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\SETUPAPI.dll" at 0000006FFF130000: builtin
+286635.587:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\SHELL32.dll" at 0000006FFB200000: builtin
+286635.598:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\OPENGL32.dll" at 000000007BDC0000: builtin
+286635.611:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\msacm32.dll" at 0000006FFB050000: builtin
+286635.611:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\WINMM.dll" at 0000006FFB100000: builtin
+286635.614:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\OLEAUT32.dll" at 0000006FFAE40000: builtin
+286635.615:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\IMM32.dll" at 0000006FFE940000: builtin
+286635.628:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\ws2_32.dll" at 0000006FFF470000: builtin
+286635.628:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\jsproxy.dll" at 0000006FFACA0000: builtin
+286635.628:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\WINHTTP.dll" at 0000006FFAD50000: builtin
+286635.631:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\bcrypt.dll" at 0000006FFABF0000: builtin
+286635.638:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\HID.DLL" at 0000006FFAB50000: builtin
+286635.640:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\CRYPT32.dll" at 0000006FFA9D0000: builtin
+286635.644:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\dwmapi.dll" at 0000006FFA930000: builtin
+286635.644:0024:trace:loaddll:build_module Loaded L"C:\\games\\MiSide\\UnityPlayer.dll" at 0000006FFC160000: native
+_r_debug not found in ld.so
+286635.855:00d4:trace:loaddll:build_module Loaded L"C:\\games\\MiSide\\UnityCrashHandler64.exe" at 0000000140000000: native
+286635.855:00d4:trace:loaddll:build_ntdll_module Loaded L"C:\\windows\\system32\\ntdll.dll" at 0000006FFFE40000: builtin
+286635.861:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\libarm64ecfex.dll" at 0000006FFDE80000: builtin
+_r_debug not found in ld.so
+286635.882:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\kernelbase.dll" at 0000006FFFAF0000: builtin
+286635.883:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\kernel32.dll" at 0000006FFFD30000: builtin
+286635.900:00dc:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\explorer.exe" at 0000000140000000: builtin
+286635.900:00dc:trace:loaddll:build_ntdll_module Loaded L"C:\\windows\\system32\\ntdll.dll" at 0000006FFFE40000: builtin
+286635.905:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\ucrtbase.dll" at 0000006FFF770000: builtin
+286635.905:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\sechost.dll" at 0000006FFF960000: builtin
+286635.906:00dc:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\kernelbase.dll" at 0000006FFFAF0000: builtin
+286635.907:00dc:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\kernel32.dll" at 0000006FFFD30000: builtin
+286635.909:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\msvcrt.dll" at 0000006FFF5D0000: builtin
+286635.909:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\advapi32.dll" at 0000006FFFA10000: builtin
+286635.913:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\win32u.dll" at 0000006FFE9F0000: builtin
+286635.913:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\gdi32.dll" at 0000006FFEAD0000: builtin
+286635.914:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\USER32.dll" at 0000006FFEC40000: builtin
+286635.922:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\dbghelp.dll" at 0000006FFA7C0000: builtin
+286635.924:00dc:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\ucrtbase.dll" at 0000006FFF770000: builtin
+286635.924:00dc:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\sechost.dll" at 0000006FFF960000: builtin
+286635.927:00dc:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\msvcrt.dll" at 0000006FFF5D0000: builtin
+286635.928:00dc:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\advapi32.dll" at 0000006FFFA10000: builtin
+286635.930:00dc:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\cryptbase.dll" at 0000006FFF540000: builtin
+286635.930:00dc:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\rpcrt4.dll" at 0000006FFF300000: builtin
+286635.940:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\shcore.dll" at 0000006FFBBD0000: builtin
+286635.940:00dc:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\win32u.dll" at 0000006FFE9F0000: builtin
+286635.940:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\shlwapi.dll" at 0000006FFBC70000: builtin
+286635.940:00dc:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\gdi32.dll" at 0000006FFEAD0000: builtin
+286635.941:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\SHELL32.dll" at 0000006FFB200000: builtin
+286635.941:00dc:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\user32.dll" at 0000006FFEC40000: builtin
+286635.952:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\cryptbase.dll" at 0000006FFF540000: builtin
+286635.952:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\rpcrt4.dll" at 0000006FFF300000: builtin
+286635.952:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\combase.dll" at 0000006FFBE10000: builtin
+286635.955:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\coml2.dll" at 0000006FFBD70000: builtin
+286635.955:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\ole32.dll" at 0000006FFBF10000: builtin
+286635.957:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\PSAPI.DLL" at 0000006FFA720000: builtin
+286635.966:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\mpr.dll" at 0000006FFA540000: builtin
+286635.969:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\ws2_32.dll" at 0000006FFF470000: builtin
+286635.970:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\WININET.dll" at 0000006FFA5F0000: builtin
+286635.975:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\VERSION.dll" at 0000006FFC0C0000: builtin
+286636.132:00dc:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\imm32.dll" at 0000006FFE940000: builtin
+286636.142:00dc:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\winex11.drv" at 0000006FFA4A0000: builtin
+286636.167:00d4:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\imm32.dll" at 0000006FFE940000: builtin
+libc: Access denied finding property "vendor.mesa.vk.version.override"
+libc: Access denied finding property "vendor.mesa.panvk.debug"
+libc: Access denied finding property "vendor.mesa.pan.cpu.trace"
+libc: Access denied finding property "vendor.mesa.vk.version.override"
+libc: Access denied finding property "vendor.mesa.vk.trace"
+libc: Access denied finding property "vendor.mesa.vk.trace.per.submit"
+libc: Access denied finding property "vendor.mesa.gallium.print.options"
+libc: Access denied finding property "vendor.mesa.vk.trace.frame"
+libc: Access denied finding property "vendor.mesa.vk.trace.trigger"
+libc: Access denied finding property "vendor.mesa.force.vk.vendor"
+libc: Access denied finding property "vendor.mesa.force.vk.devicename"
+libc: Access denied finding property "vendor.mesa.vk.wsi.force.bgra8.unorm.first"
+libc: Access denied finding property "vendor.mesa.vk.wsi.force.swapchain.to.current.extent"
+libc: Access denied finding property "vendor.mesa.vk.wsi.disable.unordered.submits"
+libc: Access denied finding property "vendor.mesa.vk.x11.ignore.suboptimal"
+libc: Access denied finding property "vendor.mesa.adaptive.sync"
+libc: Access denied finding property "vendor.mesa.vk.x11.override.min.image.count"
+libc: Access denied finding property "vendor.mesa.vk.x11.strict.image.count"
+libc: Access denied finding property "vendor.mesa.vk.x11.ensure.min.image.count"
+libc: Access denied finding property "vendor.mesa.vk.google.display.timing"
+libc: Access denied finding property "vendor.mesa.pan.compute.core.mask"
+libc: Access denied finding property "vendor.mesa.pan.fragment.core.mask"
+libc: Access denied finding property "vendor.mesa.pan.enable.vertex.pipeline.stores.atomics"
+libc: Access denied finding property "vendor.mesa.pan.force.enable.shader.atomics"
+libc: Access denied finding property "vendor.mesa.heap.memory.percent"
+libc: Access denied finding property "vendor.mesa.driconf.executable.override"
+libc: Access denied finding property "vendor.mesa.process.name"
+libc: Access denied finding property "vendor.mesa.panvk.kbase.dvfs"
+libc: Access denied finding property "vendor.mesa.vk.ignore.conformance.warning"
+WARNING: panvk is not a conformant Vulkan implementation, testing use only.
+libc: Access denied finding property "vendor.mesa.log"
+libc: Access denied finding property "vendor.mesa.log.level"
+libc: Access denied finding property "vendor.mesa.log.prefix"
+libc: Access denied finding property "vendor.mesa.log.file.auto"
+libc: Access denied finding property "vendor.mesa.log.file"
+libc: Access denied finding property "vendor.mesa.bifrost.mesa.debug"
+libc: Access denied finding property "vendor.mesa.disk.cache.single.file"
+libc: Access denied finding property "vendor.mesa.disk.cache.database"
+libc: Access denied finding property "vendor.mesa.disk.cache.multi.file"
+libc: Access denied finding property "vendor.mesa.shader.cache.max.size"
+libc: Access denied finding property "vendor.mesa.glsl.cache.max.size"
+libc: Access denied finding property "vendor.mesa.shader.cache.disable"
+libc: Access denied finding property "vendor.mesa.vk.version.override"
+libc: Access denied finding property "vendor.mesa.vk.wsi.debug"
+libc: Access denied finding property "vendor.mesa.vk.wsi.present.mode"
+libc: Access denied finding property "vendor.mesa.vk.wsi.headless.swapchain"
+286636.192:00dc:err:wgl:X11DRV_OpenGLInit Failed to load libGL: dlopen failed: library "libGL.so.1" not found
+286636.192:00dc:err:wgl:X11DRV_OpenGLInit OpenGL support is disabled.
+286636.234:00dc:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\uxtheme.dll" at 0000006FFA3B0000: builtin
+286636.286:00dc:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\shcore.dll" at 0000006FFBBD0000: builtin
+286636.287:00dc:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\shlwapi.dll" at 0000006FFBC70000: builtin
+286636.287:00dc:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\shell32.dll" at 0000006FFB200000: builtin
+286636.298:00dc:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\combase.dll" at 0000006FFBE10000: builtin
+286636.299:00dc:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\coml2.dll" at 0000006FFBD70000: builtin
+286636.299:00dc:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\ole32.dll" at 0000006FFBF10000: builtin
+286636.309:00dc:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\oleaut32.dll" at 0000006FFAE40000: builtin
+286636.309:00dc:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\actxprxy.dll" at 0000006FFA2D0000: builtin
+_r_debug not found in ld.so
+286636.359:00f8:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\rpcss.exe" at 0000000140000000: builtin
+286636.359:00f8:trace:loaddll:build_ntdll_module Loaded L"C:\\windows\\system32\\ntdll.dll" at 0000006FFFE40000: builtin
+286636.367:00f8:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\kernelbase.dll" at 0000006FFFAF0000: builtin
+286636.367:00f8:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\kernel32.dll" at 0000006FFFD30000: builtin
+286636.386:00f8:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\ucrtbase.dll" at 0000006FFF770000: builtin
+286636.387:00f8:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\sechost.dll" at 0000006FFF960000: builtin
+286636.391:00f8:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\msvcrt.dll" at 0000006FFF5D0000: builtin
+286636.391:00f8:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\advapi32.dll" at 0000006FFFA10000: builtin
+286636.393:00f8:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\cryptbase.dll" at 0000006FFF540000: builtin
+286636.394:00f8:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\rpcrt4.dll" at 0000006FFF300000: builtin
+_r_debug not found in ld.so
+286636.481:0120:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\tabtip.exe" at 0000000140000000: builtin
+286636.481:0120:trace:loaddll:build_ntdll_module Loaded L"C:\\windows\\system32\\ntdll.dll" at 0000006FFFE40000: builtin
+286636.487:0120:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\kernelbase.dll" at 0000006FFFAF0000: builtin
+286636.488:0120:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\kernel32.dll" at 0000006FFFD30000: builtin
+286636.504:0120:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\ucrtbase.dll" at 0000006FFF770000: builtin
+286636.504:0120:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\sechost.dll" at 0000006FFF960000: builtin
+286636.508:0120:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\msvcrt.dll" at 0000006FFF5D0000: builtin
+286636.508:0120:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\advapi32.dll" at 0000006FFFA10000: builtin
+286636.517:0120:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\win32u.dll" at 0000006FFE9F0000: builtin
+286636.518:0120:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\gdi32.dll" at 0000006FFEAD0000: builtin
+286636.518:0120:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\user32.dll" at 0000006FFEC40000: builtin
+286636.525:0120:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\cryptbase.dll" at 0000006FFF540000: builtin
+286636.525:0120:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\rpcrt4.dll" at 0000006FFF300000: builtin
+286636.525:0120:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\combase.dll" at 0000006FFBE10000: builtin
+286636.527:0120:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\coml2.dll" at 0000006FFBD70000: builtin
+286636.527:0120:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\ole32.dll" at 0000006FFBF10000: builtin
+286636.542:0120:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\shcore.dll" at 0000006FFBBD0000: builtin
+286636.542:0120:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\shlwapi.dll" at 0000006FFBC70000: builtin
+286636.542:0120:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\shell32.dll" at 0000006FFB200000: builtin
+286636.544:0120:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\oleaut32.dll" at 0000006FFAE40000: builtin
+286636.664:0120:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\imm32.dll" at 0000006FFE940000: builtin
+286636.674:0024:trace:loaddll:build_module Loaded L"c:\\windows\\system32\\winex11.drv" at 0000006FFA4A0000: builtin
+286636.681:0120:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\oleacc.dll" at 0000006FFA0F0000: builtin
+286636.681:0120:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\uiautomationcore.dll" at 0000006FFA1A0000: builtin
+286636.683:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\uxtheme.dll" at 0000006FFA3B0000: builtin
+286636.687:0120:trace:loaddll:build_module Loaded L"c:\\windows\\system32\\winex11.drv" at 0000006FFA4A0000: builtin
+286636.708:0120:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\uxtheme.dll" at 0000006FFA3B0000: builtin
+286636.729:0120:fixme:oleacc:find_class_data unhandled window class: L"#32769"
+286636.729:0120:fixme:uiautomation:uia_get_providers_for_hwnd Override provider callback currently unimplemented.
+286636.729:0120:fixme:uiautomation:default_uia_provider_callback Default ProviderType_NonClientArea provider unimplemented.
+286636.743:0120:fixme:oleacc:find_class_data unhandled window class: L"#32769"
+286636.748:0120:fixme:uiautomation:base_hwnd_fragment_get_FragmentRoot 000000000071A4E8, 000000000011FC08: stub!
+286636.748:0120:fixme:uiautomation:base_hwnd_fragment_GetEmbeddedFragmentRoots 000000000071A4E8, 000000000011FBF8: stub!
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=4194304"
+    "memorysetup-bucket-allocator-block-count=1"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=4194304"
+    "memorysetup-profiler-bucket-allocator-block-count=1"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=4194304"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+286636.849:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\dnsapi.dll" at 0000006FFE610000: builtin
+286636.851:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\nsi.dll" at 0000006FFE580000: builtin
+286636.851:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\IPHLPAPI.DLL" at 0000006FFE6C0000: builtin
+286636.854:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\dbghelp.dll" at 0000006FFA7C0000: builtin
+286636.859:0024:trace:loaddll:build_module Loaded L"C:\\games\\MiSide\\baselib.dll" at 0000006FF8840000: native
+286636.859:0024:trace:loaddll:build_module Loaded L"C:\\games\\MiSide\\GameAssembly.dll" at 0000006FF88C0000: native
+286636.909:0024:fixme:combase:RoSetErrorReportingFlags (00000004): stub
+286636.911:0024:fixme:combase:RoGetActivationFactory (L"Windows.System.DispatcherQueue", {00000035-0000-0000-c000-000000000046}, 000000000010FAA8): semi-stub
+286636.912:0024:err:combase:RoGetActivationFactory Failed to find library for L"Windows.System.DispatcherQueue"
+286637.007:0024:fixme:ntdll:NtQuerySystemInformation info_class SYSTEM_PERFORMANCE_INFORMATION
+286637.139:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\dxgi.dll" at 0000006FF7E10000: native
+286637.139:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\d3d11.dll" at 0000006FF8250000: native
+warn:  CreateDXGIFactory2: Ignoring flags
+info:  Game: MiSideFull.exe
+info:  DXVK: v3.1.1+
+info:  Build: aarch64 clang 23.1.2
+286637.152:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\winevulkan.dll" at 0000006FF7D20000: builtin
+info:  Vulkan: Found vkGetInstanceProcAddr in winevulkan.dll @ 0x6ff7d70cc0
+info:  Extension providers:
+info:    Platform WSI
+info:    OpenVR
+info:  OpenVR: could not open registry key, status 2
+info:  OpenVR: Failed to locate module
+info:    OpenXR
+info:  Enabled instance extensions:
+info:    VK_EXT_surface_maintenance1
+info:    VK_KHR_get_surface_capabilities2
+info:    VK_KHR_surface
+info:    VK_KHR_win32_surface
+libc: Access denied finding property "vendor.mesa.vk.version.override"
+libc: Access denied finding property "vendor.mesa.panvk.debug"
+libc: Access denied finding property "vendor.mesa.pan.cpu.trace"
+libc: Access denied finding property "vendor.mesa.vk.version.override"
+libc: Access denied finding property "vendor.mesa.vk.trace"
+libc: Access denied finding property "vendor.mesa.vk.trace.per.submit"
+libc: Access denied finding property "vendor.mesa.gallium.print.options"
+libc: Access denied finding property "vendor.mesa.vk.trace.frame"
+libc: Access denied finding property "vendor.mesa.vk.trace.trigger"
+libc: Access denied finding property "vendor.mesa.force.vk.vendor"
+libc: Access denied finding property "vendor.mesa.force.vk.devicename"
+libc: Access denied finding property "vendor.mesa.vk.wsi.force.bgra8.unorm.first"
+libc: Access denied finding property "vendor.mesa.vk.wsi.force.swapchain.to.current.extent"
+libc: Access denied finding property "vendor.mesa.vk.wsi.disable.unordered.submits"
+libc: Access denied finding property "vendor.mesa.vk.x11.ignore.suboptimal"
+libc: Access denied finding property "vendor.mesa.adaptive.sync"
+libc: Access denied finding property "vendor.mesa.vk.x11.override.min.image.count"
+libc: Access denied finding property "vendor.mesa.vk.x11.strict.image.count"
+libc: Access denied finding property "vendor.mesa.vk.x11.ensure.min.image.count"
+libc: Access denied finding property "vendor.mesa.vk.google.display.timing"
+libc: Access denied finding property "vendor.mesa.pan.compute.core.mask"
+libc: Access denied finding property "vendor.mesa.pan.fragment.core.mask"
+libc: Access denied finding property "vendor.mesa.pan.enable.vertex.pipeline.stores.atomics"
+libc: Access denied finding property "vendor.mesa.pan.force.enable.shader.atomics"
+libc: Access denied finding property "vendor.mesa.heap.memory.percent"
+libc: Access denied finding property "vendor.mesa.driconf.executable.override"
+libc: Access denied finding property "vendor.mesa.process.name"
+libc: Access denied finding property "vendor.mesa.panvk.kbase.dvfs"
+libc: Access denied finding property "vendor.mesa.vk.ignore.conformance.warning"
+WARNING: panvk is not a conformant Vulkan implementation, testing use only.
+libc: Access denied finding property "vendor.mesa.log"
+libc: Access denied finding property "vendor.mesa.log.level"
+libc: Access denied finding property "vendor.mesa.log.prefix"
+libc: Access denied finding property "vendor.mesa.log.file.auto"
+libc: Access denied finding property "vendor.mesa.log.file"
+libc: Access denied finding property "vendor.mesa.bifrost.mesa.debug"
+libc: Access denied finding property "vendor.mesa.disk.cache.single.file"
+libc: Access denied finding property "vendor.mesa.disk.cache.database"
+libc: Access denied finding property "vendor.mesa.disk.cache.multi.file"
+libc: Access denied finding property "vendor.mesa.shader.cache.max.size"
+libc: Access denied finding property "vendor.mesa.glsl.cache.max.size"
+libc: Access denied finding property "vendor.mesa.shader.cache.disable"
+libc: Access denied finding property "vendor.mesa.vk.version.override"
+libc: Access denied finding property "vendor.mesa.vk.wsi.debug"
+libc: Access denied finding property "vendor.mesa.vk.wsi.present.mode"
+libc: Access denied finding property "vendor.mesa.vk.wsi.headless.swapchain"
+libc: Access denied finding property "vendor.mesa.vk.version.override"
+libc: Access denied finding property "vendor.mesa.vk.version.override"
+libc: Access denied finding property "vendor.mesa.vk.trace"
+libc: Access denied finding property "vendor.mesa.vk.trace.per.submit"
+libc: Access denied finding property "vendor.mesa.vk.trace.frame"
+libc: Access denied finding property "vendor.mesa.vk.trace.trigger"
+libc: Access denied finding property "vendor.mesa.force.vk.vendor"
+libc: Access denied finding property "vendor.mesa.force.vk.devicename"
+libc: Access denied finding property "vendor.mesa.vk.wsi.force.bgra8.unorm.first"
+libc: Access denied finding property "vendor.mesa.vk.wsi.force.swapchain.to.current.extent"
+libc: Access denied finding property "vendor.mesa.vk.wsi.disable.unordered.submits"
+libc: Access denied finding property "vendor.mesa.vk.x11.ignore.suboptimal"
+libc: Access denied finding property "vendor.mesa.adaptive.sync"
+libc: Access denied finding property "vendor.mesa.vk.x11.override.min.image.count"
+libc: Access denied finding property "vendor.mesa.vk.x11.strict.image.count"
+libc: Access denied finding property "vendor.mesa.vk.x11.ensure.min.image.count"
+libc: Access denied finding property "vendor.mesa.vk.google.display.timing"
+libc: Access denied finding property "vendor.mesa.pan.compute.core.mask"
+libc: Access denied finding property "vendor.mesa.pan.fragment.core.mask"
+libc: Access denied finding property "vendor.mesa.pan.enable.vertex.pipeline.stores.atomics"
+libc: Access denied finding property "vendor.mesa.pan.force.enable.shader.atomics"
+libc: Access denied finding property "vendor.mesa.heap.memory.percent"
+libc: Access denied finding property "vendor.mesa.panvk.kbase.dvfs"
+libc: Access denied finding property "vendor.mesa.vk.ignore.conformance.warning"
+WARNING: panvk is not a conformant Vulkan implementation, testing use only.
+libc: Access denied finding property "vendor.mesa.disk.cache.single.file"
+libc: Access denied finding property "vendor.mesa.disk.cache.database"
+libc: Access denied finding property "vendor.mesa.disk.cache.multi.file"
+libc: Access denied finding property "vendor.mesa.shader.cache.max.size"
+libc: Access denied finding property "vendor.mesa.glsl.cache.max.size"
+libc: Access denied finding property "vendor.mesa.shader.cache.disable"
+libc: Access denied finding property "vendor.mesa.vk.version.override"
+libc: Access denied finding property "vendor.mesa.vk.wsi.debug"
+libc: Access denied finding property "vendor.mesa.vk.wsi.present.mode"
+libc: Access denied finding property "vendor.mesa.vk.wsi.headless.swapchain"
+info:  Found device: Mali-G615 MC6 (panvk 26.2.99)
+info:  Creating device:
+info:  Mali-G615 MC6:
+info:    Driver   : panvk 26.2.99
+info:  Queues:
+info:    Graphics : (0, 0)
+info:    Transfer : (0, 0)
+info:    Sparse   : (4294967295, 0)
+info:  Memory:
+info:    Heap 0: 5.36 GiB (DEVICE_LOCAL)
+info:    Budget: 2.55 GiB
+info:      Type  0: DEVICE_LOCAL
+info:      Type  1: DEVICE_LOCAL | HOST_VISIBLE | HOST_COHERENT
+info:      Type  2: DEVICE_LOCAL | HOST_VISIBLE | HOST_CACHED
+info:  Enabled extensions:
+info:    VK_EXT_attachment_feedback_loop_layout
+info:    VK_EXT_border_color_swizzle
+info:    VK_EXT_conservative_rasterization
+info:    VK_EXT_custom_border_color
+info:    VK_EXT_depth_clip_enable
+info:    VK_EXT_depth_bias_control
+info:    VK_EXT_dynamic_rendering_unused_attachments
+info:    VK_EXT_extended_dynamic_state3
+info:    VK_EXT_graphics_pipeline_library
+info:    VK_EXT_hdr_metadata
+info:    VK_EXT_line_rasterization
+info:    VK_EXT_memory_priority
+info:    VK_EXT_multi_draw
+info:    VK_EXT_non_seamless_cube_map
+info:    VK_EXT_pageable_device_local_memory
+info:    VK_EXT_robustness2
+info:    VK_EXT_shader_module_identifier
+info:    VK_EXT_shader_stencil_export
+info:    VK_EXT_transform_feedback
+info:    VK_EXT_vertex_attribute_divisor
+info:    VK_KHR_dynamic_rendering_local_read
+info:    VK_KHR_external_memory_win32
+info:    VK_KHR_external_semaphore_win32
+info:    VK_KHR_incremental_present
+info:    VK_KHR_load_store_op_none
+info:    VK_KHR_maintenance5
+info:    VK_KHR_maintenance6
+info:    VK_KHR_maintenance8
+info:    VK_KHR_maintenance9
+info:    VK_KHR_pipeline_library
+info:    VK_KHR_present_id
+info:    VK_KHR_present_wait
+info:    VK_KHR_shader_float_controls2
+info:    VK_KHR_shader_subgroup_uniform_control_flow
+info:    VK_KHR_shader_untyped_pointers
+info:    VK_KHR_swapchain
+info:    VK_KHR_swapchain_maintenance1
+info:    VK_KHR_swapchain_mutable_format
+info:    VK_KHR_unified_image_layouts
+info:    VK_KHR_win32_keyed_mutex
+info:  Enabled features:
+info:    depthBiasClamp                 : 1
+info:    depthBounds                    : 0
+info:    depthClamp                     : 1
+info:    drawIndirectFirstInstance      : 1
+info:    dualSrcBlend                   : 1
+info:    fillModeNonSolid               : 1
+info:    fragmentStoresAndAtomics       : 1
+info:    fullDrawIndexUint32            : 1
+info:    geometryShader                 : 1
+info:    imageCubeArray                 : 1
+info:    independentBlend               : 1
+info:    largePoints                    : 1
+info:    logicOp                        : 1
+info:    multiDrawIndirect              : 1
+info:    multiViewport                  : 1
+info:    occlusionQueryPrecise          : 1
+info:    pipelineStatisticsQuery        : 1
+info:    robustBufferAccess             : 1
+info:    sampleRateShading              : 1
+info:    samplerAnisotropy              : 1
+info:    shaderClipDistance             : 1
+info:    shaderCullDistance             : 1
+info:    shaderFloat64                  : 0
+info:    shaderImageGatherExtended      : 1
+info:    shaderInt16                    : 1
+info:    shaderInt64                    : 1
+info:    shaderUniformBufferArrayDynamicIndexing : 1
+info:    shaderSampledImageArrayDynamicIndexing : 1
+info:    shaderStorageBufferArrayDynamicIndexing : 1
+info:    shaderStorageImageArrayDynamicIndexing : 1
+info:    sparseBinding                  : 0
+info:    sparseResidencyBuffer          : 0
+info:    sparseResidencyImage2D         : 0
+info:    sparseResidencyImage3D         : 0
+info:    sparseResidency2Samples        : 0
+info:    sparseResidency4Samples        : 0
+info:    sparseResidency8Samples        : 0
+info:    sparseResidency16Samples       : 0
+info:    sparseResidencyAliased         : 0
+info:    shaderResourceResidency        : 0
+info:    shaderResourceMinLod           : 0
+info:    tessellationShader             : 1
+info:    textureCompressionBC           : 1
+info:    variableMultisampleRate        : 1
+info:    vertexPipelineStoresAndAtomics : 1
+info:    wideLines                      : 1
+info:    shaderDrawParameters           : 1
+info:    storageBuffer16BitAccess       : 1
+info:    storagePushConstant16          : 1
+info:    bufferDeviceAddress            : 1
+info:    descriptorIndexing             : 1
+info:    storageBuffer8BitAccess        : 1
+info:    storagePushConstant8           : 1
+info:    shaderUniformTexelBufferArrayDynamicIndexing : 1
+info:    shaderStorageTexelBufferArrayDynamicIndexing : 1
+info:    shaderUniformBufferArrayNonUniformIndexing : 1
+info:    shaderSampledImageArrayNonUniformIndexing : 1
+info:    shaderStorageBufferArrayNonUniformIndexing : 1
+info:    shaderStorageImageArrayNonUniformIndexing : 1
+info:    shaderUniformTexelBufferArrayNonUniformIndexing : 1
+info:    shaderStorageTexelBufferArrayNonUniformIndexing : 1
+info:    descriptorBindingSampledImageUpdateAfterBind : 1
+info:    descriptorBindingUpdateUnusedWhilePending : 1
+info:    descriptorBindingPartiallyBound : 1
+info:    drawIndirectCount              : 1
+info:    hostQueryReset                 : 1
+info:    runtimeDescriptorArray         : 1
+info:    samplerFilterMinmax            : 1
+info:    samplerMirrorClampToEdge       : 1
+info:    scalarBlockLayout              : 1
+info:    shaderFloat16                  : 1
+info:    shaderInt8                     : 1
+info:    shaderOutputViewportIndex      : 0
+info:    shaderOutputLayer              : 1
+info:    timelineSemaphore              : 1
+info:    uniformBufferStandardLayout    : 1
+info:    vulkanMemoryModel              : 1
+info:    inlineUniformBlock             : 1
+info:    computeFullSubgroups           : 1
+info:    dynamicRendering               : 1
+info:    maintenance4                   : 1
+info:    robustImageAccess              : 1
+info:    pipelineCreationCacheControl   : 1
+info:    shaderDemoteToHelperInvocation : 1
+info:    shaderZeroInitializeWorkgroupMemory : 1
+info:    subgroupSizeControl            : 1
+info:    synchronization2               : 1
+info:  VK_EXT_attachment_feedback_loop_layout:
+info:    attachmentFeedbackLoopLayout   : 1
+info:  VK_EXT_border_color_swizzle:
+info:    borderColorSwizzle             : 1
+info:    borderColorSwizzleFromImage    : 1
+info:  VK_EXT_conservative_rasterization:
+info:    extConservativeRasterization   : 1
+info:  VK_EXT_custom_border_color:
+info:    customBorderColors             : 1
+info:    customBorderColorWithoutFormat : 1
+info:  VK_EXT_depth_clip_enable:
+info:    depthClipEnable                : 1
+info:  VK_EXT_depth_bias_control:
+info:    depthBiasControl               : 1
+info:    leastRepresentableValueForceUnormRepresentation : 0
+info:    floatRepresentation            : 0
+info:    depthBiasExact                 : 1
+info:  VK_EXT_descriptor_buffer:
+info:    descriptorBuffer               : 0
+info:  VK_EXT_descriptor_heap:
+info:    descriptorHeap                 : 0
+info:  VK_EXT_dynamic_rendering_unused_attachments:
+info:    dynamicRenderingUnusedAttachments : 1
+info:  VK_EXT_extended_dynamic_state3:
+info:    extendedDynamicState3AlphaToCoverageEnable : 1
+info:    extendedDynamicState3DepthClipEnable : 1
+info:    extendedDynamicState3RasterizationSamples : 1
+info:    extendedDynamicState3SampleMask : 1
+info:    extendedDynamicState3LineRasterizationMode : 1
+info:    extendedDynamicState3SampleLocationsEnable : 0
+info:  VK_EXT_fragment_shader_interlock:
+info:    fragmentShaderSampleInterlock  : 0
+info:    fragmentShaderPixelInterlock   : 0
+info:  VK_EXT_full_screen_exclusive:
+info:    extFullScreenExclusive         : 0
+info:  VK_EXT_graphics_pipeline_library:
+info:    graphicsPipelineLibrary        : 1
+info:  VK_EXT_hdr_metadata:
+info:    extHdrMetadata                 : 1
+info:  VK_EXT_line_rasterization:
+info:    rectangularLines               : 1
+info:    smoothLines                    : 0
+info:  VK_EXT_memory_budget:
+info:    extMemoryBudget                : 1
+info:  VK_EXT_memory_priority:
+info:    memoryPriority                 : 1
+info:  VK_EXT_multi_draw:
+info:    multiDraw                      : 1
+info:  VK_EXT_non_seamless_cube_map:
+info:    nonSeamlessCubeMap             : 1
+info:  VK_EXT_pageable_device_local_memory:
+info:    pageableDeviceLocalMemory      : 1
+info:  VK_EXT_robustness2:
+info:    robustBufferAccess2            : 1
+info:    robustImageAccess2             : 0
+info:    nullDescriptor                 : 1
+info:  VK_EXT_sample_locations:
+info:    extSampleLocations             : 0
+info:  VK_EXT_shader_module_identifier:
+info:    shaderModuleIdentifier         : 1
+info:  VK_EXT_shader_stencil_export:
+info:    extShaderStencilExport         : 1
+info:  VK_EXT_swapchain_colorspace:
+info:    extSwapchainColorSpace         : 0
+info:  VK_EXT_swapchain_maintenance1:
+info:    swapchainMaintenance1          : 0
+info:  VK_EXT_transform_feedback:
+info:    transformFeedback              : 1
+info:    geometryStreams                : 1
+info:  VK_EXT_vertex_attribute_divisor:
+info:    vertexAttributeInstanceRateDivisor : 1
+info:    vertexAttributeInstanceRateZeroDivisor : 1
+info:  VK_KHR_device_fault:
+info:    deviceFault                    : 0
+info:    deviceFaultVendorBinary        : 0
+info:  VK_KHR_dynamic_rendering_local_read:
+info:    dynamicRenderingLocalRead      : 1
+info:  VK_KHR_external_memory_win32:
+info:    khrExternalMemoryWin32         : 1
+info:  VK_KHR_external_semaphore_win32:
+info:    khrExternalSemaphoreWin32      : 1
+info:  VK_KHR_incremental_present:
+info:    khrIncrementalPresent          : 1
+info:  VK_KHR_load_store_op_none:
+info:    khrLoadStoreOpNone             : 1
+info:  VK_KHR_maintenance5:
+info:    maintenance5                   : 1
+info:  VK_KHR_maintenance6:
+info:    maintenance6                   : 1
+info:  VK_KHR_maintenance7:
+info:    maintenance7                   : 0
+info:  VK_KHR_maintenance8:
+info:    maintenance8                   : 1
+info:  VK_KHR_maintenance9:
+info:    maintenance9                   : 1
+info:  VK_KHR_maintenance10:
+info:    maintenance10                  : 0
+info:  VK_KHR_maintenance11:
+info:    maintenance11                  : 0
+info:  VK_KHR_pipeline_library:
+info:    khrPipelineLibrary             : 1
+info:  VK_KHR_present_id:
+info:    presentId                      : 1
+info:  VK_KHR_present_id2:
+info:    presentId2                     : 0
+info:  VK_KHR_present_wait:
+info:    presentWait                    : 1
+info:  VK_KHR_present_wait2:
+info:    presentWait2                   : 0
+info:  VK_KHR_shader_float_controls2:
+info:    shaderFloatControls2           : 1
+info:  VK_KHR_shader_subgroup_uniform_control_flow:
+info:    shaderSubgroupUniformControlFlow : 1
+info:  VK_KHR_shader_untyped_pointers:
+info:    shaderUntypedPointers          : 1
+info:  VK_KHR_swapchain:
+info:    khrSwapchain                   : 1
+info:  VK_KHR_swapchain_maintenance1:
+info:    swapchainMaintenance1          : 1
+info:  VK_KHR_swapchain_mutable_format:
+info:    khrSwapchainMutableFormat      : 1
+info:  VK_KHR_unified_image_layouts:
+info:    unifiedImageLayouts            : 1
+info:  VK_KHR_win32_keyed_mutex:
+info:    khrWin32KeyedMutex             : 1
+info:  VK_AMD_buffer_marker:
+info:    amdBufferMarker                : 0
+info:  VK_NV_device_diagnostic_checkpoints:
+info:    nvDeviceDiagnosticCheckpoints  : 0
+info:  VK_NV_low_latency2:
+info:    nvLowLatency2                  : 0
+info:  VK_NV_raw_access_chains:
+info:    shaderRawAccessChains          : 0
+info:  VK_NVX_binary_import:
+info:    nvxBinaryImport                : 0
+info:  VK_NVX_image_view_handle:
+info:    nvxImageViewHandle             : 0
+libc: Access denied finding property "vendor.mesa.vk.enable.pipeline.cache"
+libc: Access denied finding property "vendor.mesa.gpu.traces"
+libc: Access denied finding property "vendor.mesa.gpu.tracefile"
+libc: Access denied finding property "vendor.mesa.panvk.utrace.clone.mem.size"
+info:  Memory type mask for buffer resources: 0x7, usage: 0x219ff
+info:  Graphics pipeline libraries supported
+libc: Access denied finding property "vendor.mesa.spirv.debug"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.force.unstructured"
+libc: Access denied finding property "vendor.mesa.vk.validate.shader.binaries"
+info:  Binding model: Legacy
+info:  D3D11InternalCreateDevice: Maximum supported feature level: D3D_FEATURE_LEVEL_11_1
+info:  D3D11InternalCreateDevice: Using feature level D3D_FEATURE_LEVEL_11_1
+info:  DXGI: VK_FORMAT_A8_UNORM_KHR -> VK_FORMAT_R8_UNORM
+286637.247:0024:trace:loaddll:build_module Loaded L"C:\\windows\\winsxs\\arm64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.2600.2982_none_deadbeef\\comctl32.dll" at 0000006FF7850000: builtin
+286637.247:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\compstui.dll" at 0000006FF7AC0000: builtin
+286637.247:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\winspool.drv" at 0000006FF7B80000: builtin
+286637.248:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\wbem\\wbemprox.dll" at 0000006FF7C40000: builtin
+286637.248:0024:fixme:wbemprox:client_security_SetBlanket 0000006FF7CC1FB8, 0000000064CD5D90, 10, 0, (null), 3, 3, 0000000000000000, 0
+286637.248:0024:fixme:wbemprox:client_security_Release 0000006FF7CC1FB8
+286637.329:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\mmdevapi.dll" at 0000007FE5600000: builtin
+286637.340:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\winepulse.drv" at 0000007FE5580000: builtin
+286637.340:0024:trace:loaddll:free_modref Unloaded module L"C:\\windows\\system32\\winepulse.drv" : builtin
+286637.348:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\winealsa.drv" at 0000007FE5580000: builtin
+ALSA lib conf.c:4580:(snd_config_update_r) Cannot access file /data/data/com.winlator/files/imagefs/usr/share/alsa/alsa.conf
+ALSA lib pcm.c:2722:(snd_pcm_open_noupdate) Unknown PCM default
+ALSA lib conf.c:4580:(snd_config_update_r) Cannot access file /data/data/com.winlator/files/imagefs/usr/share/alsa/alsa.conf
+ALSA lib pcm.c:2722:(snd_pcm_open_noupdate) Unknown PCM default
+286637.365:01c8:fixme:kernelbase:AppPolicyGetThreadInitializationType FFFFFFFFFFFFFFFA, 00000000659FFF80
+info:  Creating device:
+info:  Mali-G615 MC6:
+info:    Driver   : panvk 26.2.99
+info:  Queues:
+info:    Graphics : (0, 0)
+info:    Transfer : (0, 0)
+info:    Sparse   : (4294967295, 0)
+info:  Memory:
+info:    Heap 0: 5.36 GiB (DEVICE_LOCAL)
+info:    Budget: 2.36 GiB
+info:      Type  0: DEVICE_LOCAL
+info:      Type  1: DEVICE_LOCAL | HOST_VISIBLE | HOST_COHERENT
+info:      Type  2: DEVICE_LOCAL | HOST_VISIBLE | HOST_CACHED
+info:  Enabled extensions:
+info:    VK_EXT_attachment_feedback_loop_layout
+info:    VK_EXT_border_color_swizzle
+info:    VK_EXT_conservative_rasterization
+info:    VK_EXT_custom_border_color
+info:    VK_EXT_depth_clip_enable
+info:    VK_EXT_depth_bias_control
+info:    VK_EXT_dynamic_rendering_unused_attachments
+info:    VK_EXT_extended_dynamic_state3
+info:    VK_EXT_graphics_pipeline_library
+info:    VK_EXT_hdr_metadata
+info:    VK_EXT_line_rasterization
+info:    VK_EXT_memory_priority
+info:    VK_EXT_multi_draw
+info:    VK_EXT_non_seamless_cube_map
+info:    VK_EXT_pageable_device_local_memory
+info:    VK_EXT_robustness2
+info:    VK_EXT_shader_module_identifier
+info:    VK_EXT_shader_stencil_export
+info:    VK_EXT_transform_feedback
+info:    VK_EXT_vertex_attribute_divisor
+info:    VK_KHR_dynamic_rendering_local_read
+info:    VK_KHR_external_memory_win32
+info:    VK_KHR_external_semaphore_win32
+info:    VK_KHR_incremental_present
+info:    VK_KHR_load_store_op_none
+info:    VK_KHR_maintenance5
+info:    VK_KHR_maintenance6
+info:    VK_KHR_maintenance8
+info:    VK_KHR_maintenance9
+info:    VK_KHR_pipeline_library
+info:    VK_KHR_present_id
+info:    VK_KHR_present_wait
+info:    VK_KHR_shader_float_controls2
+info:    VK_KHR_shader_subgroup_uniform_control_flow
+info:    VK_KHR_shader_untyped_pointers
+info:    VK_KHR_swapchain
+info:    VK_KHR_swapchain_maintenance1
+info:    VK_KHR_swapchain_mutable_format
+info:    VK_KHR_unified_image_layouts
+info:    VK_KHR_win32_keyed_mutex
+info:  Enabled features:
+info:    depthBiasClamp                 : 1
+info:    depthBounds                    : 0
+info:    depthClamp                     : 1
+info:    drawIndirectFirstInstance      : 1
+info:    dualSrcBlend                   : 1
+info:    fillModeNonSolid               : 1
+info:    fragmentStoresAndAtomics       : 1
+info:    fullDrawIndexUint32            : 1
+info:    geometryShader                 : 1
+info:    imageCubeArray                 : 1
+info:    independentBlend               : 1
+info:    largePoints                    : 1
+info:    logicOp                        : 1
+info:    multiDrawIndirect              : 1
+info:    multiViewport                  : 1
+info:    occlusionQueryPrecise          : 1
+info:    pipelineStatisticsQuery        : 1
+info:    robustBufferAccess             : 1
+info:    sampleRateShading              : 1
+info:    samplerAnisotropy              : 1
+info:    shaderClipDistance             : 1
+info:    shaderCullDistance             : 1
+info:    shaderFloat64                  : 0
+info:    shaderImageGatherExtended      : 1
+info:    shaderInt16                    : 1
+info:    shaderInt64                    : 1
+info:    shaderUniformBufferArrayDynamicIndexing : 1
+info:    shaderSampledImageArrayDynamicIndexing : 1
+info:    shaderStorageBufferArrayDynamicIndexing : 1
+info:    shaderStorageImageArrayDynamicIndexing : 1
+info:    sparseBinding                  : 0
+info:    sparseResidencyBuffer          : 0
+info:    sparseResidencyImage2D         : 0
+info:    sparseResidencyImage3D         : 0
+info:    sparseResidency2Samples        : 0
+info:    sparseResidency4Samples        : 0
+info:    sparseResidency8Samples        : 0
+info:    sparseResidency16Samples       : 0
+info:    sparseResidencyAliased         : 0
+info:    shaderResourceResidency        : 0
+info:    shaderResourceMinLod           : 0
+info:    tessellationShader             : 1
+info:    textureCompressionBC           : 1
+info:    variableMultisampleRate        : 1
+info:    vertexPipelineStoresAndAtomics : 1
+info:    wideLines                      : 1
+info:    shaderDrawParameters           : 1
+info:    storageBuffer16BitAccess       : 1
+info:    storagePushConstant16          : 1
+info:    bufferDeviceAddress            : 1
+info:    descriptorIndexing             : 1
+info:    storageBuffer8BitAccess        : 1
+info:    storagePushConstant8           : 1
+info:    shaderUniformTexelBufferArrayDynamicIndexing : 1
+info:    shaderStorageTexelBufferArrayDynamicIndexing : 1
+info:    shaderUniformBufferArrayNonUniformIndexing : 1
+info:    shaderSampledImageArrayNonUniformIndexing : 1
+info:    shaderStorageBufferArrayNonUniformIndexing : 1
+info:    shaderStorageImageArrayNonUniformIndexing : 1
+info:    shaderUniformTexelBufferArrayNonUniformIndexing : 1
+info:    shaderStorageTexelBufferArrayNonUniformIndexing : 1
+info:    descriptorBindingSampledImageUpdateAfterBind : 1
+info:    descriptorBindingUpdateUnusedWhilePending : 1
+info:    descriptorBindingPartiallyBound : 1
+info:    drawIndirectCount              : 1
+info:    hostQueryReset                 : 1
+info:    runtimeDescriptorArray         : 1
+info:    samplerFilterMinmax            : 1
+info:    samplerMirrorClampToEdge       : 1
+info:    scalarBlockLayout              : 1
+info:    shaderFloat16                  : 1
+info:    shaderInt8                     : 1
+info:    shaderOutputViewportIndex      : 0
+info:    shaderOutputLayer              : 1
+info:    timelineSemaphore              : 1
+info:    uniformBufferStandardLayout    : 1
+info:    vulkanMemoryModel              : 1
+info:    inlineUniformBlock             : 1
+info:    computeFullSubgroups           : 1
+info:    dynamicRendering               : 1
+info:    maintenance4                   : 1
+info:    robustImageAccess              : 1
+info:    pipelineCreationCacheControl   : 1
+info:    shaderDemoteToHelperInvocation : 1
+info:    shaderZeroInitializeWorkgroupMemory : 1
+info:    subgroupSizeControl            : 1
+info:    synchronization2               : 1
+info:  VK_EXT_attachment_feedback_loop_layout:
+info:    attachmentFeedbackLoopLayout   : 1
+info:  VK_EXT_border_color_swizzle:
+info:    borderColorSwizzle             : 1
+info:    borderColorSwizzleFromImage    : 1
+info:  VK_EXT_conservative_rasterization:
+info:    extConservativeRasterization   : 1
+info:  VK_EXT_custom_border_color:
+info:    customBorderColors             : 1
+info:    customBorderColorWithoutFormat : 1
+info:  VK_EXT_depth_clip_enable:
+info:    depthClipEnable                : 1
+info:  VK_EXT_depth_bias_control:
+info:    depthBiasControl               : 1
+info:    leastRepresentableValueForceUnormRepresentation : 0
+info:    floatRepresentation            : 0
+info:    depthBiasExact                 : 1
+info:  VK_EXT_descriptor_buffer:
+info:    descriptorBuffer               : 0
+info:  VK_EXT_descriptor_heap:
+info:    descriptorHeap                 : 0
+info:  VK_EXT_dynamic_rendering_unused_attachments:
+info:    dynamicRenderingUnusedAttachments : 1
+info:  VK_EXT_extended_dynamic_state3:
+info:    extendedDynamicState3AlphaToCoverageEnable : 1
+info:    extendedDynamicState3DepthClipEnable : 1
+info:    extendedDynamicState3RasterizationSamples : 1
+info:    extendedDynamicState3SampleMask : 1
+info:    extendedDynamicState3LineRasterizationMode : 1
+info:    extendedDynamicState3SampleLocationsEnable : 0
+info:  VK_EXT_fragment_shader_interlock:
+info:    fragmentShaderSampleInterlock  : 0
+info:    fragmentShaderPixelInterlock   : 0
+info:  VK_EXT_full_screen_exclusive:
+info:    extFullScreenExclusive         : 0
+info:  VK_EXT_graphics_pipeline_library:
+info:    graphicsPipelineLibrary        : 1
+info:  VK_EXT_hdr_metadata:
+info:    extHdrMetadata                 : 1
+info:  VK_EXT_line_rasterization:
+info:    rectangularLines               : 1
+info:    smoothLines                    : 0
+info:  VK_EXT_memory_budget:
+info:    extMemoryBudget                : 1
+info:  VK_EXT_memory_priority:
+info:    memoryPriority                 : 1
+info:  VK_EXT_multi_draw:
+info:    multiDraw                      : 1
+info:  VK_EXT_non_seamless_cube_map:
+info:    nonSeamlessCubeMap             : 1
+info:  VK_EXT_pageable_device_local_memory:
+info:    pageableDeviceLocalMemory      : 1
+info:  VK_EXT_robustness2:
+info:    robustBufferAccess2            : 1
+info:    robustImageAccess2             : 0
+info:    nullDescriptor                 : 1
+info:  VK_EXT_sample_locations:
+info:    extSampleLocations             : 0
+info:  VK_EXT_shader_module_identifier:
+info:    shaderModuleIdentifier         : 1
+info:  VK_EXT_shader_stencil_export:
+info:    extShaderStencilExport         : 1
+info:  VK_EXT_swapchain_colorspace:
+info:    extSwapchainColorSpace         : 0
+info:  VK_EXT_swapchain_maintenance1:
+info:    swapchainMaintenance1          : 0
+info:  VK_EXT_transform_feedback:
+info:    transformFeedback              : 1
+info:    geometryStreams                : 1
+info:  VK_EXT_vertex_attribute_divisor:
+info:    vertexAttributeInstanceRateDivisor : 1
+info:    vertexAttributeInstanceRateZeroDivisor : 1
+info:  VK_KHR_device_fault:
+info:    deviceFault                    : 0
+info:    deviceFaultVendorBinary        : 0
+info:  VK_KHR_dynamic_rendering_local_read:
+info:    dynamicRenderingLocalRead      : 1
+info:  VK_KHR_external_memory_win32:
+info:    khrExternalMemoryWin32         : 1
+info:  VK_KHR_external_semaphore_win32:
+info:    khrExternalSemaphoreWin32      : 1
+info:  VK_KHR_incremental_present:
+info:    khrIncrementalPresent          : 1
+info:  VK_KHR_load_store_op_none:
+info:    khrLoadStoreOpNone             : 1
+info:  VK_KHR_maintenance5:
+info:    maintenance5                   : 1
+info:  VK_KHR_maintenance6:
+info:    maintenance6                   : 1
+info:  VK_KHR_maintenance7:
+info:    maintenance7                   : 0
+info:  VK_KHR_maintenance8:
+info:    maintenance8                   : 1
+info:  VK_KHR_maintenance9:
+info:    maintenance9                   : 1
+info:  VK_KHR_maintenance10:
+info:    maintenance10                  : 0
+info:  VK_KHR_maintenance11:
+info:    maintenance11                  : 0
+info:  VK_KHR_pipeline_library:
+info:    khrPipelineLibrary             : 1
+info:  VK_KHR_present_id:
+info:    presentId                      : 1
+info:  VK_KHR_present_id2:
+info:    presentId2                     : 0
+info:  VK_KHR_present_wait:
+info:    presentWait                    : 1
+info:  VK_KHR_present_wait2:
+info:    presentWait2                   : 0
+info:  VK_KHR_shader_float_controls2:
+info:    shaderFloatControls2           : 1
+info:  VK_KHR_shader_subgroup_uniform_control_flow:
+info:    shaderSubgroupUniformControlFlow : 1
+info:  VK_KHR_shader_untyped_pointers:
+info:    shaderUntypedPointers          : 1
+info:  VK_KHR_swapchain:
+info:    khrSwapchain                   : 1
+info:  VK_KHR_swapchain_maintenance1:
+info:    swapchainMaintenance1          : 1
+info:  VK_KHR_swapchain_mutable_format:
+info:    khrSwapchainMutableFormat      : 1
+info:  VK_KHR_unified_image_layouts:
+info:    unifiedImageLayouts            : 1
+info:  VK_KHR_win32_keyed_mutex:
+info:    khrWin32KeyedMutex             : 1
+info:  VK_AMD_buffer_marker:
+info:    amdBufferMarker                : 0
+info:  VK_NV_device_diagnostic_checkpoints:
+info:    nvDeviceDiagnosticCheckpoints  : 0
+info:  VK_NV_low_latency2:
+info:    nvLowLatency2                  : 0
+info:  VK_NV_raw_access_chains:
+info:    shaderRawAccessChains          : 0
+info:  VK_NVX_binary_import:
+info:    nvxBinaryImport                : 0
+info:  VK_NVX_image_view_handle:
+info:    nvxImageViewHandle             : 0
+libc: Access denied finding property "vendor.mesa.vk.enable.pipeline.cache"
+libc: Access denied finding property "vendor.mesa.panvk.utrace.clone.mem.size"
+info:  Memory type mask for buffer resources: 0x7, usage: 0x219ff
+info:  Graphics pipeline libraries supported
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+info:  Binding model: Legacy
+info:  D3D11InternalCreateDevice: Maximum supported feature level: D3D_FEATURE_LEVEL_11_1
+info:  D3D11InternalCreateDevice: Using feature level D3D_FEATURE_LEVEL_11_0
+info:  DXGI: VK_FORMAT_A8_UNORM_KHR -> VK_FORMAT_R8_UNORM
+286637.571:0024:trace:loaddll:build_module Loaded L"C:\\games\\MiSide\\MiSideFull_Data\\Plugins\\x86_64\\lib_burst_generated.dll" at 0000007FE0990000: native
+286637.634:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\xinput1_3.dll" at 0000007FE0900000: builtin
+286637.638:0024:fixme:system:NtUserGetDisplayConfigBufferSizes only returning active paths
+286637.638:0024:fixme:system:NtUserQueryDisplayConfig only returning active paths
+286637.638:0024:fixme:system:NtUserQueryDisplayConfig setting toplogyid to DISPLAYCONFIG_TOPOLOGY_INTERNAL
+err:   readMonitorEdidFromKey: Failed to get EDID reg key size
+err:   DXGI: Failed to parse display metadata + colorimetry info, using blank.
+err:   readMonitorEdidFromKey: Failed to get EDID reg key size
+err:   DXGI: Failed to parse display metadata + colorimetry info, using blank.
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+warn:  D3D11DXGIDevice::QueryInterface: Unknown interface query
+warn:  0ec870a6-5d7e-4c22-8cfc-5baae07616ed
+warn:  DXGI: MakeWindowAssociation: Ignoring flags
+warn:  DxgiSwapChain::GetFrameStatistics: Frame statistics may be inaccurate
+libc: Access denied finding property "vendor.mesa.panvk.kbase.heap.renew.work"
+libc: Access denied finding property "vendor.mesa.panvk.kbase.heap.renew.interval"
+libc: Access denied finding property "vendor.mesa.vk.max.timeout"
+info:  Found cache file: C:\users\xuser\AppData\Local\dxvk\0ff97712fe5ac9ad.dxvk.bin
+info:  Cache: 32 shaders (48 kB)
+info:  DXVK: Using 8 compiler threads
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.panvk.zs.preload.always"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+info:  Presenter: Actual swapchain properties:
+info:    Format:       VK_FORMAT_B8G8R8A8_UNORM
+info:    Color space:  VK_COLOR_SPACE_SRGB_NONLINEAR_KHR
+info:    Present mode: VK_PRESENT_MODE_FIFO_KHR (dynamic: yes)
+info:    Buffer size:  1920x1080
+info:    Image count:  4
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.panvk.kbase.gpu.semaphore.waits"
+286638.218:0140:fixme:uiautomation:msaa_provider_GetPatternProvider Unimplemented patternId 10002
+286638.218:0140:fixme:uiautomation:base_hwnd_provider_GetPatternProvider 00000000007771A0, 10002, 000000000157F980: stub
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+libc: Access denied finding property "vendor.mesa.spirv.dump.path"
+libc: Access denied finding property "vendor.mesa.spirv.read.path"
+286648.987:0024:trace:loaddll:build_module Loaded L"C:\\windows\\system32\\XINPUT1_4.dll" at 0000007FF6AC0000: builtin
+286648.988:0024:trace:loaddll:build_module Loaded L"C:\\games\\MiSide\\MiSideFull_Data\\Plugins\\x86_64\\steam_api64.dll" at 0000007FF6B50000: native

@@ -1,0 +1,41 @@
+[287831.998270] mali 13000000.mali: [QINSPECT_RECOVERY]prevent gpu reset
+[287831.998326] mali 13000000.mali: [QINSPECT_RECOVERY]prevent gpu reset fail, skip this run
+[287831.998369] mali 13000000.mali: Evicting context 11468_25896 slots: 0x00
+[287831.998396] mali 13000000.mali: ctx:2083_3 kcpu queue:3 Command - FENCE_SIGNAL timeout(6000 ms)! Trigger cross queue sync recovery
+[287831.998409] mali 13000000.mali: Evicting context 11468_25895 slots: 0x00
+[287831.998442] mali 13000000.mali: [QINSPECT_RECOVERY]Preparing to recovery
+[287831.998449] mali 13000000.mali: Evicting context 11526_25894 slots: 0x00
+[287831.998470] mali 13000000.mali: [QINSPECT_RECOVERY]acquire lock
+[287831.998485] mali 13000000.mali: Evicting context 9332_25888 slots: 0x00
+[287831.998518] mali 13000000.mali: [QINSPECT_RECOVERY]prevent gpu reset
+[287831.998545] mali 13000000.mali: [QINSPECT_RECOVERY]prevent gpu reset fail, skip this run
+[287831.998571] mali 13000000.mali: Evicting context 9041_25883 slots: 0x00
+[287831.998577] mali 13000000.mali: ctx:1047_0 kcpu queue:7 Command - FENCE_SIGNAL timeout(6000 ms)! Trigger cross queue sync recovery
+[287831.998608] mali 13000000.mali: Evicting context 8707_25878 slots: 0x00
+[287831.998636] mali 13000000.mali: [QINSPECT_RECOVERY]Preparing to recovery
+[287831.998644] mali 13000000.mali: Evicting context 6122_25867 slots: 0x00
+[287831.998666] mali 13000000.mali: [QINSPECT_RECOVERY]acquire lock
+[287831.998692] mali 13000000.mali: [QINSPECT_RECOVERY]prevent gpu reset
+[287831.998719] mali 13000000.mali: [QINSPECT_RECOVERY]prevent gpu reset fail, skip this run
+[287831.998750] mali 13000000.mali: Evicting context 13106_25725 slots: 0x00
+[287831.998754] mali 13000000.mali: ctx:1047_0 kcpu queue:7 Command - FENCE_SIGNAL timeout(7000 ms)! Trigger cross queue sync recovery
+[287831.998800] mali 13000000.mali: [QINSPECT_RECOVERY]Preparing to recovery
+[287831.998809] mali 13000000.mali: Evicting context 28977_25677 slots: 0x00
+[287831.998825] mali 13000000.mali: [QINSPECT_RECOVERY]acquire lock
+[287831.998853] mali 13000000.mali: [QINSPECT_RECOVERY]prevent gpu reset
+[287831.998879] mali 13000000.mali: [QINSPECT_RECOVERY]prevent gpu reset fail, skip this run
+[287831.998906] mali 13000000.mali: Evicting context 19284_23168 slots: 0x00
+[287831.998943] mali 13000000.mali: Evicting context 23524_17534 slots: 0x00
+[287831.998990] mali 13000000.mali: Evicting context 23362_17533 slots: 0x00
+[287831.999090] mali 13000000.mali: Evicting context 19089_17532 slots: 0x00
+[287831.999129] mali 13000000.mali: Evicting context 16524_17415 slots: 0x00
+[287831.999166] mali 13000000.mali: Evicting context 28868_17238 slots: 0x00
+[287831.999209] mali 13000000.mali: Evicting context 9122_16715 slots: 0x00
+[287831.999245] mali 13000000.mali: Evicting context 19323_16065 slots: 0x00
+[287831.999291] mali 13000000.mali: Evicting context 9984_15649 slots: 0x00
+[287831.999423] mali 13000000.mali: Evicting context 2288_6 slots: 0x00
+[287831.999474] mali 13000000.mali: Evicting context 1723_5 slots: 0x00
+[287831.999518] mali 13000000.mali: Evicting context 2083_3 slots: 0x00
+[287831.999564] mali 13000000.mali: Evicting context 1047_0 slots: 0x00
+[287831.999615] mali 13000000.mali: Reset active queue groups and clear out scheduler data
+[287831.999670] mali 13000000.mali: Resetting GPU (allowing up to 500 ms)

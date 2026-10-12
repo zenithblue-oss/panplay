@@ -1,0 +1,64 @@
+{
+ "scenario": "NFS MW Quick Play Circuit City Perimeter 3 laps 2 opp Golf GTI, lap1; car STATIONARY facing wall (throttle hold via overlay did not accelerate), 95 s",
+ "method": "frame times = SurfaceFlinger per-layer present2present histogram of the XServerActivity SurfaceView (display-quantised, 1 ms bins <=33, 2-4 ms to 150 ms), polled ~10 Hz; HUD FPS 51-53 read from screenshots; DXVK_HUD=full unchanged",
+ "frames": 4567,
+ "avg_fps": 48.1,
+ "p50_ms": 22,
+ "p95_ms": 33,
+ "p99_ms": 44,
+ "p99_9_ms": 58,
+ "low1pct_fps": 21.4,
+ "low0_1pct_fps": 17.2,
+ "frames_gt50ms": 13,
+ "frames_ge100ms": 0,
+ "frames_ge500ms": 0,
+ "longest_bin_ms": 58,
+ "shader_compile_cpu_ticks_total": 5,
+ "hitch_compile_correlation": "none: 13 frames >=50ms at t=0.3-8.4s and 78.3s, dxvk-shader threads used 5 ticks (7 s) in whole run",
+ "gpl": "Graphics pipeline libraries supported (VK_EXT_graphics_pipeline_library), 8 compiler threads, DXVK v3.1.1+",
+ "cpu_MHz_min_avg_max": {
+  "little0-3 (cap 2200)": [
+   1200,
+   1848,
+   1900
+  ],
+  "mid4-6 (cap 3200)": [
+   1000,
+   1797,
+   2200
+  ],
+  "big7 (cap 3350)": [
+   1100,
+   1991,
+   2300
+  ]
+ },
+ "gpu_MHz_min_avg_max": [
+  661,
+  736,
+  740
+ ],
+ "gpu_max_opp_MHz": 1400,
+ "gpu_util_pct_avg": 97,
+ "gpu_cap": "gpufreqv2 limit_table: ceiling index 40 (740 MHz of 1400) limiter THERMAL_AP",
+ "temps_C": {
+  "cpu-big7": [
+   56.1,
+   68.4
+  ],
+  "cpu-little0": [
+   57.5,
+   68.4
+  ],
+  "soc-top1": [
+   51.0,
+   57.7
+  ],
+  "battery": [
+   35.0,
+   35.5
+  ]
+ },
+ "interference": "scrcpy server + FluxLinux/other app polling devfreq running concurrently; device already ~53C at start",
+ "attempt1": "first race hit VK_ERROR_DEVICE_LOST (see attempt1-devicelost/), PanProbe process panvktest died 23:53:14 same time window"
+}
