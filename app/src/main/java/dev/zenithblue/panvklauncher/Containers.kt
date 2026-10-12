@@ -410,8 +410,10 @@ object ContainerManager {
 
         // DXVK/vkd3d logs go to one dir (Z: = /); SessionLogs.collect moves them into the session folder.
         val gfxLogs = SessionLogs.gfxLogDir(ctx)
+        // Gaming mode skips SessionLogs.collect, so nothing moves these out: keep the newest 20.
+        try { gfxLogs.listFiles { f -> f.isFile }?.sortedByDescending { it.lastModified() }?.drop(20)?.forEach { it.delete() } } catch (_: Exception) {}
         if (dxvk) {
-            envMap["DXVK_LOG_LEVEL"] = "info"
+            envMap["DXVK_LOG_LEVEL"] = if (PerfRecorder.gamingMode(ctx)) "warn" else "info"
             envMap["DXVK_LOG_PATH"] = "Z:" + gfxLogs.absolutePath
             envMap["DXVK_HUD"] = "full"
             envMap.putAll(PerfRecorder.env()) // DXVK_STATS_FILE while a perf session is recording
@@ -455,6 +457,14 @@ object ContainerManager {
         // Per-game shortcut env wins over defaults (but not DISPLAY / display plumbing above).
         launchOpts.get()?.env?.forEach { (k, v) -> if (k != "DISPLAY" && k != "DXVK_HUD") envMap[k] = v }
         envMap.remove(EXTRA_DLL_OVERRIDES)?.let { envMap["WINEDLLOVERRIDES"] = envMap["WINEDLLOVERRIDES"] + it }
+        // Game audio (graphical runs, set by run()): driver libs first on LD_LIBRARY_PATH, the other wine*.drv disabled.
+        audioEnv.get()?.forEach { (k, v) ->
+            when (k) {
+                GameAudio.AUDIO_LIB_DIR -> envMap["LD_LIBRARY_PATH"] = "$v:${envMap["LD_LIBRARY_PATH"]}"
+                GameAudio.AUDIO_DLL_OVERRIDES -> envMap["WINEDLLOVERRIDES"] = (envMap["WINEDLLOVERRIDES"] ?: "") + v
+                else -> envMap[k] = v
+            }
+        }
         // FPS cap. DXVK 3.x dropped the DXVK_FRAME_RATE env (config option instead); vkd3d-proton reads VKD3D_FRAME_RATE.
         // A user-set DXVK_FRAME_RATE in the shortcut env means they manage it themselves.
         val fps = launchOpts.get()?.fpsLimit ?: 0
@@ -554,32 +564,43 @@ object ContainerManager {
             return -1
         }
 
+        // One buffered writer per run; flushed at most every ~1 s while lines arrive, and on exit.
+        val logW = try { java.io.FileWriter(logFile, true).buffered() } catch (_: Exception) { null }
+        var lastFlush = System.currentTimeMillis()
+        fun log(s: String) {
+            try {
+                logW?.write(s); logW?.write("\n")
+                val now = System.currentTimeMillis()
+                if (now - lastFlush >= 1000) { logW?.flush(); lastFlush = now }
+            } catch (_: Exception) {}
+        }
         return try {
             process.inputStream.bufferedReader().use { reader ->
                 var line: String?
                 while (reader.readLine().also { line = it } != null) {
                     val l = line!!
-                    try { logFile.appendText(l + "\n") } catch (_: Exception) {}
+                    log(l)
                     onLine(l)
                 }
             }
             val exitCode = process.waitFor()
             info.exit = exitCode; info.endMs = System.currentTimeMillis()
             val exitMsg = "exit=$exitCode"
-            try { logFile.appendText(exitMsg + "\n") } catch (_: Exception) {}
+            log(exitMsg)
             onLine(exitMsg)
             exitCode
         } catch (e: IOException) {
             val errMsg = e.message ?: e.toString()
-            try { logFile.appendText(errMsg + "\n") } catch (_: Exception) {}
+            log(errMsg)
             onLine(errMsg)
             -1
         } catch (t: Throwable) {
             val errMsg = t.message ?: t.toString()
-            try { logFile.appendText(errMsg + "\n") } catch (_: Exception) {}
+            log(errMsg)
             onLine(errMsg)
             -1
         } finally {
+            try { logW?.close() } catch (_: Exception) {}
             synchronized(lifecycleLock) {
                 if (currentProcess == process) {
                     currentProcess = null
@@ -691,6 +712,8 @@ object ContainerManager {
             // A game from an earlier session (crashed launcher, detached child) must not keep its GPU and RAM.
             killPrefixProcesses(ctx)
             selectWow64Emulator(ctx, Box64Presets.isBox(launchOpts.get()?.fexMode ?: ""))
+            audioEnv.set(GameAudio.start(ctx, GameAudio.resolve(ctx, launchOpts.get()?.audio),
+                File(containerDir, ".wine").absolutePath, onLine))
             val code = runInternal(ctx, args, workDir ?: containerDir, onLine, session?.env)
             // The started exe can exit while the game it spawned keeps running (Fallout4Launcher, start.exe), and a
             // finished game can leave Wine processes behind that hold its memory into the next launch. Wait until
@@ -699,6 +722,7 @@ object ContainerManager {
             killPrefixProcesses(ctx)
             return code
         } finally {
+            if (audioEnv.get() != null) { GameAudio.stop(ctx); audioEnv.remove() }
             if (session != null) DisplayServer.close(session)
             synchronized(lifecycleLock) {
                 currentProcess = null
@@ -716,6 +740,8 @@ object ContainerManager {
 
     // Per-launch shortcut overrides (args/env/driver); thread-local so run()/runInternal()/env() need no new params.
     private val launchOpts = ThreadLocal<LaunchOptions?>()
+    // GameAudio.start() result for the current graphical run; read by env().
+    private val audioEnv = ThreadLocal<Map<String, String>?>()
 
     fun runExe(ctx: Context, exePathIn: String, onLine: (String) -> Unit = {}, opts: LaunchOptions? = null): Int {
         // A game folder (shortcut / intent / picker gave a directory) launches its main exe.
@@ -820,6 +846,46 @@ object ContainerManager {
 
     fun runExplorer(ctx: Context, onLine: (String) -> Unit = {}): Int {
         return run(ctx, listOf("explorer", "/desktop=shell,1280x720"), onLine = onLine, graphics = true)
+    }
+
+    /** .reg header check: "Windows Registry Editor Version 5.00" (UTF-16LE or UTF-8, optional BOM) or "REGEDIT4". */
+    fun isRegFile(head: ByteArray): Boolean {
+        val text = when {
+            head.size >= 2 && head[0] == 0xFF.toByte() && head[1] == 0xFE.toByte() -> String(head, 2, head.size - 2, Charsets.UTF_16LE)
+            head.size >= 3 && head[0] == 0xEF.toByte() && head[1] == 0xBB.toByte() && head[2] == 0xBF.toByte() -> String(head, 3, head.size - 3, Charsets.UTF_8)
+            else -> String(head, Charsets.ISO_8859_1)
+        }
+        return text.startsWith("Windows Registry Editor Version 5.00") || text.startsWith("REGEDIT4")
+    }
+
+    /**
+     * Import a picked .reg into the (single) container prefix with "wine reg import" (handles REGEDIT4 and
+     * UTF-16 v5 files as-is). Goes through run(), so it is refused while a game/wineserver owns the prefix.
+     * Output lands in the normal logs/run-*.log. Returns a short result for a toast. Blocking.
+     */
+    fun importReg(ctx: Context, uri: Uri, onLine: (String) -> Unit = {}): String {
+        val dst = File(ctx.filesDir, "container/.wine/drive_c/panplay-import.reg")
+        try {
+            val head = ctx.contentResolver.openInputStream(uri)?.use { s -> ByteArray(80).let { it.copyOf(s.readNBytesCompat(it)) } }
+                ?: return "Import failed: cannot read file"
+            if (!isRegFile(head)) return "Not a .reg file (bad header)" // short: Android toasts clip long text
+            if (!isSetup(ctx)) return "Container is not set up"
+            ctx.contentResolver.openInputStream(uri)?.use { i -> dst.outputStream().use { i.copyTo(it) } }
+                ?: return "Import failed: cannot read file"
+        } catch (e: Exception) { return "Import failed: ${e.message}" }
+        val tail = ArrayDeque<String>()
+        return try {
+            val code = run(ctx, listOf("reg", "import", """C:\panplay-import.reg""")) { l ->
+                onLine(l); tail.addLast(l); if (tail.size > 3) tail.removeFirst()
+            }
+            if (code == 0) "Registry file imported" else "Registry import failed (exit=$code): ${tail.joinToString(" | ")}"
+        } finally { dst.delete() }
+    }
+
+    private fun java.io.InputStream.readNBytesCompat(b: ByteArray): Int {
+        var n = 0
+        while (n < b.size) { val r = read(b, n, b.size - n); if (r < 0) break; n += r }
+        return n
     }
 
     fun stop(ctx: Context) = synchronized(lifecycleLock) {

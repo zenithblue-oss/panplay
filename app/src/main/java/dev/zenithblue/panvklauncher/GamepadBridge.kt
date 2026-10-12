@@ -25,11 +25,14 @@ object GamepadBridge {
     const val BTN_BACK = 4; const val BTN_GUIDE = 5; const val BTN_START = 6
     const val BTN_LSTICK = 7; const val BTN_RSTICK = 8; const val BTN_LB = 9; const val BTN_RB = 10
     const val HAT_UP = 1; const val HAT_RIGHT = 2; const val HAT_DOWN = 4; const val HAT_LEFT = 8
+    /** Mapping ids by BTN_* bit, and by HAT_* bit. */
+    val BTN_IDS = listOf("A", "B", "X", "Y", "BACK", "GUIDE", "START", "L3", "R3", "LB", "RB")
+    val HAT_IDS = listOf(HAT_UP to "DPAD_UP", HAT_DOWN to "DPAD_DOWN", HAT_LEFT to "DPAD_LEFT", HAT_RIGHT to "DPAD_RIGHT")
     private const val DEADZONE = 0.1f
 
     private val lock = Any()
     private var buf: java.nio.ByteBuffer? = null
-    private var connected = 0
+    private var active = false
 
     // Physical (hardware pad) and virtual (on-screen overlay) state.
     private var pBtn = 0; private var pKeyHat = 0; private var pAxisHat = 0
@@ -54,27 +57,41 @@ object GamepadBridge {
 
     /** Env vars to add to the Wine process environment; empty if libpadshim.so is not installed. */
     fun env(ctx: Context): Map<String, String> {
-        if (!ControllerInput.gamepadOutput) return emptyMap() // keyboard-only: no virtual XInput pad for the game to see
+        padLoaded = false
+        if (!ControllerInput.padNeeded) return emptyMap() // all keys/mouse: no virtual XInput pad for the game to see
         val so = File(ctx.applicationInfo.nativeLibraryDir, "libpadshim.so")
         if (!so.exists()) return emptyMap()
+        padLoaded = true
         return mapOf("LD_PRELOAD" to so.path, "PANVK_PAD_SHM" to map(ctx).path)
     }
 
+    /** libpadshim was preloaded into the running game: gamepad bindings can change live. */
+    @Volatile var padLoaded = false
+        private set
+
     fun start(ctx: Context) {
-        if (ControllerInput.gamepadOutput) map(ctx)
-        synchronized(lock) { connected = if (ControllerInput.gamepadOutput) 1 else 0; flush() }
+        if (ControllerInput.padNeeded) map(ctx)
+        synchronized(lock) { active = true; flush() }
     }
 
-    fun stop() = synchronized(lock) {
+    fun stop() = synchronized(lock) { active = false; clearInput() }
+
+    /** Release every held input (keys, mouse, pad), e.g. while the in-game menu has focus. */
+    fun clearInput() = synchronized(lock) {
         pBtn = 0; pKeyHat = 0; pAxisHat = 0; pStick = FloatArray(4); pLtAxis = 0f; pRtAxis = 0f
         pLtKey = false; pRtKey = false
         vBtn = 0; vHat = 0; vStick = FloatArray(4); vLt = 0f; vRt = 0f
-        connected = 0; flush()
+        flush()
     }
 
-    fun physicalConnected(): Boolean = InputDevice.getDeviceIds().any { id ->
-        InputDevice.getDevice(id)?.let { !it.isVirtual && isPad(it.sources) } == true
-    }
+    /** Held physical buttons (BTN_* bits). */
+    fun physicalButtons(): Int = synchronized(lock) { pBtn }
+
+    fun physicalConnected(): Boolean = physicalName() != null
+
+    /** Name of the first attached hardware pad, or null. */
+    fun physicalName(): String? = InputDevice.getDeviceIds().asSequence().mapNotNull { InputDevice.getDevice(it) }
+        .firstOrNull { !it.isVirtual && isPad(it.sources) }?.name
 
     /** Low 16 bits = low-frequency rumble, high 16 = high-frequency (0..65535), as requested by Wine. */
     fun rumble(): Int = synchronized(lock) { buf?.getInt(24) ?: 0 }
@@ -178,17 +195,18 @@ object GamepadBridge {
 
     private fun flush() {
         val (lx, ly) = stick(0); val (rx, ry) = stick(2)
-        val lt = trig(pLtAxis, pLtKey, vLt); val rt = trig(pRtAxis, pRtKey, vRt)
-        val btn = pBtn or vBtn; val hat = pKeyHat or pAxisHat or vHat
-        // Keyboard/mouse output (default): same merged state, X11 events instead of the virtual pad.
-        ControllerInput.update(lx, ly, rx, ry, lt, rt, btn, hat)
+        val s = PadState(lx, ly, rx, ry, trig(pLtAxis, pLtKey, vLt), trig(pRtAxis, pRtKey, vRt), pBtn or vBtn, pKeyHat or pAxisHat or vHat)
+        // Keys / mouse per the game's config; inputs bound to "gamepad" go to the virtual pad below.
+        ControllerInput.update(s)
         val b = buf ?: return
-        if (!ControllerInput.gamepadOutput) return
-        b.putShort(8, s16(lx)); b.putShort(10, s16(ly)); b.putShort(12, s16(rx)); b.putShort(14, s16(ry))
-        b.putShort(16, s16(lt)); b.putShort(18, s16(rt))
-        b.putShort(20, btn.toShort())
-        b.put(22, hat.toByte())
-        b.putInt(4, connected)
+        val c = ControllerInput.config
+        if (!c.usesPad) return
+        val p = ControllerInput.padOut(c, s)
+        b.putShort(8, s16(p.lx)); b.putShort(10, s16(p.ly)); b.putShort(12, s16(p.rx)); b.putShort(14, s16(p.ry))
+        b.putShort(16, s16(p.lt)); b.putShort(18, s16(p.rt))
+        b.putShort(20, p.btn.toShort())
+        b.put(22, p.hat.toByte())
+        b.putInt(4, if (active) 1 else 0)
         b.putInt(0, b.getInt(0) + 1) // seq last
     }
 }

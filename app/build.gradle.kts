@@ -77,8 +77,8 @@ android {
         minSdk = 28
         // targetSdk 28: W^X (targetSdk>=29) blocks execve of wine/wineserver from app data; linker64 fails ("could not exec the wine loader"). Same as Winlator/GameNative legacy.
         targetSdk = 28
-        versionCode = 32
-        versionName = "1.2.6"
+        versionCode = 33
+        versionName = "1.2.7"
 
         ndk {
             abiFilters.add("arm64-v8a")
@@ -144,6 +144,7 @@ dependencies {
     implementation("org.tukaani:xz:1.10")
     implementation("com.github.luben:zstd-jni:1.5.7-4@aar")
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.json:json:20180813") // real org.json for JVM tests (android.jar's is a stub); not in the APK
 }
 
 // Bundled components (rootfs, Proton, FEX, DXVK): pinned in bundled-components.json, copied from

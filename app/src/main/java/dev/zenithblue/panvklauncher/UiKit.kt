@@ -315,7 +315,7 @@ fun ResolutionField(label: String, value: String, onValue: (String) -> Unit, def
 @Composable
 fun FpsLimitField(value: Int, onValue: (Int) -> Unit) {
     var custom by remember { mutableStateOf(false) }
-    val presets = listOf(30, 60, 120)
+    val presets = listOf(30, 40, 45, 60, 90, 120)
     val opts = buildList {
         add("0" to "Off")
         presets.forEach { add("$it" to "$it FPS") }
@@ -323,27 +323,31 @@ fun FpsLimitField(value: Int, onValue: (Int) -> Unit) {
         add("__custom__" to "Custom…")
     }
     DropdownField("FPS limit", opts, value.toString(), { if (it == "__custom__") custom = true else onValue(it.toInt()) })
-    if (custom) {
-        var t by remember { mutableStateOf(if (value > 0) value.toString() else "") }
-        val n = t.toIntOrNull()
-        val ok = n != null && n in 1..1000
-        androidx.compose.material3.AlertDialog(
-            onDismissRequest = { custom = false },
-            title = { Text("Custom FPS limit") },
-            text = {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    androidx.compose.material3.OutlinedTextField(
-                        t, { t = it.filter(Char::isDigit).take(4) }, label = { Text("FPS (1-1000)") }, singleLine = true,
-                        keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number),
-                        isError = !ok
-                    )
-                    if (!ok) Text("Enter 1 to 1000.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
-                }
-            },
-            confirmButton = { androidx.compose.material3.TextButton(onClick = { onValue(n!!); custom = false }, enabled = ok) { Text("Use") } },
-            dismissButton = { androidx.compose.material3.TextButton(onClick = { custom = false }) { Text("Cancel") } }
-        )
-    }
+    if (custom) FpsCustomDialog(value, onValue) { custom = false }
+}
+
+/** "Custom FPS limit" prompt (1..1000); [onValue] then [onDismiss] on Use. */
+@Composable
+fun FpsCustomDialog(value: Int, onValue: (Int) -> Unit, onDismiss: () -> Unit) {
+    var t by remember { mutableStateOf(if (value > 0) value.toString() else "") }
+    val n = t.toIntOrNull()
+    val ok = n != null && n in 1..1000
+    androidx.compose.material3.AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Custom FPS limit") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                androidx.compose.material3.OutlinedTextField(
+                    t, { t = it.filter(Char::isDigit).take(4) }, label = { Text("FPS (1-1000)") }, singleLine = true,
+                    keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number),
+                    isError = !ok
+                )
+                if (!ok) Text("Enter 1 to 1000.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
+            }
+        },
+        confirmButton = { androidx.compose.material3.TextButton(onClick = { onValue(n!!); onDismiss() }, enabled = ok) { Text("Use") } },
+        dismissButton = { androidx.compose.material3.TextButton(onClick = onDismiss) { Text("Cancel") } }
+    )
 }
 
 /** Busy card: text plus a determinate bar when [progress] is known, indeterminate otherwise. */

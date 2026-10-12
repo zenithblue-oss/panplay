@@ -73,7 +73,7 @@ fun ComponentsScreen(
     PageList {
         item {
             Text(
-                "Rootfs, Wine, FEX, Box64, DXVK and vkd3d-proton that games run on. Already installed components are detected from the files on this device.",
+                "Rootfs, Wine, FEX, Box64, DXVK, vkd3d-proton and the audio drivers that games run on. Already installed components are detected from the files on this device.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -90,6 +90,30 @@ fun ComponentsScreen(
                 onDownload = { onDownload(st) },
                 onDelete = { confirmDelete = it }
             )
+        }
+
+        item { SectionTitle("Game audio") }
+        item {
+            var audio by remember { mutableStateOf(GameAudio.defaultDriver(context)) }
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
+            ) {
+                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    DropdownField(
+                        label = "Default audio driver",
+                        options = GameAudio.drivers.map { (k, v) -> k to if (k == GameAudio.DEFAULT) "$v (recommended)" else v },
+                        selected = audio,
+                        onSelect = { audio = it; GameAudio.setDefaultDriver(context, it) }
+                    )
+                    Text(
+                        "Used by games set to Default; each game can override it on its Launch card. ALSA plays straight to " +
+                            "Android AAudio from the game. PulseAudio runs a sound server for the game session.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
         }
 
         if (others.isNotEmpty()) {

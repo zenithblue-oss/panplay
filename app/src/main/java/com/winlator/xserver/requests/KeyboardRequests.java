@@ -38,11 +38,12 @@ public abstract class KeyboardRequests {
     public static void getPointerMapping(XClient client, XInputStream inputStream, XOutputStream outputStream) throws IOException, XRequestError {
         try (XStreamLock lock = outputStream.lock()) {
             outputStream.writeByte(RESPONSE_CODE_SUCCESS);
-            outputStream.writeByte((byte)5);
+            // 9 buttons: left, middle, right, wheel up/down/left/right, back, forward (Pointer.Button).
+            outputStream.writeByte((byte)9);
             outputStream.writeShort(client.getSequenceNumber());
-            outputStream.writeInt(2);
+            outputStream.writeInt(3);
             outputStream.writePad(24);
-            for (byte i = 1; i <= 5; i++) outputStream.writeByte(i);
+            for (byte i = 1; i <= 9; i++) outputStream.writeByte(i);
             outputStream.writePad(3);
         }
     }

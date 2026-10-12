@@ -64,7 +64,6 @@ object BuiltinXServer {
     private var shmConnector: XConnectorEpoll? = null
     private var shm: SysVSharedMemory? = null
     private var activity: WeakReference<Activity>? = null
-    private var dumping = false
 
     fun isRunning(): Boolean = xServer != null
 
@@ -110,7 +109,7 @@ object BuiltinXServer {
                 xServer = xs
                 GamepadBridge.start(ctx)
                 ControllerInput.start()
-                if (!dumping) { dumping = true; startDumpThread(ctx) }
+                if (PerfRecorder.recording(ctx)) startDumpThread(ctx, xs)
                 onLine("Built-in X server $resolution on ${cfg.path}${if (useShm) " (MIT-SHM via SysV broker)" else ""}")
                 DisplayServer.Session(":0", cfg.path, env, true)
             } catch (t: Throwable) {
@@ -185,10 +184,11 @@ object BuiltinXServer {
         return sb.toString()
     }
 
-    fun startDumpThread(ctx: Context) {
+    /** Runs only while [xs] is the live server; exits on stop or restart. */
+    private fun startDumpThread(ctx: Context, xs: XServer) {
         val f = File(ctx.filesDir, "xdump.txt")
         Thread({
-            while (true) {
+            while (xServer === xs) {
                 try { f.writeText(dump()) } catch (_: Throwable) {}
                 try { Thread.sleep(2000) } catch (_: InterruptedException) { break }
             }

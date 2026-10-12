@@ -102,6 +102,24 @@ public enum XKeycode {
     KEY_NEXT(117),
     KEY_INSERT(118),
     KEY_DEL(119),
+    // panvk-launcher: keys for controller mapping. Keyboard.keysyms only covers keycodes 8..131 and Wine maps
+    // non-character keys by keysym, so these use free codes <= 127 (id is a signed byte; not the evdev numbers).
+    KEY_PAUSE(127),
+    KEY_SUPER_L(97),
+    KEY_SUPER_R(98),
+    KEY_MENU(99),
+    KEY_F13(120),
+    KEY_F14(121),
+    KEY_F15(122),
+    KEY_F16(123),
+    KEY_F17(124),
+    KEY_F18(125),
+    KEY_F19(126),
+    KEY_F20(100),
+    KEY_F21(101),
+    KEY_F22(102),
+    KEY_F23(103),
+    KEY_F24(109),
     KEY_MAX(KEY_DEL.id);
     public final byte id;
 

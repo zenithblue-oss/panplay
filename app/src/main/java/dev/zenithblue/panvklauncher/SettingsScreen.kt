@@ -99,7 +99,8 @@ fun SettingsScreen(
     onStop: () -> Unit,
     onOpenAppLog: () -> Unit,
     onOpenSessionLogs: () -> Unit,
-    onOpenControls: () -> Unit = {}
+    onOpenControls: () -> Unit = {},
+    onImportReg: () -> Unit = {}
 ) {
     var manualPath by remember { mutableStateOf("") }
     val actionEnabled = !isRunning && !isSettingUp && isSetup
@@ -207,12 +208,12 @@ fun SettingsScreen(
                 Column {
                     Row { Text("Button size", Modifier.weight(1f)); Text("${(size * 100).toInt()}%", style = MaterialTheme.typography.labelLarge) }
                     androidx.compose.material3.Slider(
-                        size, { size = it }, valueRange = 0.7f..1.4f,
+                        size, { size = it }, valueRange = OverlayPrefs.SIZE_MIN..OverlayPrefs.maxSize(ctx),
                         onValueChangeFinished = { OverlayPrefs.setSize(ctx, size) },
                         modifier = Modifier.semantics { contentDescription = "Overlay button size ${(size * 100).toInt()} percent" }
                     )
                     Text(
-                        "Buttons never go below 40dp and never overlap; on small screens the largest size that fits is used.",
+                        "Scales with screen size, so phones and tablets look alike. Buttons never go below 40dp and never overlap; if a size does not fit, the largest size that fits is used.",
                         style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -259,6 +260,9 @@ fun SettingsScreen(
                     }
                     FilledTonalButton(onClick = onPickExe, enabled = actionEnabled, modifier = Modifier.heightIn(min = 48.dp)) {
                         Text("Pick .exe")
+                    }
+                    FilledTonalButton(onClick = onImportReg, enabled = actionEnabled, modifier = Modifier.heightIn(min = 48.dp)) {
+                        Text("Import registry file (.reg)")
                     }
                 }
                 OutlinedTextField(
@@ -318,7 +322,9 @@ fun SettingsScreen(
                 }
                 val rctx = androidx.compose.ui.platform.LocalContext.current
                 var rec by remember { mutableStateOf(PerfRecorder.enabled(rctx)) }
-                SwitchRow("Record performance", "FPS, frame times, CPU, RAM, GPU, temps per session (low overhead)", rec, { rec = it; PerfRecorder.setEnabled(rctx, it) })
+                var gaming by remember { mutableStateOf(PerfRecorder.gamingMode(rctx)) }
+                SwitchRow("Gaming mode", "Less logging during play. Turns off perf recording and session reports.", gaming, { gaming = it; PerfRecorder.setGamingMode(rctx, it) })
+                SwitchRow("Record performance", "FPS, frame times, CPU, RAM, GPU, temps per session (low overhead)", rec, { rec = it; PerfRecorder.setEnabled(rctx, it) }, enabled = !gaming)
             }
         }
 

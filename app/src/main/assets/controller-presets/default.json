@@ -1,16 +1,13 @@
 {
-  "name": "Default WASD",
+  "name": "Gamepad",
   "output": "keyboard",
   "bindings": {
-    "A": "space", "B": "Escape", "X": "e", "Y": "f",
-    "LB": "q", "RB": "r", "LT": "mouse:right", "RT": "mouse:left",
-    "BACK": "Tab", "START": "Escape", "L3": "Shift_L", "R3": "c",
-    "DPAD_UP": "Up", "DPAD_DOWN": "Down", "DPAD_LEFT": "Left", "DPAD_RIGHT": "Right"
+    "A": "gamepad", "B": "gamepad", "X": "gamepad", "Y": "gamepad",
+    "LB": "gamepad", "RB": "gamepad", "LT": "gamepad", "RT": "gamepad",
+    "BACK": "gamepad", "START": "gamepad", "GUIDE": "gamepad", "L3": "gamepad", "R3": "gamepad",
+    "DPAD_UP": "gamepad", "DPAD_DOWN": "gamepad", "DPAD_LEFT": "gamepad", "DPAD_RIGHT": "gamepad"
   },
-  "labels": {
-    "A": "Jump", "B": "Esc", "X": "Use", "Y": "F", "LB": "Q", "RB": "R",
-    "LT": "RMB", "RT": "LMB", "BACK": "Tab", "START": "Menu", "L3": "Run"
-  },
-  "leftStick": { "mode": "keys", "up": "w", "down": "s", "left": "a", "right": "d", "deadzone": 0.3 },
-  "rightStick": { "mode": "mouse", "sensitivity": 1.0, "deadzone": 0.12, "invertY": false }
+  "labels": {},
+  "leftStick": { "mode": "gamepad", "deadzone": 0.3 },
+  "rightStick": { "mode": "gamepad", "sensitivity": 1.0, "deadzone": 0.12 }
 }

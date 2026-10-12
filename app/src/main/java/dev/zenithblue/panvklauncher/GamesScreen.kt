@@ -120,6 +120,19 @@ fun GamesScreen(
         }
     }
 
+    // Shortcuts whose exe is gone are hidden, never deleted (SD card / storage may just be unmounted).
+    // Without storage access nothing under /storage is readable, so nothing counts as missing then.
+    var missing by remember { mutableStateOf(emptySet<String>()) }
+    var showMissing by remember { mutableStateOf(false) }
+    LaunchedEffect(games) {
+        missing = withContext(Dispatchers.IO) {
+            if (!StorageAccess.granted(ctx)) emptySet()
+            else games.filter { !java.io.File(ShortcutStore.resolveExe(ctx, it.exe)).isFile }.map { it.id }.toSet()
+        }
+    }
+    // Missing ones go last (stable sort), so "Show missing" reveals them in view instead of above the scroll anchor.
+    val shown = if (showMissing) games.sortedBy { it.id in missing } else games.filter { it.id !in missing }
+
     // Games whose exe matches a controller preset (e.g. MiSide.exe) get that preset as their own editable file.
     LaunchedEffect(games) {
         withContext(Dispatchers.IO) { games.forEach { ControllerConfig.attachPreset(ctx, it.id, ShortcutStore.resolveExe(ctx, it.exe)) } }
@@ -144,7 +157,7 @@ fun GamesScreen(
                             modifier = Modifier.padding(vertical = 8.dp)
                         )
                     }
-                    items(games, key = { it.id }) { g ->
+                    items(shown, key = { it.id }) { g ->
                         GameCard(
                             g = g,
                             busy = busy,
@@ -161,6 +174,11 @@ fun GamesScreen(
                             },
                             onDelete = { menuFor = null; deleting = g }
                         )
+                    }
+                    if (missing.isNotEmpty()) item(span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) {
+                        TextButton(onClick = { showMissing = !showMissing }, modifier = Modifier.heightIn(min = 48.dp)) {
+                            Text(if (showMissing) "Hide missing (${missing.size})" else "Show missing (${missing.size})")
+                        }
                     }
                     if (builtin.isNotEmpty()) {
                         item(span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) {

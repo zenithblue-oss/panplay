@@ -115,6 +115,27 @@ object ContentManager {
             versionName = "0.4.5-2f47bdf",
             note = "Box64 (commit 2f47bdf), optional per-game alternative to FEX",
             asset = "components/box64-0.4.5-2f47bdf.wcp"
+        ),
+        // Game audio (scripts/build-audio.sh); the driver is picked per game / on this page (GameAudio).
+        CatalogEntry(
+            type = "PulseAudio",
+            name = "PulseAudio 17.0 + AAudio sink, aarch64 bionic (built from pulseaudio source)",
+            url = "",
+            sha256 = null,
+            title = "PulseAudio",
+            versionName = "17.0-2",
+            note = "Sound server for Wine's winepulse driver",
+            asset = "components/PulseAudio-17.0-2.wcp"
+        ),
+        CatalogEntry(
+            type = "ALSA",
+            name = "alsa-lib 1.2.16.1 + PanPlay AAudio PCM plugin, aarch64 bionic (built from source)",
+            url = "",
+            sha256 = null,
+            title = "ALSA",
+            versionName = "1.2.16.1-2",
+            note = "Direct AAudio output for Wine's winealsa driver",
+            asset = "components/ALSA-1.2.16.1-2.wcp"
         )
     )
 

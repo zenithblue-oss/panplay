@@ -70,10 +70,26 @@ fun ControlsScreen(onLog: (String) -> Unit) {
         } catch (t: Throwable) { error = "Export failed: ${t.message}" }
     }
 
+    var padName by remember { mutableStateOf(GamepadBridge.physicalName()) }
+    LaunchedEffect(Unit) { while (true) { kotlinx.coroutines.delay(1500); padName = GamepadBridge.physicalName() } }
+
     PageList {
         item {
+            Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer), modifier = Modifier.fillMaxWidth()) {
+                Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Rounded.SportsEsports, contentDescription = null)
+                    Spacer(Modifier.width(12.dp))
+                    Column {
+                        Text(padName ?: "No controller connected", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text(if (padName != null) "Physical controller connected" else "Connect one by USB or Bluetooth", style = MaterialTheme.typography.bodySmall)
+                    }
+                }
+            }
+        }
+        item {
             Text(
-                "Controller configs map the on-screen pad and physical controllers to keys and mouse. Assign one to a game in its Edit sheet.",
+                "Controller configs map the on-screen pad and physical controllers: every button, trigger and stick to the Xbox pad, " +
+                    "any key, mouse button, wheel or mouse movement. Assign one to a game in its Edit sheet; games without one use their exe template or Gamepad.",
                 style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }

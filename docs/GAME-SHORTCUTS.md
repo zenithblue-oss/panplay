@@ -27,6 +27,8 @@ Games tab in PanPlay (the launcher, `apps/panvk-launcher`) = library of Windows 
 `icon`: `auto` = app extracts on next Games-tab open, `none` = no icon, else file name.
 `resolution`: `""` = leave the launcher display resolution alone, else sets the display
 resolution pref before launch (global pref, persists). `driver`: `""` = selected driver, else `Driver.id`. `fex`: FEX preset (`""` = Intermediate; Stability, Compatibility, Intermediate, Performance, Extreme, Denuvo), applied as `FEX_*` env before the per-game `env`.
+`audio`: `""` = launcher default (Components > Game audio, ALSA unless changed), else `alsa`, `pulse` or `off`
+(see `runtimes/audio/README.md`).
 Per-game `env` is applied last (wins over launcher defaults, except `DISPLAY`).
 
 ## Intent (debug builds only)

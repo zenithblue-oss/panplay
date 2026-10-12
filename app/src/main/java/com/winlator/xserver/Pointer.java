@@ -6,7 +6,8 @@ import java.util.ArrayList;
 
 public class Pointer {
     public enum Button {
-        BUTTON_LEFT, BUTTON_MIDDLE, BUTTON_RIGHT, BUTTON_SCROLL_UP, BUTTON_SCROLL_DOWN, BUTTON_SCROLL_CLICK_LEFT, BUTTON_SCROLL_CLICK_RIGHT;
+        BUTTON_LEFT, BUTTON_MIDDLE, BUTTON_RIGHT, BUTTON_SCROLL_UP, BUTTON_SCROLL_DOWN, BUTTON_SCROLL_CLICK_LEFT, BUTTON_SCROLL_CLICK_RIGHT,
+        BUTTON_BACK, BUTTON_FORWARD; // panvk-launcher: X buttons 8 / 9 (Wine XBUTTON1 / XBUTTON2)
 
         public byte code() {
             return (byte)(ordinal() + 1);

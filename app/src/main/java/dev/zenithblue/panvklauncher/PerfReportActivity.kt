@@ -65,7 +65,7 @@ class PerfReportActivity : ComponentActivity() {
             }
             val id = cur
             if (id == null) {
-                Text(if (PerfRecorder.enabled(ctx)) "No performance sessions recorded yet." else "Recording is off (Settings > Record performance).")
+                Text(if (PerfRecorder.recording(ctx)) "No performance sessions recorded yet." else "Recording is off (Settings > Record performance, or Gaming mode is on).")
                 return@Column
             }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {

@@ -158,9 +158,24 @@ fun LauncherApp(
     var isContainerSetup by remember { mutableStateOf(ContainerManager.isSetup(context)) }
     var recentExes by remember { mutableStateOf(ContainerManager.recentExes(context)) }
 
-    fun addLog(msg: String) {
+    fun addLogs(msgs: List<String>) {
         val time = SimpleDateFormat("HH:mm:ss", Locale.US).format(Date())
-        logs.add("[$time] $msg")
+        logs.addAll(msgs.map { "[$time] $it" })
+        if (logs.size > 2000) logs.removeRange(0, logs.size - 2000) // keep the last 2000 lines
+    }
+    fun addLog(msg: String) = addLogs(listOf(msg))
+
+    // Wine output lines: queued off the UI thread, drained to logs at most every 250 ms.
+    val pendingLogs = remember { java.util.concurrent.ConcurrentLinkedQueue<String>() }
+    val logFlushQueued = remember { java.util.concurrent.atomic.AtomicBoolean(false) }
+    fun postLog(line: String) {
+        pendingLogs.add(line)
+        if (logFlushQueued.compareAndSet(false, true)) mainHandler.postDelayed({
+            logFlushQueued.set(false)
+            val batch = ArrayList<String>()
+            while (true) batch.add(pendingLogs.poll() ?: break)
+            if (batch.isNotEmpty()) addLogs(batch)
+        }, 250)
     }
 
     val hasProton = remember(installedComponents) {
@@ -184,7 +199,7 @@ fun LauncherApp(
                 addLog("Setting up container...")
                 val result = withContext(Dispatchers.IO) {
                     ContainerManager.setup(context) { line ->
-                        mainHandler.post { addLog(line) }
+                        postLog(line)
                     }
                 }
                 withContext(Dispatchers.Main) {
@@ -212,7 +227,7 @@ fun LauncherApp(
         scope.launch(Dispatchers.IO) {
             try {
                 ContainerManager.run(context, args) { line ->
-                    mainHandler.post { addLog(line) }
+                    postLog(line)
                 }
             } catch (t: Throwable) {
                 mainHandler.post { addLog("Run error: ${t.message}") }
@@ -225,6 +240,24 @@ fun LauncherApp(
         }
     }
 
+    fun importReg(uri: android.net.Uri) {
+        if (isWineRunning || isSettingUp) {
+            android.widget.Toast.makeText(context, "Stop the running game first", android.widget.Toast.LENGTH_LONG).show()
+            return
+        }
+        isWineRunning = true
+        runningName = "wine reg import"
+        scope.launch(Dispatchers.IO) {
+            val msg = try { ContainerManager.importReg(context, uri) { postLog(it) } } catch (t: Throwable) { "Registry import failed: ${t.message}" }
+            mainHandler.post {
+                addLog(msg)
+                android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_LONG).show()
+                isWineRunning = ContainerManager.isRunning()
+                isContainerSetup = ContainerManager.isSetup(context)
+            }
+        }
+    }
+
     fun runWineExe(exePath: String, sc: Shortcut? = null) {
         if (isWineRunning || isSettingUp) return
         isWineRunning = true
@@ -233,6 +266,7 @@ fun LauncherApp(
             val startMs = System.currentTimeMillis()
             val launcherLog = StringBuffer()
             var launched = false
+            val gaming = PerfRecorder.gamingMode(context) // skips session report; wine run log still written
             try {
                 // PanVK drives Mali kbase only; warn (not block, an imported driver may differ) when no Mali node exists.
                 if (!File("/dev/mali0").exists() && !File("/dev/mali").exists()) {
@@ -242,6 +276,7 @@ fun LauncherApp(
                 }
                 // Controller mapping (shortcut file, exe preset or default) must be set before Wine/X server start.
                 ControllerInput.config = ControllerConfig.resolve(context, sc?.id, exePath)
+                GameSession.set(sc, exePath)
                 ContainerManager.addRecent(context, exePath)
                 mainHandler.post {
                     recentExes = ContainerManager.recentExes(context)
@@ -256,8 +291,8 @@ fun LauncherApp(
                 launched = true
                 PerfRecorder.start(context, sc, exePath)
                 ContainerManager.runExe(context, exePath, { line ->
-                    launcherLog.append(line).append('\n')
-                    mainHandler.post { addLog(line) }
+                    if (!gaming) launcherLog.append(line).append('\n')
+                    postLog(line)
                 }, sc?.let { ShortcutStore.launchOptions(context, it) })
             } catch (t: Throwable) {
                 launcherLog.append("Run error: ${t.message}\n")
@@ -270,7 +305,7 @@ fun LauncherApp(
                     isContainerSetup = ContainerManager.isSetup(context)
                 }
                 // Game returned (exit, crash or driver failure): collect every log and show the Session logs screen.
-                try {
+                if (!gaming) try {
                     val dir = SessionLogs.collect(context, sc, exePath, startMs, launcherLog.toString(), launched)
                     mainHandler.post { SessionLogsActivity.open(context, dir.name) }
                 } catch (t: Throwable) {
@@ -287,7 +322,7 @@ fun LauncherApp(
         scope.launch(Dispatchers.IO) {
             try {
                 ContainerManager.runExplorer(context) { line ->
-                    mainHandler.post { addLog(line) }
+                    postLog(line)
                 }
             } catch (t: Throwable) {
                 mainHandler.post { addLog("Explorer run error: ${t.message}") }
@@ -440,6 +475,7 @@ fun LauncherApp(
             }
         )
     }
+    WhatsNewDialog(enabled = !showStorageDialog)
 
     fun runExeWithPermission(path: String, sc: Shortcut? = null) {
         val appFiles = context.filesDir.absolutePath
@@ -504,6 +540,11 @@ fun LauncherApp(
             else if (ContainerManager.isRunning()) addLog("Wine busy, not launching '${sc.name}' (stop it first)")
             else runShortcut(sc)
         }
+    }
+
+    // .reg has no reliable MIME type across providers; isRegFile checks the header instead.
+    val regLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) importReg(uri)
     }
 
     val importLauncher = rememberLauncherForActivityResult(
@@ -817,7 +858,8 @@ fun LauncherApp(
                 onStop = { stopWine() },
                 onOpenAppLog = { showLogs = true },
                 onOpenSessionLogs = { SessionLogsActivity.open(context) },
-                onOpenControls = { selectedTab = AppTab.Controls }
+                onOpenControls = { selectedTab = AppTab.Controls },
+                onImportReg = { regLauncher.launch(arrayOf("*/*")) }
             )
         }
     }

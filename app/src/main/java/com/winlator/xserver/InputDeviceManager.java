@@ -15,6 +15,7 @@ import com.winlator.xserver.events.PointerWindowEvent;
 
 public class InputDeviceManager implements Pointer.OnPointerMotionListener, Keyboard.OnKeyboardListener, WindowManager.OnWindowModificationListener, XResourceManager.OnResourceLifecycleListener {
     private static final byte MOUSE_WHEEL_DELTA = 120;
+    private static final boolean DEBUG = false; // panvk-launcher: flip for key/button traces
     private Window pointWindow;
     private final XServer xServer;
 
@@ -147,7 +148,7 @@ public class InputDeviceManager implements Pointer.OnPointerMotionListener, Keyb
                 short[] localPoint = grabWindow.rootPointToLocal(x, y);
 
                 Window child = grabWindow.isAncestorOf(pointWindow) ? pointWindow : null;
-                com.winlator.core.XLog.log("ButtonPress " + button.code() + " at " + x + "," + y + " -> " + grabWindow.id + " (point " + pointWindow.id + ")");
+                if (DEBUG) com.winlator.core.XLog.log("ButtonPress " + button.code() + " at " + x + "," + y + " -> " + grabWindow.id + " (point " + pointWindow.id + ")");
                 grabWindow.sendEvent(Event.BUTTON_PRESS, new ButtonPress(button.code(), xServer.windowManager.rootWindow, grabWindow, child, x, y, localPoint[0], localPoint[1], eventMask));
             }
         }
@@ -201,7 +202,7 @@ public class InputDeviceManager implements Pointer.OnPointerMotionListener, Keyb
     @Override
     public void onKeyPress(byte keycode, int keysym) {
         Window focusedWindow = xServer.windowManager.getFocusedWindow();
-        if (focusedWindow == null) { com.winlator.core.XLog.log("KeyPress " + (keycode & 0xff) + " dropped: focus None"); return; }
+        if (focusedWindow == null) { if (DEBUG) com.winlator.core.XLog.log("KeyPress " + (keycode & 0xff) + " dropped: focus None"); return; }
         updatePointWindow();
 
         Window eventWindow = null;
@@ -211,12 +212,12 @@ public class InputDeviceManager implements Pointer.OnPointerMotionListener, Keyb
             child = eventWindow != null && eventWindow.isAncestorOf(pointWindow) ? pointWindow : null;
         }
         if (eventWindow == null) {
-            if (!focusedWindow.hasEventListenerFor(Event.KEY_PRESS)) { com.winlator.core.XLog.log("KeyPress " + (keycode & 0xff) + " dropped: focus " + focusedWindow.id + " has no listener"); return; }
+            if (!focusedWindow.hasEventListenerFor(Event.KEY_PRESS)) { if (DEBUG) com.winlator.core.XLog.log("KeyPress " + (keycode & 0xff) + " dropped: focus " + focusedWindow.id + " has no listener"); return; }
             eventWindow = focusedWindow;
         }
 
         if (!eventWindow.attributes.isEnabled()) return;
-        com.winlator.core.XLog.log("KeyPress " + (keycode & 0xff) + " sym=0x" + Integer.toHexString(keysym) + " -> " + eventWindow.id + " (focus " + focusedWindow.id + ", point " + pointWindow.id + ")");
+        if (DEBUG) com.winlator.core.XLog.log("KeyPress " + (keycode & 0xff) + " sym=0x" + Integer.toHexString(keysym) + " -> " + eventWindow.id + " (focus " + focusedWindow.id + ", point " + pointWindow.id + ")");
 
         Bitmask keyButMask = getKeyButMask();
         short x = xServer.pointer.getX();

@@ -14,7 +14,7 @@ public class Keyboard {
     public static final short MIN_KEYCODE = 8;
     public final int[] keysyms = new int[KEYS_COUNT];
     private final Bitmask modifiersMask = new Bitmask();
-    private final XKeycode[] keycodeMap = createKeycodeMap();
+    private XKeycode[] keycodeMap; // lazy: createKeycodeMap needs the Android runtime (keeps createKeyboard JVM-testable)
     private final ArraySet<Byte> pressedKeys = new ArraySet<>();
     private final ArrayList<OnKeyboardListener> onKeyboardListeners = new ArrayList<>();
     private final XServer xServer;
@@ -99,7 +99,8 @@ public class Keyboard {
         int action = event.getAction();
         if (action == KeyEvent.ACTION_DOWN || action == KeyEvent.ACTION_UP) {
             int keyCode = event.getKeyCode();
-            XKeycode xKeycode = keycodeMap[keyCode];
+            if (keycodeMap == null) keycodeMap = createKeycodeMap();
+            XKeycode xKeycode = keyCode < keycodeMap.length ? keycodeMap[keyCode] : null;
             if (xKeycode == null) return false;
 
             if (action == KeyEvent.ACTION_DOWN) {
@@ -304,7 +305,17 @@ public class Keyboard {
         keyboard.setKeysyms(XKeycode.KEY_KP_7.id, 65463, 65429);
         keyboard.setKeysyms(XKeycode.KEY_KP_8.id, 65464, 65431);
         keyboard.setKeysyms(XKeycode.KEY_KP_9.id, 65465, 65465);
-        keyboard.setKeysyms(XKeycode.KEY_KP_DEL.id, 65439, 0);
+        keyboard.setKeysyms(XKeycode.KEY_KP_DEL.id, 65454, 65439); // KP_Decimal, KP_Delete
+        keyboard.setKeysyms(XKeycode.KEY_KP_ENTER.id, 65421, 0);
+        keyboard.setKeysyms(XKeycode.KEY_CAPS_LOCK.id, 65509, 0);
+        keyboard.setKeysyms(XKeycode.KEY_NUM_LOCK.id, 65407, 0);
+        keyboard.setKeysyms(XKeycode.KEY_SCROLL_LOCK.id, 65300, 0);
+        keyboard.setKeysyms(XKeycode.KEY_PRTSCN.id, 65377, 0);
+        keyboard.setKeysyms(XKeycode.KEY_PAUSE.id, 65299, 0);
+        keyboard.setKeysyms(XKeycode.KEY_SUPER_L.id, 65515, 0);
+        keyboard.setKeysyms(XKeycode.KEY_SUPER_R.id, 65516, 0);
+        keyboard.setKeysyms(XKeycode.KEY_MENU.id, 65383, 0);
+        for (int f = 13; f <= 24; f++) keyboard.setKeysyms(XKeycode.valueOf("KEY_F" + f).id, 65469 + f, 0); // F13 = 0xFFCA
         keyboard.setKeysyms(XKeycode.KEY_F1.id, 65470, 0);
         keyboard.setKeysyms(XKeycode.KEY_F2.id, 65471, 0);
         keyboard.setKeysyms(XKeycode.KEY_F3.id, 65472, 0);

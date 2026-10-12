@@ -1,5 +1,5 @@
 {
-  "comment": "Archives packed into the APK as assets/components/<file> (stored, not recompressed) and unpacked on first start. Gradle (bundleComponents) copies them from -PcomponentsDir (default /var/tmp/panvk/components) and fails on any sha256 mismatch. Fetched: scripts/fetch-launcher-components.sh. Built: scripts/build-fex-windows.sh, scripts/build-dxvk.sh (pins in scripts/components.env). -PbundleComponents=false builds a download-only APK.",
+  "comment": "Archives packed into the APK as assets/components/<file> (stored, not recompressed) and unpacked on first start. Gradle (bundleComponents) copies them from -PcomponentsDir (default /var/tmp/panvk/components) and fails on any sha256 mismatch. Fetched: scripts/fetch-launcher-components.sh. Built: scripts/build-fex-windows.sh, scripts/build-dxvk.sh, scripts/build-box64-wow64.sh, scripts/build-audio.sh (pins in scripts/components.env). -PbundleComponents=false builds a download-only APK.",
   "components": [
     {
       "file": "imagefs_bionic.txz",
@@ -30,6 +30,16 @@
       "file": "box64-0.4.5-2f47bdf.wcp",
       "sha256": "d71d5a21ff31186b70edbfa6a5cb59fcbac13782e122f6f8c2288f0132d16507",
       "build": "scripts/build-box64-wow64.sh"
+    },
+    {
+      "file": "PulseAudio-17.0-2.wcp",
+      "sha256": "15604aa07aa71a1da6258dc96fc4a61bef510b7cce93d370ce6bfc900ecec39a",
+      "build": "scripts/build-audio.sh"
+    },
+    {
+      "file": "ALSA-1.2.16.1-2.wcp",
+      "sha256": "723aaf3cb9fdb9bacd2feb02e5db33b31638b3bf4b91a029a68328faf2203b22",
+      "build": "scripts/build-audio.sh"
     }
   ]
 }

@@ -24,10 +24,27 @@ import kotlin.math.roundToInt
 /** Overlay look + feel, "launcher" prefs. */
 object OverlayPrefs {
     private fun p(c: Context) = c.getSharedPreferences("launcher", Context.MODE_PRIVATE)
-    fun opacity(c: Context) = p(c).getFloat("overlay_opacity", 0.7f)
+    /** User size multiplier limits (on top of the screen-size factor in GamepadOverlayView.buildLayout). */
+    const val SIZE_MIN = 0.6f
+    const val SIZE_MAX = 1.5f
+    fun opacity(c: Context) = p(c).getFloat("overlay_opacity", 0.7f).coerceIn(0.2f, 1f)
     fun setOpacity(c: Context, v: Float) = p(c).edit().putFloat("overlay_opacity", v.coerceIn(0.2f, 1f)).apply()
-    fun size(c: Context) = p(c).getFloat("overlay_size", 1f)
-    fun setSize(c: Context, v: Float) = p(c).edit().putFloat("overlay_size", v.coerceIn(0.7f, 1.4f)).apply()
+    // Clamped on read too, so out-of-range values saved by older builds are fixed.
+    fun size(c: Context) = p(c).getFloat("overlay_size", 1f).coerceIn(SIZE_MIN, maxSize(c))
+    fun setSize(c: Context, v: Float) = p(c).edit().putFloat("overlay_size", v.coerceIn(SIZE_MIN, maxSize(c))).apply()
+
+    private var maxCache = 0f
+    /** Slider top on this device: above it the layout fit check shrinks the pad back, so bigger values look the same.
+     *  Landscape real screen size, safe-area insets ignored (cutout may still shrink the last few percent). */
+    fun maxSize(c: Context): Float {
+        if (maxCache == 0f) {
+            val dm = android.util.DisplayMetrics()
+            @Suppress("DEPRECATION") c.getSystemService(android.view.WindowManager::class.java).defaultDisplay.getRealMetrics(dm)
+            maxCache = SIZE_MAX // recursion guard: the probe view's init reads size()
+            maxCache =GamepadOverlayView(c.applicationContext).maxFitSize(maxOf(dm.widthPixels, dm.heightPixels), minOf(dm.widthPixels, dm.heightPixels))
+        }
+        return maxCache
+    }
     /** off | light | strong */
     fun haptics(c: Context) = p(c).getString("overlay_haptics", "light") ?: "light"
     fun setHaptics(c: Context, v: String) = p(c).edit().putString("overlay_haptics", v).apply()
@@ -43,7 +60,7 @@ object OverlayPrefs {
  * px scaled into the view, sends nothing to the pad, and reports taps as control ids via [onPreviewTap].
  */
 class GamepadOverlayView(context: Context) : View(context) {
-    private enum class Kind { STICK, DPAD, BTN, TRIG, TOGGLE, EXIT }
+    private enum class Kind { STICK, DPAD, BTN, TRIG, TOGGLE, MENU, EXIT }
 
     private class Ctl(val kind: Kind, val arg: Int, var label: String, val round: Boolean, val color: Int) {
         val rect = RectF()
@@ -118,7 +135,11 @@ class GamepadOverlayView(context: Context) : View(context) {
 
     private var toggle: Ctl? = null
     private var exitCtl: Ctl? = null
-    private fun active(): List<Ctl> = if (hidden) listOfNotNull(toggle, exitCtl) else ctls
+    private var menuCtl: Ctl? = null
+    private fun active(): List<Ctl> = if (hidden) listOfNotNull(toggle, menuCtl, exitCtl) else ctls
+
+    /** MENU tapped: open the in-game menu. */
+    var onMenu: (() -> Unit)? = null
 
     /** Called after EXIT was held for [EXIT_HOLD_MS]. */
     var onExit: (() -> Unit)? = null
@@ -163,11 +184,11 @@ class GamepadOverlayView(context: Context) : View(context) {
         performHapticFeedback(c)
     }
 
-    // Sizes: dp base value * scale k, clamped to a dp minimum (>= 40dp touch targets), then converted to px
-    // with the display density, so the pad follows UI density / "display size". The search below picks the
-    // biggest k (starting at the user's size setting) that fits without overlap; if even the minimum sizes do
-    // not fit it drops optional controls (triggers, then right stick, then bumpers) and tries a side-by-side
-    // arrangement instead of overlapping.
+    // Sizes: dp base value * scale k, clamped to a dp minimum (>= 40dp touch targets), then converted to px.
+    // k = user size * screen factor (short side / 360dp), so the pad covers the same share of a phone and a
+    // tablet instead of the same physical size. The search below picks the biggest k (starting there) that
+    // fits without overlap or leaving the safe area; if even the minimum sizes do not fit it drops optional
+    // controls (triggers, then right stick, then bumpers) and tries a side-by-side arrangement.
     private var ax0 = 0f; private var ax1 = 0f; private var ay0 = 0f; private var ay1 = 0f
 
     private fun buildLayout(w: Int, h: Int) {
@@ -175,10 +196,11 @@ class GamepadOverlayView(context: Context) : View(context) {
         ctls.clear()
         toggle = null
         if (w <= 0 || h <= 0) return
+        val sf = screenFactor(w, h)
         var last: List<Ctl> = emptyList()
         search@ for (level in 0..3) {
-            var k = 1.25f * userScale
-            while (k >= 0.6f - 1e-3f) {
+            var k = userScale * sf
+            while (k >= 0.5f - 1e-3f) {
                 for (stacked in booleanArrayOf(true, false)) for (sep in booleanArrayOf(false, true)) {
                     last = layout(w, h, level, k, stacked, sep)
                     if (fits(last)) break@search
@@ -189,6 +211,21 @@ class GamepadOverlayView(context: Context) : View(context) {
         ctls.addAll(last)
         toggle = ctls.firstOrNull { it.kind == Kind.TOGGLE }
         exitCtl = ctls.firstOrNull { it.kind == Kind.EXIT }
+        menuCtl = ctls.firstOrNull { it.kind == Kind.MENU }
+    }
+
+    private fun screenFactor(w: Int, h: Int) = (minOf(w, h) / resources.displayMetrics.density / 360f).coerceIn(0.85f, 2f)
+
+    /** Biggest user size (SIZE_MIN..SIZE_MAX, 0.05 steps) whose full layout fits w x h without the search shrinking it. */
+    fun maxFitSize(w: Int, h: Int): Float {
+        val sf = screenFactor(w, h)
+        var s = OverlayPrefs.SIZE_MAX
+        while (s > OverlayPrefs.SIZE_MIN + 1e-3f) {
+            for (stacked in booleanArrayOf(true, false)) for (sep in booleanArrayOf(false, true))
+                if (fits(layout(w, h, 0, s * sf, stacked, sep))) return s
+            s -= 0.05f
+        }
+        return OverlayPrefs.SIZE_MIN
     }
 
     private fun fits(l: List<Ctl>): Boolean {
@@ -212,10 +249,11 @@ class GamepadOverlayView(context: Context) : View(context) {
         val g = 6 * dp
         val il = if (previewing) 0f else insL; val itop = if (previewing) 0f else insT
         val ir = if (previewing) 0f else insR; val ib = if (previewing) 0f else insB
-        ax0 = il + 4 * dp; ax1 = w - ir - 4 * dp; ay0 = itop + 4 * dp; ay1 = h - ib - 4 * dp
+        ax0 = il + 8 * dp; ax1 = w - ir - 8 * dp; ay0 = itop + 8 * dp; ay1 = h - ib - 8 * dp
         val rsOn = rightStickEnabled && level < 2
-        val R = u(52f, 36f); val dh = u(56f, 54f); val fr = u(24f, 20f); val fh = fr * 2.6f
-        val shW = u(56f, 48f); val shH = u(40f, 40f); val cw = u(58f, 52f); val cH = u(36f, 40f)
+        // Bases = the old default look (old k 1.25) at k 1; floors low enough that the size slider still acts.
+        val R = u(65f, 36f); val dh = u(70f, 48f); val fr = u(30f, 20f); val fh = fr * 2.6f
+        val shW = u(70f, 48f); val shH = u(50f, 40f); val cw = u(72f, 52f); val cH = u(45f, 40f)
         val rowH = maxOf(shH, cH)
         val cyC = ay0 + rowH / 2
         val shY = if (sep) ay0 + rowH + g + shH / 2 else cyC
@@ -257,14 +295,16 @@ class GamepadOverlayView(context: Context) : View(context) {
             add(Ctl(Kind.TRIG, 0, "LT", false, Color.WHITE), lStart, shY, shW / 2, shH / 2)
             add(Ctl(Kind.TRIG, 1, "RT", false, Color.WHITE), rEnd, shY, shW / 2, shH / 2)
         }
-        // Top row: BACK START HIDE EXIT (EXIT = hold to confirm, red).
-        val x0 = (ax0 + ax1) / 2 - (4 * cw + 3 * g) / 2 + cw / 2
-        add(Ctl(Kind.BTN, GamepadBridge.BTN_BACK, "BACK", false, Color.WHITE), x0, cyC, cw / 2, cH / 2)
+        // Top row: BACK START HIDE MENU EXIT (EXIT = hold to confirm, red).
+        val x0 = (ax0 + ax1) / 2 - (5 * cw + 4 * g) / 2 + cw / 2
+        add(Ctl(Kind.BTN, GamepadBridge.BTN_BACK, "SELECT", false, Color.WHITE), x0, cyC, cw / 2, cH / 2)
         add(Ctl(Kind.BTN, GamepadBridge.BTN_START, "START", false, Color.WHITE), x0 + (cw + g), cyC, cw / 2, cH / 2)
         add(Ctl(Kind.TOGGLE, 0, if (hidden) "SHOW" else "HIDE", false, Color.WHITE), x0 + 2 * (cw + g), cyC, cw / 2, cH / 2)
-        add(Ctl(Kind.EXIT, 0, "EXIT", false, 0xFFF87171.toInt()), x0 + 3 * (cw + g), cyC, cw / 2, cH / 2)
+        add(Ctl(Kind.MENU, 0, "MENU", false, Color.WHITE), x0 + 3 * (cw + g), cyC, cw / 2, cH / 2)
+        add(Ctl(Kind.EXIT, 0, "EXIT", false, 0xFFF87171.toInt()), x0 + 4 * (cw + g), cyC, cw / 2, cH / 2)
         line.strokeWidth = maxOf(1.5f, 1.5f * dp * k)
         text.textSize = 13f * dp * maxOf(k, 0.85f)
+        text.setShadowLayer(2f * dp, 0f, 0.5f * dp, 0xAA000000.toInt()) // keeps labels readable on bright games
         return out
     }
 
@@ -300,6 +340,7 @@ class GamepadOverlayView(context: Context) : View(context) {
             Kind.BTN -> { press(c, down); GamepadBridge.setVirtualButton(c.arg, down) }
             Kind.TRIG -> { press(c, down); GamepadBridge.setVirtualTrigger(c.arg == 0, if (down) 1f else 0f) }
             Kind.TOGGLE -> { press(c, down); if (down) post { hidden = !hidden; c.label = if (hidden) "SHOW" else "HIDE" } }
+            Kind.MENU -> { press(c, down); if (down) post { onMenu?.invoke() } }
             Kind.EXIT -> {
                 press(c, down)
                 removeCallbacks(exitRun)
@@ -321,7 +362,7 @@ class GamepadOverlayView(context: Context) : View(context) {
         else apply(c, 0f, 0f, false)
     }
 
-    private fun releaseAll() { ctls.forEach { if (it.pid >= 0) release(it) }; owner.clear() }
+    fun releaseAll() { ctls.forEach { if (it.pid >= 0) release(it) }; owner.clear() }
 
     override fun onDetachedFromWindow() { releaseAll(); super.onDetachedFromWindow() }
 
@@ -403,7 +444,10 @@ class GamepadOverlayView(context: Context) : View(context) {
                     canvas.drawCircle(c.cx, c.cy, rad, fill)
                     line.alpha = (o * 140).toInt(); canvas.drawCircle(c.cx, c.cy, rad, line)
                     fill.color = Color.WHITE; fill.alpha = (o * (110 + 90 * a)).toInt().coerceAtMost(255)
-                    canvas.drawCircle(c.cx + c.dx * rad, c.cy + c.dy * rad, rad * (0.42f + 0.04f * a), fill)
+                    val kr = rad * (0.42f + 0.04f * a)
+                    canvas.drawCircle(c.cx + c.dx * rad, c.cy + c.dy * rad, kr, fill)
+                    line.alpha = (o * (160 + 80 * a)).toInt().coerceAtMost(255) // knob edge, brighter while held
+                    canvas.drawCircle(c.cx + c.dx * rad, c.cy + c.dy * rad, kr, line)
                     if (cfg.output != "gamepad") {
                         val cap = cfg.stickCaption(c.arg == 0)
                         text.color = Color.WHITE; text.alpha = (o * 200).toInt()
@@ -417,7 +461,7 @@ class GamepadOverlayView(context: Context) : View(context) {
                     arm(canvas, c, GamepadBridge.HAT_LEFT, c.cx - h, c.cy - w, c.cx - w, c.cy + w, 3)
                     arm(canvas, c, GamepadBridge.HAT_RIGHT, c.cx + w, c.cy - w, c.cx + h, c.cy + w, 1)
                     fill.color = Color.BLACK; fill.alpha = (o * 90).toInt()
-                    tmp.set(c.cx - w, c.cy - w, c.cx + w, c.cy + w); canvas.drawRect(tmp, fill)
+                    tmp.set(c.cx - w, c.cy - w, c.cx + w, c.cy + w); canvas.drawRoundRect(tmp, w / 3f, w / 3f, fill)
                 }
                 else -> {
                     canvas.save()
@@ -436,7 +480,8 @@ class GamepadOverlayView(context: Context) : View(context) {
                         animating = true
                     }
                     if (c.round) canvas.drawCircle(c.cx, c.cy, r.width() / 2f, line) else canvas.drawRoundRect(r, r.height() / 2f, r.height() / 2f, line)
-                    if (a > 0.5f && c.color != Color.WHITE) { text.color = Color.WHITE; text.alpha = (o * 255).toInt() }
+                    // Pressed fill is the accent colour: white label on colour, black on the white fill of plain buttons.
+                    if (a > 0.5f) { text.color = if (c.color == Color.WHITE) Color.BLACK else Color.WHITE; text.alpha = (o * 255).toInt() }
                     drawFit(canvas, if (c.kind == Kind.EXIT && c.pressed) "HOLD" else caption(c), c.cx, c.cy, r.width() * 0.84f, 1f)
                     canvas.restore()
                 }

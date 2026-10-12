@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.dp
 
 /**
  * "Launch" card shown before a game starts. Lists every runtime part with its real installed version
- * (read-only) and lets the user change only resolution, driver and FEX mode. Both choices are saved on the game.
+ * (read-only) and lets the user change resolution, FPS limit, driver, FEX mode and audio driver; all are saved on the game.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,6 +70,9 @@ fun LaunchSheet(
         mutableStateOf(DriverManager.find(ctx, drivers, game.driver)?.id ?: "")
     }
     var fexMode by remember(game.id) { mutableStateOf(Box64Presets.resolve(Box64Presets.modeFor(game))) }
+    var audio by remember(game.id) { mutableStateOf(game.audio) }
+    val audioDefault = remember { GameAudio.defaultDriver(ctx) }
+    val audioInfo = remember(audio) { GameAudio.describe(ctx, GameAudio.resolve(ctx, audio)) }
     // Box64 (WowBox64) only emulates 32-bit WoW64 processes; 64-bit games always use FEX.
     val is32 = info.arch == "i386"
     val box = is32 && Box64Presets.isBox(fexMode)
@@ -115,6 +118,7 @@ fun LaunchSheet(
                         }
                         InfoRow("PanVK driver", chosenDriver.label, chosenDriver.buildId.ifEmpty { chosenDriver.driverVersion })
                         InfoRow(if (box) "Box64 mode" else "FEX mode", emuMode)
+                        InfoRow(audioInfo.label, audioInfo.name, audioInfo.version, subIsError = audioInfo.missing)
                         InfoRow("Executable", info.exePath, info.arch)
                         // Controller assignment is set in the game's Edit sheet; its mapping can be edited from here.
                         TextButton(onClick = { editCtl = true }, modifier = Modifier.heightIn(min = 48.dp)) { Text("Edit controls…") }
@@ -147,6 +151,13 @@ fun LaunchSheet(
                         onSelect = { fexMode = it }
                     )
                     Text(if (box) Box64Presets.hint(emuMode) else FexPresets.hint(emuMode), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    DropdownField(
+                        label = "Audio driver",
+                        options = listOf("" to "Default (${GameAudio.label(audioDefault)})") + GameAudio.drivers,
+                        selected = audio,
+                        onSelect = { audio = it }
+                    )
+                    if (audioInfo.missing) Text("${audioInfo.name} is not installed: the game runs without sound.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
                     if (problems.isNotEmpty()) {
                         Column(
                             modifier = Modifier.semantics(mergeDescendants = true) {},
@@ -158,7 +169,7 @@ fun LaunchSheet(
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
                         TextButton(onClick = onDismiss, modifier = Modifier.heightIn(min = 52.dp)) { Text("Cancel") }
                         Button(
-                            onClick = { onLaunch(game.copy(resolution = resolution, driver = driverId, fex = emuMode, fpsLimit = fps)) },
+                            onClick = { onLaunch(game.copy(resolution = resolution, driver = driverId, fex = emuMode, fpsLimit = fps, audio = audio)) },
                             enabled = problems.isEmpty(),
                             modifier = Modifier.weight(1f).heightIn(min = 52.dp)
                         ) {

@@ -27,6 +27,10 @@ object PerfRecorder {
     private fun prefs(c: Context) = c.getSharedPreferences("launcher", Context.MODE_PRIVATE)
     fun enabled(c: Context) = prefs(c).getBoolean("perf_record", true)
     fun setEnabled(c: Context, v: Boolean) = prefs(c).edit().putBoolean("perf_record", v).apply()
+    /** Gaming mode: less logging during play; recording effectively off without touching perf_record. */
+    fun gamingMode(c: Context) = prefs(c).getBoolean("gaming_mode", false)
+    fun setGamingMode(c: Context, v: Boolean) = prefs(c).edit().putBoolean("gaming_mode", v).apply()
+    fun recording(c: Context) = enabled(c) && !gamingMode(c)
 
     fun dir(c: Context) = File(c.filesDir, "perf").apply { mkdirs() }
 
@@ -46,7 +50,7 @@ object PerfRecorder {
 
     fun start(ctx: Context, sc: Shortcut?, exePath: String) {
         lastId = null
-        if (!enabled(ctx) || cur != null) return
+        if (!recording(ctx) || cur != null) return
         try {
             val now = System.currentTimeMillis()
             val label = (sc?.name ?: File(exePath).nameWithoutExtension).replace(Regex("[^A-Za-z0-9._-]+"), "_").take(40)
